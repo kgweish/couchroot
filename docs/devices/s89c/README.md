@@ -148,3 +148,32 @@ The earlier host suite passed 233 Python tests and 118 JavaScript/browser tests.
 This session's checks covered certificate chains and signatures, installed-file
 hashes, native Home/readback and recovery, plus the owner's physical remote test.
 The shipped UI source stayed unchanged during signing and hardware validation.
+
+## Local 0.4.2 design trial
+
+The local tvOS-style build uses five compact columns, bundled service logos,
+local time for its greeting/date/clock, and rotating landscape images from
+Unsplash. It discovers installed apps and connected TV/HDMI sources. Input
+captions say **via Home** and open Samsung Home for source selection.
+Saved shortcut lists take precedence; fresh storage starts with all discovered
+entries. Monitoring code and controls are absent from the S89C package.
+
+Both signatures and all source members passed verification. Installed source
+and author-signature hashes matched the signed 0.4.2 archive; the TV reported
+`MiniHub001.Hub` as its foreground app. The original signed 0.4.1 package remains
+available locally. The owner confirmed that the design looks good, the remote
+arrows work, and Home returns to the updated launcher after opening an app.
+
+Tizen Core 10.0.18's `tz install` silently removed the old package before
+installing this build. That reset the Home assignment to Samsung Home. The
+existing native helper restored Minimal Hub; typed Home/startup readback and
+autostart `1` passed verification afterward. SDK access to the private app-data
+folder was denied, and developer-inspector requests stalled, so saved launcher
+settings could have reset. No firmware, services or other apps were changed.
+
+Do not use `tz install` for another update. The local adapter has been retired.
+A future update needs an installer path verified to preserve app data. The
+standard `deploy-ui` targets remain S90D and QN90A until S89C has that adapter.
+
+Standby/wake and full reboot checks remain pending. The owner plans to exercise
+those behaviors over the next day.

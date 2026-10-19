@@ -13,7 +13,7 @@ the TV, and how much of the feature set they carry.
 | Becomes Home by | Samsung's own Home/startup assignment (S90D) or the ISP source role (QN90A) | Boot hook dispatch + an overridable Home key grab |
 | Software time to Hub after a QN90A reboot | ~37–47 s (best web path) | **~9–10 s** (first rendered frame) |
 | Time to Hub on S90D | Started by Samsung; no hook needed (visible time not measured) | Not available |
-| Features | Full: favourites, edit/move/undo, settings, sound, hold-OK, fade, telemetry, screensaver, monitoring | Core: favourites, edit/move/undo, settings, app discovery, Home routing; advanced web-only features stay in the web Hub |
+| Features | Full: favourites, edit/move/undo, settings, sound, hold-OK, fade and screensaver | Core: favourites, edit/move/undo, settings, app discovery, Home routing; advanced web-only features stay in the web Hub |
 | Failure fallback | Samsung Home | Web Hub (installed alongside) and Samsung Home |
 | Maturity | Supported source release | Experimental research launcher |
 
@@ -27,7 +27,7 @@ The tested upgrade engine is Chromium 120; the default is Chromium 76.
 It retains native boot admission, Home routing, source re-arm and app return,
 adds bounded child restart, and imports old native preferences once into separate
 WebView storage. Its native bridge exposes app discovery and launch, not the full
-Tizen API. Telemetry, monitoring, screensaver and platform sound integration do
+Tizen API. Screensaver and platform sound integration do
 not automatically carry over. The signed web Hub remains installed as fallback.
 
 The first deferred-presentation profile mapped a canvas at about 16.35 seconds,

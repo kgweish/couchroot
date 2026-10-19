@@ -5,6 +5,14 @@
   var name = url.searchParams.get('scenario') || 'home';
   if (!Object.prototype.hasOwnProperty.call(HubScenarios, name)) name = 'home';
   var scenario = HubScenarios[name], apps = HubFixtures.catalog();
+  if (scenario.design) {
+    // Sample connectors for visual review; these do not describe the owner's TV.
+    apps = apps.concat([
+      { id: 'DemoInput1.tv', name: 'Live TV', show: true },
+      { id: 'DemoInput1.hdmi1', name: 'HDMI 1', show: true },
+      { id: 'DemoInput1.hdmi3', name: 'HDMI 3', show: true }
+    ]);
+  }
   if (scenario.missingArtwork) apps[apps.length - 1].iconPath = '/missing-preview-icon.png';
   var marker = 'hub-preview.scenario';
   if (localStorage.getItem(marker) !== name || url.searchParams.has('reset')) {
@@ -20,6 +28,12 @@
   }
   url.searchParams.delete('reset');
   history.replaceState(null, '', url);
+  if (scenario.design) {
+    // Extra services can be selected in the mock picker without reseeding Home.
+    apps = apps.concat(HubStreamingApps.filter(function (service) {
+      return !apps.some(function (app) { return app.id === service.id; });
+    }).map(function (service) { return { id: service.id, name: service.name, show: true }; }));
+  }
   // The first saved shortcut stays on Home while its app leaves the simulated TV.
   HubFixtures.install(Object.assign({ launchHandoff: true }, scenario, { apps: scenario.unavailable ? apps.slice(1) : apps }));
   window.addEventListener('hub-preview-launch', function (event) {
@@ -28,7 +42,7 @@
   document.addEventListener('DOMContentLoaded', function () {
     var badge = document.getElementById('preview');
     badge.hidden = false;
-    badge.textContent = 'LOCAL PREVIEW · SIMULATED TV';
+    badge.textContent = scenario.design ? 'DESIGN MOCKUP · SAMPLE APPS & INPUTS' : 'LOCAL PREVIEW · SIMULATED TV';
     function click(id) { document.getElementById(id).click(); }
     if (scenario.screen === 'picker') {
       click('edit-apps'); document.querySelector('#editor-actions button').click();
@@ -46,7 +60,6 @@
     } else if (scenario.screen) {
       click('settings');
       if (scenario.screen === 'reset') click('setting-reset');
-      if (scenario.screen === 'monitoring') click('setting-telemetry');
       if (scenario.screen === 'start') document.getElementById('setting-start').focus();
       if (scenario.screen === 'hold') document.getElementById('setting-hold').focus();
     }

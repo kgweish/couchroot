@@ -16,7 +16,9 @@ Start with [UI development](../../../docs/guides/ui-development.md). Read
 - `web/index.html`, `web/style.css`: structure, layout and appearance.
 - `web/hub.js`: screens, remote input and focus restoration.
 - `web/model.js`, `web/presentation.js`: saved favorites/navigation and artwork.
-- `web/bridge.js`, `web/feedback.js`, `web/telemetry*.js`: platform adapters.
+- `web/bridge.js`, `web/feedback.js`: core platform adapters.
+- `research/s90d-telemetry/legacy-hub/`: compatibility adapters for existing
+  S90D/QN90A collectors, excluded from the core launcher and S89C builds.
 - `preview/`: shared mocks, scenarios and workbench; never shipped.
 
 Run `npm run dev` and inspect the printed loopback URL. Use another `PORT` if an

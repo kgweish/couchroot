@@ -212,24 +212,17 @@ kbd { font: inherit; font-size: .88em; padding: .22em .6em; border: 1px solid #f
 #setting-visual.setting-layout.dense { grid-template-columns: repeat(4, 1fr); padding: 2.2vw; }
 .setting-layout > span { height: 100%; border-radius: .4vw; background: linear-gradient(130deg, #504937, #282d26); border: 1px solid #ddc79140; }
 .setting-layout > span:nth-child(2n) { background: linear-gradient(130deg, #463438, #262624); border-color: #bc8f9640; }
-.reset-pair, #setting-visual.setting-telemetry, #setting-visual.setting-start, #setting-visual.setting-hold { color: #ddcba5; font-size: 2.4vw; letter-spacing: -.02em; }
+.reset-pair, #setting-visual.setting-start, #setting-visual.setting-hold { color: #ddcba5; font-size: 2.4vw; letter-spacing: -.02em; }
 #setting-visual.setting-clock { color: #ddcba5; font-size: 5vw; font-variant-numeric: tabular-nums; letter-spacing: -.03em; }
 .setting-fade > span { margin: 0 .4vw; border: 1px solid #ccb98760; border-radius: 40px; padding: 1.2vh 1vw; font-size: 1.1vw; color: #ddcba5; }
 .setting-fade.dim-preview > span { opacity: .35; }
 
 /* Dialogs: one panel, cancel on the left, the committing action on the right. */
-#reset-dialog, #telemetry-dialog, #launch-error-dialog { position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 8; display: flex; align-items: center; justify-content: center; background: #0a0c0bf2; }
-#telemetry-dialog { z-index: 10; }
+#reset-dialog, #launch-error-dialog { position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 8; display: flex; align-items: center; justify-content: center; background: #0a0c0bf2; }
 .dialog-panel { width: 56vw; max-height: 92vh; padding: 3.2vw 3.4vw 2.6vw; background: linear-gradient(130deg, #2e2f26, #1e231e); border: 1px solid #cbb78655; border-radius: 1.25vw; }
 .dialog-panel h2 { font-size: 2.4vw; letter-spacing: -.035em; margin-bottom: 1.6vh; }
 #launch-error-title { overflow-wrap: break-word; }
-.dialog-description, #telemetry-detail { color: var(--soft); font-size: 1.25vw; line-height: 1.6; }
-.dialog-panel .setting-row { margin: 3vh 0 0; }
-.dialog-panel label { display: block; margin: 2.6vh 0 1.1vh; font-size: .95vw; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
-#telemetry-endpoint { width: 100%; padding: 1.5vh 1.2vw; background: #131612; color: #f6f3ec; border: 1px solid #ffffff2e; border-radius: .75vw; outline: none; font: inherit; font-size: 1.4vw; }
-#telemetry-endpoint:focus { border-color: transparent; box-shadow: 0 0 0 3px var(--ring); }
-#telemetry-detail { margin-top: 1.6vh; font-size: 1.1vw; color: var(--muted); }
-.dialog-panel .status-line { min-height: 1.4em; margin-top: 1.4vh; }
+.dialog-description { color: var(--soft); font-size: 1.25vw; line-height: 1.6; }
 .dialog-actions { display: flex; gap: 1.2vw; margin-top: 2.4vh; }
 .dialog-actions button { flex: 1; padding: 1em; font-size: 1.3vw; border-radius: .75vw; background: #ffffff0b; border: 1px solid #ffffff24; }
 .dialog-actions button:disabled { opacity: .45; }

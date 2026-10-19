@@ -1,0 +1,65 @@
+/* S89C Home design; enabled by its staged body attribute. */
+.design-tvos { font-family: 'Helvetica Neue', Arial, sans-serif; color: #f8f8fc; }
+.design-tvos .ambient { background: radial-gradient(ellipse at 5% 90%, #14344e99, transparent 66%), radial-gradient(ellipse at 90% 8%, #39356e99, transparent 70%), #101522; }
+.design-tvos .orbital { display: none; }
+.design-landscape { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.4s ease; }
+.design-landscape.is-active { opacity: 1; }
+.photos-off .design-landscape, .photos-off #design-photo-credit { display: none; }
+[data-design="tvos"] #setting-visual.setting-photos { color: #eef0f5; font-size: 2.4vw; background: radial-gradient(ellipse at 5% 90%, #14344e99, transparent 66%), #101522; }
+[data-design="tvos"] .ambient::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; left: 0; background: linear-gradient(180deg, #070b166b, #070b1600 40%, #070b1699), #03071194; }
+[data-design="tvos"]:not(.design-tvos) #design-title, [data-design="tvos"]:not(.design-tvos) #design-date { display: none; }
+.design-tvos #setting-visual.setting-layout.gallery { grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(2, 3.3vw); align-content: center; padding: 2.2vw; }
+.design-tvos main, .design-tvos main.clock-on { padding-top: 12vh; }
+.design-tvos.design-moving main { padding-top: 4vh; }
+#design-title { position: absolute; left: 6.25vw; top: 3.8vh; margin: 0; font-size: 1.85vw; font-weight: 500; letter-spacing: -.03em; }
+#design-date { position: absolute; left: 6.25vw; top: 8.1vh; font-size: 1.05vw; color: #e1e5ee; }
+#design-photo-credit { position: absolute; bottom: 1vh; left: 6.25vw; margin: 0; font-size: .7vw; color: #c7cbd8; }
+.design-tvos #home-clock { top: 4.1vh; font-size: 1.7vw; color: #f4f4fb; letter-spacing: -.02em; }
+.design-tvos .apps:not(.reordering) { row-gap: 5.5vh; padding-bottom: 2.8vw; }
+.design-tvos .apps.compact { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5.5vh 1.65vw; padding-bottom: 2.8vw; }
+.design-tvos .apps.compact .tile { height: 9.1vw; max-height: none; font-size: 1.9vw; border: 0; border-radius: .85vw; box-shadow: 0 5px 14px #00000038; transition: transform 140ms ease-out, box-shadow 140ms ease-out; }
+.design-tvos .apps.compact .tile:focus { transform: scale(1.065); z-index: 1; box-shadow: 0 0 0 3px #ffffffcc, 0 14px 25px #00000070; }
+.design-caption { position: absolute; top: calc(100% + .7vw); left: -1vw; right: -1vw; color: #eef0f5; font-size: 1.05vw; line-height: 1.3; font-weight: 400; letter-spacing: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tile:focus .design-caption { color: #fff; }
+.design-moving #design-title, .design-moving #design-date, .design-tvos .apps.reordering .design-caption { display: none; }
+.design-brand-logo { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 72%; height: 55%; object-fit: contain; pointer-events: none; }
+.design-brand-logo.design-square-art { width: 100%; height: 100%; border-radius: inherit; }
+.design-row-logo { width: 2.2vw; height: 2.2vw; object-fit: contain; border-radius: .3vw; flex-shrink: 0; }
+.design-has-logo .brand-wordmark, .design-has-logo .app-logo { visibility: hidden; }
+.design-has-logo.brand-disney .design-brand-logo, .design-has-logo.brand-espn .design-brand-logo { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+.design-tvos .brand-art, .design-tvos .card-art { display: none; }
+.design-tvos .plex { background: #242426; }
+.design-tvos .youtube { background: #fbfbfd; }
+.design-tvos .youtube-logo { color: #151518; }
+.design-tvos .brand-netflix { background: #111113; }
+.design-tvos .brand-prime { background: linear-gradient(130deg, #02a8dd, #0475b3); }
+.design-tvos .brand-disney { background: linear-gradient(145deg, #0c3c80, #071c4c); }
+.design-tvos .brand-hulu { background: #22df82; }
+.design-tvos .brand-hulu .brand-wordmark { color: #073827; font-size: 1.5em; }
+.design-tvos .brand-spotify { background: #1ed760; }
+.design-tvos .brand-spotify .brand-wordmark { color: #062c17; }
+.design-tvos .brand-peacock { background: #101113; }
+.design-tvos .brand-peacock .brand-wordmark { color: #f8f8fa; }
+.design-tvos .brand-crunchyroll { background: #ff640a; }
+.design-tvos .brand-crunchyroll .brand-wordmark, .design-tvos .brand-espn .brand-wordmark { color: #fff; }
+.design-tvos .brand-espn { background: #dc1a31; }
+.design-tvos .brand-tubi { background: #f7ee12; }
+.design-tvos .brand-tubi .brand-wordmark { color: #121216; }
+.design-tvos .brand-fallback-3 { background: linear-gradient(130deg, #7252b3, #4b337d); }
+.design-tvos .design-input { background: linear-gradient(135deg, #3b4d6e, #26344f); }
+.design-tvos .design-live { background: linear-gradient(135deg, #1a8c9c, #17627d); }
+.design-input .brand-wordmark { display: none; }
+.design-source-icon { width: 4.4vw; height: 3.5vw; fill: none; stroke: #f7f9ff; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.design-play { fill: #f7f9ff; stroke: none; }
+.design-tvos .bottom-menu { padding-top: 3.2vh; }
+.design-tvos .system { background: #ffffff0b; color: #dfe2ed; border-color: #ffffff16; }
+.design-tvos .system:focus { background: #eceef5; color: #202434; box-shadow: 0 0 0 3px #ffffff77; }
+.design-tvos #preview { color: #828ba0; letter-spacing: .1em; }
+.design-tvos .hint { color: #9ba5b9; }
+@media (prefers-reduced-motion: reduce) {
+  .design-landscape { transition: none; }
+  .design-tvos .apps.compact .tile { transition: none; }
+  .design-tvos .apps.compact .tile:focus { transform: none; }
+}
+
+.design-tvos .apps.single { width: calc(100% + 24px); }

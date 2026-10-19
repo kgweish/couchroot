@@ -34,7 +34,7 @@ performance with native input and raster-thread CPU on the TV; synthetic handler
 timing or animation-frame callbacks alone do not measure completed presentation.
 See [the performance record](../devices/qn90a/performance.md).
 
-Desktop mocks cover discovery, launching and monitoring preference storage.
+Desktop mocks cover discovery, launching and launcher preference storage.
 They do not reproduce the TV's app inventory, security policy, sound output,
 launch spinner, Home-key routing, startup, standby or firmware behavior.
 Changes touching those boundaries need a model-specific on-TV check.

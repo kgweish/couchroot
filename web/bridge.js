@@ -19,7 +19,7 @@
   }
   function create(platform) {
     function launch(app, success, failure) {
-      if (!app || typeof app.id !== 'string' || !/^[A-Za-z0-9_.-]{1,256}$/.test(app.id)) { failure(new Error('Unknown app')); return; }
+      if (!app || typeof app.id !== 'string' || (!/^[A-Za-z0-9_.-]{1,256}$/.test(app.id) || /^HubInput\./.test(app.id))) { failure(new Error('Unknown app')); return; }
       if (!platform) { success({ preview: true, name: app.name }); return; }
       var settled = false;
       var done = function () { if (!settled) { settled = true; success({ preview: false, name: app.name }); } };
@@ -61,6 +61,25 @@
       preview: !platform,
       launch: function (key, success, failure) { launch(apps[key], success, failure); },
       launchApp: launch,
+      discoverSources: function (success) {
+        var settled = false, timer;
+        function finish(sources) { if (!settled) { settled = true; clearTimeout(timer); success(sources); } }
+        timer = setTimeout(function () { finish([]); }, 1500);
+        try {
+          if (!platform || !platform.systeminfo) { finish([]); return; }
+          platform.systeminfo.getPropertyValue('VIDEOSOURCE', function (info) {
+            var seen = Object.create(null);
+            finish((Array.isArray(info.connected) ? info.connected : []).filter(function (source) {
+              if (!source || ['TV', 'HDMI'].indexOf(source.type) < 0 || !Number.isInteger(source.number) || source.number < 0 || source.number > 99) return false;
+              var id = source.type + '.' + source.number;
+              if (seen[id]) return false;
+              seen[id] = true; return true;
+            }).map(function (source) {
+              return { id: 'HubInput.' + source.type + '.' + source.number, name: (source.type === 'TV' ? 'Live TV' : 'HDMI ' + source.number) + ' · via Home', icon: '' };
+            }));
+          }, function () { finish([]); });
+        } catch (_) { finish([]); }
+      },
       discover: function (success, failure) {
         if (!platform) { success([apps.plex, apps.youtube].map(function (a) { return { id: a.id, name: a.name, icon: '' }; })); return; }
         try {

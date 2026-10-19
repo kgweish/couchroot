@@ -6,11 +6,13 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: file:; connect-src 'none'; object-src 'none'; base-uri 'none'">
   <title>Minimal Hub</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="tvos.css">
+  <script src="streaming-artwork.js" defer></script>
+  <script src="tvos.js" defer></script>
   <script src="bridge.js" defer></script>
   <script src="presentation.js" defer></script>
   <script src="model.js" defer></script>
   <script src="feedback.js" defer></script>
-  <script src="telemetry.js" defer></script>
   <script src="hub.js" defer></script>
 </head>
 <body>
@@ -65,12 +67,12 @@
         <div class="settings-controls"><div id="settings-options" class="settings-options" data-scroll-cue="settings-scroll">
           <h3>Sound &amp; appearance</h3>
           <button id="setting-sound" class="setting-row"><span class="setting-label">Navigation sound</span><span id="sound-value" class="setting-value"></span><span class="setting-description">Quiet feedback for your remote.</span></button>
-          <button id="setting-layout" class="setting-row"><span class="setting-label">Tile layout</span><span id="layout-value" class="setting-value"></span><span class="setting-description">Choose the space between your apps.</span></button>
+          <button id="setting-layout" class="setting-row"><span class="setting-label">Tile layout</span><span id="layout-value" class="setting-value"></span><span class="setting-description">Choose the look and size of your app tiles.</span></button>
+          <button id="setting-photos" class="setting-row" hidden><span class="setting-label">Background photos</span><span id="photos-value" class="setting-value"></span><span class="setting-description">Show rotating landscapes on Home.</span></button>
           <button id="setting-fade" class="setting-row"><span class="setting-label">Bottom menu</span><span id="fade-value" class="setting-value"></span><span class="setting-description">Let the controls recede when you settle in.</span></button>
           <button id="setting-clock" class="setting-row"><span class="setting-label">Clock</span><span id="clock-value" class="setting-value"></span><span class="setting-description">A small time display on Home.</span></button>
           <button id="setting-start" class="setting-row"><span class="setting-label">Start on</span><span id="start-value" class="setting-value"></span><span class="setting-description">Choose the selected app when Hub starts.</span></button>
           <h3>Advanced</h3>
-          <button id="setting-telemetry" class="setting-row"><span class="setting-label">TV monitoring</span><span class="setting-value setting-open" aria-hidden="true">›</span><span class="setting-description">Send performance metrics to Netdata.</span></button>
           <button id="setting-reset" class="setting-row"><span class="setting-label">Reset shortcuts</span><span class="setting-value setting-open" aria-hidden="true">›</span><span class="setting-description">Start again with Plex and YouTube.</span></button>
           <button id="setting-hold" class="setting-row" aria-pressed="false"><span class="setting-label">Hold OK to edit</span><span id="hold-value" class="setting-value"></span><span class="setting-description">A shortcut to move or remove an app.</span></button>
         </div><div id="settings-scroll" class="scroll-cues" aria-hidden="true" hidden><span class="scroll-up">↑</span><span class="scroll-down">↓</span></div></div>
@@ -79,19 +81,6 @@
         </aside>
       </div>
       <div class="page-bottom"><p id="settings-status" class="status-line" role="status" aria-live="polite"></p><div class="hint"><span><kbd>↑ ↓</kbd>Choose</span><span><kbd>OK</kbd>Change</span><span><kbd>Back</kbd>Home</span></div></div>
-    </div>
-  </section>
-  <section id="telemetry-dialog" role="dialog" aria-modal="true" aria-labelledby="telemetry-title" hidden>
-    <div class="dialog-panel telemetry-panel">
-      <h2 id="telemetry-title">TV monitoring</h2>
-      <p class="dialog-description">Send a performance snapshot every 10 seconds to your paired Netdata receiver.</p>
-      <button id="telemetry-enabled" class="setting-row" aria-pressed="false"><span class="setting-label">Monitoring</span><span id="telemetry-value" class="setting-value">Off</span></button>
-      <label for="telemetry-endpoint">Receiver URL</label>
-      <input id="telemetry-endpoint" type="url" maxlength="512" autocomplete="off" spellcheck="false" aria-describedby="telemetry-detail">
-      <p id="telemetry-detail">Use the paired receiver’s HTTPS address, ending in /v1/s90d. A different server needs pairing first.</p>
-      <p id="telemetry-status" class="status-line" role="status" aria-live="polite"></p>
-      <div class="dialog-actions"><button id="telemetry-cancel">Cancel</button><button id="telemetry-save">Save</button></div>
-      <div class="hint"><span><kbd>Back</kbd>Close without saving</span></div>
     </div>
   </section>
   <section id="launch-error-dialog" role="dialog" aria-modal="true" aria-labelledby="launch-error-title" aria-describedby="launch-error-detail" hidden>

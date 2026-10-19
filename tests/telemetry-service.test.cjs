@@ -5,7 +5,7 @@ function fixture() {
  const w={document:{hidden:false,readyState:'loading',hasFocus:()=>true,addEventListener:(n,f)=>listeners[n]=f},addEventListener:(n,f)=>listeners['window-'+n]=f,setTimeout:f=>{timers.push(f);return timers.length;},localStorage:{}};
  w.tizen={application:{launchAppControl:(...a)=>launches.push(a)},ApplicationControl:function(...a){this.args=a;},ApplicationControlData:function(key,value){this.key=key;this.value=value;}};
  w.HubTelemetry={create:()=>({load:ok=>{w.HubTelemetryService.apply(value);ok(value);}})};
- vm.runInNewContext(fs.readFileSync('web/telemetry-service.js','utf8'),{window:w});
+ vm.runInNewContext(fs.readFileSync('research/s90d-telemetry/legacy-hub/telemetry-service.js','utf8'),{window:w});
  return {w,listeners,timers,launches,value,flush:()=>{while(timers.length)timers.shift()();}};
 }
 test('launches service only after ready, using public appcontrol settings',()=>{
@@ -55,7 +55,7 @@ test('visibility return reloads preferences after the startup retry budget is ex
 });
 test('configured device identity validates its own route without copying launcher code',()=>{
  const context={window:{HUB_DEVICE_ID:'example-tv-2'},URL};
- vm.runInNewContext(fs.readFileSync('web/telemetry.js','utf8'),context);
+ vm.runInNewContext(fs.readFileSync('research/s90d-telemetry/legacy-hub/telemetry.js','utf8'),context);
  const value={schema:1,enabled:true,endpoint:'https://nas:20490/v1/devices/example-tv-2'};
  assert.equal(context.window.HubTelemetry.validate(value).endpoint,value.endpoint);
  assert.throws(()=>context.window.HubTelemetry.validate({...value,endpoint:'https://nas:20490/v1/devices/qn90a'}));
