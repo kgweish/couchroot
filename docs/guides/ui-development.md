@@ -28,28 +28,51 @@ Click inside it, then use arrows to navigate, Enter for OK, and Escape for Back.
 The selector covers default Home, a full catalog, the compact layout with the
 clock, empty Home, an unavailable app, Edit apps, move-or-remove, moving in the
 Home grid, undo removal, opening an app, hold-OK settings, the app picker,
-settings, reset confirmation, monitoring preferences,
+settings, reset confirmation,
 launch/discovery failures, unreadable saved shortcuts, and missing artwork.
 
 Scenario definitions live in `preview/scenarios.js`. `preview/fixtures.js`
-provides catalogs and simulated app discovery, launch, audio API, and private
-filesystem access. UI tests use the same mock installer with a numbered catalog
+provides catalogs and simulated app discovery, launch and audio APIs. UI tests use the same mock installer with a numbered catalog
 for stable assertions. Sound starts off in the workbench; enabling it can play
 the app's normal local Web Audio tones.
 
-**Design · tvOS apps & inputs** (`/?scenario=tvos-concept`) is a review mockup
-over the shipped Home screen. It shows five columns with a clock, local service
-logos and labels below each tile. Its Live TV, HDMI 1 and HDMI 3 entries are
+**Design · tvOS apps & inputs** (`/?scenario=tvos-concept`) previews the S89C
+Home design using simulated apps. It shows five columns with a clock, local service
+logos and labels below each tile. A greeting and date follow the browser's local
+time: morning starts at 05:00, afternoon at 12:00 and evening at 17:00.
+Landscape photos load directly from Unsplash and crossfade once a minute;
+reduced motion removes the fade. Rotation pauses while the page is hidden.
+Failed downloads keep the last photo, or the gradient before any photo loads.
+Its Live TV, HDMI 1 and HDMI 3 entries are
 sample fixtures; they do not report connected devices or switch real inputs.
-The concept's CSS and navigation stay under `preview/` and are excluded from TV
-packages. The existing Compact scenario remains available for comparison.
-Logo sources and trademark attribution are recorded in [the artwork notes](../../preview/logos/README.md).
+The design uses `web/tvos.js`, `web/tvos.css` and the shared remote navigation.
+S89C staging enables it through the body’s `data-design` attribute. Other TV
+profiles retain their current layout. The existing Compact scenario remains
+available for comparison. Logo sources are recorded in
+[the artwork notes](../../web/logos/README.md).
+
+On the S89C, discovery supplies installed app IDs and connected TV/HDMI sources.
+Input captions say **via Home**: they open Samsung Home to select the source.
+Direct input switching awaits a separate hardware test. A fresh Home includes
+the discovered catalog; saved selections and explicitly empty Home stay intact.
+Only the S89C package permits image downloads from `images.unsplash.com`.
+The concept's Add apps list includes a curated set of 25 U.S. video services,
+with Spotify as an extra music option. Extra services start off Home. Open
+**Edit apps → Add apps** to browse their logos and add a sample shortcut.
+Picker rows and the artwork preview use the same local logo files as Home.
+The catalog is simulated; on a TV, install through Samsung's Apps store before
+adding its discovered shortcut. Region and model determine store availability.
+The landscapes are [Blanca Lake by Yoshi Takekawa](https://unsplash.com/photos/4qKVQYOluDk),
+[an alpine landscape by Diggity Dog](https://unsplash.com/photos/WaceUPhYJYk), and
+[a mountain lake by Sergi Kabrera](https://unsplash.com/photos/G1a8v-UJ-0w),
+published under the [Unsplash License](https://unsplash.com/license).
+The active photo's credit appears below the controls. The concept requests only
+these curated images from `images.unsplash.com`, with no API key or referrer.
 
 - Edits to favorites/settings survive reloads within a scenario.
 - Switching scenarios or selecting **Reset scenario** reseeds preview preferences.
 - The scenarios share one preview origin; use separate browser contexts for
   independent sessions. Do not edit two scenarios concurrently in same-origin tabs.
-- Monitoring preferences are stored in browser storage. No receiver is contacted.
 - Simulated app launches appear in the workbench footer; no real app opens.
   Successful mocks simulate a hide/return cycle. The Opening scenario delays
   the callback for five seconds so launch progress can be inspected.
@@ -59,7 +82,7 @@ Direct links are useful for browser automation:
 ```text
 /hub?scenario=many
 /hub?scenario=settings&reset=1
-/hub?scenario=monitoring&reset=1&static=1
+/hub?scenario=tvos-concept&reset=1&static=1
 ```
 
 `reset=1` reseeds once and is removed from the URL. `static=1` disables reload
@@ -67,7 +90,8 @@ polling for captures. `/web/index.html` serves the original, uninjected app for
 checking its basic desktop fallback.
 
 The injected preview permits same-origin connections for reload polling. The
-shipped HTML retains its offline content policy (`connect-src 'none'`).
+tvOS scenario and S89C staged package permit images from
+`https://images.unsplash.com`. The base HTML keeps `connect-src 'none'`.
 
 ## Validate and package
 
@@ -81,7 +105,8 @@ npm run package
 
 Screenshot capture starts its own temporary server and writes 1920×1080 PNGs
 for every scenario to `test-results/screenshots/`. It uses fresh browser contexts,
-a fixed clock and reduced motion. Inspect the images; these are not golden-image
+a fixed clock and reduced motion, and blocks online photos to capture the
+concept's gradient fallback consistently. Inspect the images; these are not golden-image
 tests. The older-browser checks exercise selected fallbacks in modern Chromium,
 not a Tizen emulator.
 
@@ -184,11 +209,18 @@ research paths directly; move a path and its references together, and run
 Saved shortcuts, handlers and navigation initialize before the initial catalog
 request. Discovery is scheduled after document focus; explicitly opening the
 editor can request it immediately and cancels the pending startup request.
-Monitoring waits for focus and a further 1.5 seconds before reading preferences.
 Tizen callback-based APIs can still block while loading their native extensions.
-Hidden startup waits for a visible, focused return; existing bounded monitoring
-retries and explicit discovery recovery remain available.
+Hidden startup waits for a visible, focused return; explicit discovery recovery
+remains available.
 
 `HubBootTrace` hooks are inert in a normal package. The research recorder adds
 bounded navigation/paint timing when explicitly included in a diagnostic build;
 it is not a production asset. See the [QN90A measurements and limitations](../devices/qn90a/web-startup.md).
+
+## Monitoring compatibility
+
+The core launcher and S89C concept omit TV monitoring. Their Settings, scripts
+and unsigned package contain no collector integration. The existing S90D and
+QN90A builders retain their background adapters from
+`research/s90d-telemetry/legacy-hub/` for previously configured collectors.
+Those integrations are separate from the S89C preview.

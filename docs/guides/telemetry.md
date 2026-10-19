@@ -53,8 +53,13 @@ and then installs/pairs the shared service. The old helper and collector files
 remain available for rollback. QN90A keeps its welcome-process relay, Home/AirPlay
 routes and Hub-owned saver. Collection begins no earlier than uptime 60 seconds.
 
-Settings → TV monitoring exposes only enabled and receiver URL. Changes apply
-without rebooting. New URLs use `https://192.0.2.20:20490/v1/devices/DEVICE_ID`.
+Current launcher Settings omit TV monitoring. Existing S90D/QN90A collectors
+are managed through the setup tool: select `--components telemetry` and set
+`--telemetry-enabled true`, `false` or `preserve`; use `--endpoint` for a paired
+receiver URL. Plan and review those changes before applying them. The model
+builders retain the background adapters in
+`research/s90d-telemetry/legacy-hub/`. S89C core builds exclude those adapters.
+New URLs use `https://192.0.2.20:20490/v1/devices/DEVICE_ID`.
 The original `https://192.0.2.20:20490/v1/s90d` alias remains supported. Each launcher
 accepts only its own device path, HTTPS, and no embedded credentials/query/fragment.
 Both Hubs forward public preferences using normal app control. Pairing and the

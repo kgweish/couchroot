@@ -54,6 +54,17 @@ def accepted(device):
 
 
 class PlannerTests(unittest.TestCase):
+    def test_s89c_hub_excludes_monitoring_and_legacy_profiles_keep_their_adapter(self):
+        files=hub_sources('s89c')
+        self.assertNotIn('telemetry.js',files)
+        self.assertNotIn('telemetry-service.js',files)
+        self.assertNotIn(b'telemetry.js',files['index.html'])
+        for device in ('s90d','qn90a'):
+            files=hub_sources(device)
+            self.assertIn('telemetry.js',files)
+            self.assertIn('telemetry-service.js',files)
+            self.assertLess(files['index.html'].index(b'src="telemetry.js"'),files['index.html'].index(b'src="telemetry-service.js"'))
+
     def test_accepted_both_are_idempotent(self):
         for d in ('qn90a','s90d'):
             p=plan(profile(d),resolve(d),accepted(d))

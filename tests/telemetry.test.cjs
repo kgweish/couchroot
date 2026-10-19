@@ -1,6 +1,6 @@
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
-const telemetry=require('../web/telemetry.js');
+const telemetry=require('../research/s90d-telemetry/legacy-hub/telemetry.js');
 test('telemetry accepts only a credential-free HTTPS ingestion endpoint',()=>{
  assert.equal(telemetry.validate({schema:1,enabled:true,endpoint:'https://nas.local:20490/v1/s90d'}).enabled,true);
  for(const endpoint of ['http://nas/v1/s90d','https://user:password@nas/v1/s90d','https://nas/','https://nas/v1/s90d?token=secret','javascript:alert(1)'])

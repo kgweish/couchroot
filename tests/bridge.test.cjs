@@ -92,3 +92,15 @@ test('firmware internal visible helpers and duplicate Prime stub are not offered
  assert.equal(eligible({id:'NewStore01.Player',packageId:'NewStore01',show:true}),true);
  for(const uri of ['https://server/icon.png','//server/icon.png','data:image/svg+xml,test','javascript:alert(1)'])assert.equal(localIcon(uri),'');
 });
+test('source discovery validates connected inputs, deduplicates and labels the Home fallback', async () => {
+ const bridge=create({systeminfo:{getPropertyValue(property,ok){
+  assert.equal(property,'VIDEOSOURCE');ok({connected:[{type:'HDMI',number:1},{type:'HDMI',number:1},{type:'TV',number:0},{type:'HDMI',number:'2'},{type:'AV',number:1},{type:'HDMI',number:100}],disconnected:[{type:'HDMI',number:3}]});
+ }}});
+ assert.deepEqual(await new Promise(ok=>bridge.discoverSources(ok)),[
+  {id:'HubInput.HDMI.1',name:'HDMI 1 · via Home',icon:''},{id:'HubInput.TV.0',name:'Live TV · via Home',icon:''}
+ ]);
+ create({application:{launch:assert.fail}}).launchApp({id:'HubInput.HDMI.1',name:'HDMI 1'},assert.fail,e=>assert.match(e.message,/Unknown/));
+ for(const platform of [undefined,{}, {systeminfo:{getPropertyValue(){throw Error('unsupported');}}}, {systeminfo:{getPropertyValue(property,ok,fail){fail({name:'NotSupportedError'});ok({connected:[{type:'HDMI',number:1}]});}}}]){
+  assert.deepEqual(await new Promise(ok=>create(platform).discoverSources(ok)),[]);
+ }
+});

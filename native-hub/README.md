@@ -34,7 +34,7 @@ S90D was untouched. This experimental installation is not the public CLI default
 | Persistence | Separate versioned native file, atomic replacement, bounded parsing, visible save errors |
 | Launch | Nonblocking child supervision, duplicate guard, 10-second timeout, retry/Home recovery |
 | Fallbacks | Explicit Samsung Home and manual Web Hub controls |
-| Advanced web features | Navigation sound, hold-OK, menu fade and monitoring configuration remain in Web Hub |
+| Advanced web features | Navigation sound, hold-OK, menu fade remain in Web Hub |
 | Installed-app discovery | Deferred native app-manager worker; bounded, filtered catalog; refresh after return and every 60 seconds |
 | Return from another app | Native remains alive; compositor focus restores controls despite stale framework foreground data |
 
@@ -83,7 +83,7 @@ The JSON input is an object mapping the original `minimal-hub.*.v1` keys to thei
 localStorage string values, including the JSON string stored at
 `minimal-hub.shortcuts.v1`. Other fields are ignored and never copied into native
 state. Exports over 128 favorites or with invalid entries are rejected, not
-truncated. Unsupported settings (sound, fade, hold-OK, monitoring) stay in the web
+truncated. Unsupported settings (sound, fade, hold-OK) stay in the web
 Hub; importing does not apply those settings to native.
 
 The optional imported catalog contains one `app.id<TAB>Display name` per line, with a final newline.

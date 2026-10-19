@@ -63,6 +63,6 @@ Minimal Hub is an offline launcher operated from a couch with a remote.
   action on the right, and state what Back does.
 - Empty lists explain themselves in place (`note()`); empty Home offers Add apps.
 
-Review Home, Edit apps, Add apps, Settings, Reset, and TV monitoring after changes
+Review Home, Edit apps, Add apps, Settings and Reset after changes
 that affect shared layout or focus. Use the workbench failure scenarios when
 changing status messages, fallback artwork or persistence behavior.

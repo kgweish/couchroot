@@ -28,6 +28,12 @@
   }
   url.searchParams.delete('reset');
   history.replaceState(null, '', url);
+  if (scenario.design) {
+    // Extra services can be selected in the mock picker without reseeding Home.
+    apps = apps.concat(HubStreamingApps.filter(function (service) {
+      return !apps.some(function (app) { return app.id === service.id; });
+    }).map(function (service) { return { id: service.id, name: service.name, show: true }; }));
+  }
   // The first saved shortcut stays on Home while its app leaves the simulated TV.
   HubFixtures.install(Object.assign({ launchHandoff: true }, scenario, { apps: scenario.unavailable ? apps.slice(1) : apps }));
   window.addEventListener('hub-preview-launch', function (event) {
@@ -36,7 +42,7 @@
   document.addEventListener('DOMContentLoaded', function () {
     var badge = document.getElementById('preview');
     badge.hidden = false;
-    badge.textContent = 'LOCAL PREVIEW · SIMULATED TV';
+    badge.textContent = scenario.design ? 'DESIGN MOCKUP · SAMPLE APPS & INPUTS' : 'LOCAL PREVIEW · SIMULATED TV';
     function click(id) { document.getElementById(id).click(); }
     if (scenario.screen === 'picker') {
       click('edit-apps'); document.querySelector('#editor-actions button').click();
@@ -54,7 +60,6 @@
     } else if (scenario.screen) {
       click('settings');
       if (scenario.screen === 'reset') click('setting-reset');
-      if (scenario.screen === 'monitoring') click('setting-telemetry');
       if (scenario.screen === 'start') document.getElementById('setting-start').focus();
       if (scenario.screen === 'hold') document.getElementById('setting-hold').focus();
     }

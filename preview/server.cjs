@@ -2,10 +2,11 @@ const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
+const streamingApps = require('./streaming-apps.js');
 const root = path.resolve(__dirname, '..');
 const types = { '.html': 'text/html', '.js': 'application/javascript', '.css': 'text/css', '.png': 'image/png', '.jpg': 'image/jpeg', '.svg': 'image/svg+xml', '.xml': 'application/xml', '.woff2': 'font/woff2' };
-const previewFiles = new Set(['fixtures.js', 'scenarios.js', 'runtime.js', 'workbench.js', 'workbench.css', 'tvos-concept.js', 'tvos-concept.css']);
-for (const file of ['plex.svg', 'youtube.svg', 'netflix.png', 'prime.png', 'disney.jpg', 'hulu.svg', 'spotify.svg', 'peacock.png', 'crunchyroll.jpg', 'espn.png', 'tubi.png']) {
+const previewFiles = new Set(['fixtures.js', 'scenarios.js', 'runtime.js', 'workbench.js', 'workbench.css', 'streaming-apps.js']);
+for (const file of streamingApps.map(app => app.logo).concat('spotify.svg')) {
   previewFiles.add('logos/' + file);
 }
 function revision() {
@@ -36,10 +37,12 @@ function createServer() {
         // Allow loopback reload polling and the asset base only in the injected preview.
         body = body.replace("connect-src 'none'", "connect-src 'self'").replace("base-uri 'none'", "base-uri 'self'");
         if (new URL(req.url, 'http://localhost').searchParams.get('scenario') === 'tvos-concept') {
-          body = body.replace('</head>', '  <link rel="stylesheet" href="/preview/tvos-concept.css">\n  <script src="/preview/tvos-concept.js" defer></script>\n</head>');
+          body = body.replace('<script src="/preview/runtime.js"></script>', '<script src="/preview/streaming-apps.js"></script>\n  <script src="/preview/runtime.js"></script>');
+          body = body.replace("img-src 'self' data: file:;", "img-src 'self' data: file: https://images.unsplash.com;");
+          body = body.replace('<body>', '<body data-design="tvos">');
         }
       } else if (pathname.startsWith('/preview/') && previewFiles.has(pathname.slice(9))) {
-        file = path.join(__dirname, pathname.slice(9));
+        file = pathname.startsWith('/preview/logos/') ? path.join(root, 'web/logos', path.basename(pathname)) : path.join(__dirname, pathname.slice(9));
       } else if (pathname.startsWith('/web/')) {
         const relative = pathname.slice(5);
         if (relative.split('/').some(part => !part || part.startsWith('.'))) { res.writeHead(404).end(); return; }

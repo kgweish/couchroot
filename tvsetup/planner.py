@@ -70,11 +70,17 @@ class Plan:
 
 
 def hub_sources(device):
-    names = ('index.html','style.css','bridge.js','presentation.js','model.js','feedback.js','telemetry.js','hub.js','icon.png')
+    names = ('index.html','style.css','bridge.js','presentation.js','model.js','feedback.js','hub.js','icon.png','tvos.js','tvos.css','streaming-artwork.js')
     result = {name:(REPO/'web'/name).read_bytes() for name in names}
-    result['telemetry.js'] = ('window.HUB_DEVICE_ID = '+json.dumps(device)+';\n').encode()+result['telemetry.js']
-    result['index.html'] = result['index.html'].replace(b'</head>', b'  <script src="telemetry-service.js" defer></script>\n</head>')
-    result['telemetry-service.js'] = (REPO/'web/telemetry-service.js').read_bytes()
+    result.update({'logos/'+p.name:p.read_bytes() for p in sorted((REPO/'web/logos').iterdir()) if p.suffix in ('.svg','.png','.jpg')})
+    if device == 's89c':
+        result['index.html'] = result['index.html'].replace(b'<body>', b'<body data-design="tvos">').replace(b"img-src 'self' data: file:;", b"img-src 'self' data: file: https://images.unsplash.com;")
+    # Retain the existing collectors only in builds for these legacy profiles.
+    if device in ('s90d','qn90a'):
+        for name in ('telemetry.js', 'telemetry-service.js'):
+            result[name] = (REPO/'research/s90d-telemetry/legacy-hub'/name).read_bytes()
+        result['telemetry.js'] = ('window.HUB_DEVICE_ID = '+json.dumps(device)+';\n').encode()+result['telemetry.js']
+        result['index.html'] = result['index.html'].replace(b'</head>', b'  <script src="telemetry.js" defer></script>\n  <script src="telemetry-service.js" defer></script>\n</head>')
     if device == 'qn90a':
         result['index.html'] = result['index.html'].replace(b'</head>', b'  <script src="qn90a-idle.js" defer></script>\n</head>')
         result['qn90a-idle.js'] = (REPO/'research/qn90a-screensaver/hub-idle.js').read_bytes()

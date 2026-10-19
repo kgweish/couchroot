@@ -82,3 +82,27 @@ class ArchiveBoundaryTests(unittest.TestCase):
                         entry=zipfile.ZipInfo(name);entry.external_attr=mode<<16
                         archive.writestr(entry,b'payload')
                     with self.assertRaises(Refused):verify_package(path,{'id':'test','author_cert_sha256':'a'*64,'distributor_cert_sha256':'b'*64},'MiniHub001')
+
+class S89CStagingTests(unittest.TestCase):
+    def test_nested_assets_and_external_image_policy_are_scoped_to_s89c(self):
+        from tvsetup.artifacts import Builder
+        from tvsetup.planner import Action
+        from unittest.mock import patch
+        for device in ('s89c','qn90a'):
+            with self.subTest(device=device), tempfile.TemporaryDirectory() as folder:
+                profile=dict(id=device,signing_profile='test',author_cert_sha256='a'*64,distributor_cert_sha256='b'*64)
+                builder=Builder(profile,{'artifacts':{}},Path(folder))
+                def pack(argv):
+                    stage=Path(argv[-1]);(stage/'packed.wgt').write_bytes(b'test')
+                builder.command=pack
+                action=Action('001-hub','hub','package',{}, {}, dict(artifact='hub',package='MiniHub001',previous_version='0.4.1'))
+                with patch('tvsetup.artifacts.verify_package',return_value=({},'0.4.2')):
+                    builder.package(action)
+                stage=Path(folder)/'MiniHub001-source'
+                self.assertTrue((stage/'logos/netflix.png').is_file())
+                html=(stage/'index.html').read_text();config=(stage/'config.xml').read_text()
+                self.assertEqual('data-design="tvos"' in html,device=='s89c')
+                self.assertEqual('<access origin="https://images.unsplash.com"' in config,device=='s89c')
+                self.assertEqual('http://tizen.org/privilege/internet' in config,device=='s89c')
+                self.assertIn('version="0.4.2"',config)
+                self.assertNotIn('DemoStream',(stage/'streaming-artwork.js').read_text())

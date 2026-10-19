@@ -63,7 +63,8 @@ def decode_rows(text):
 
 def paths(device):
     files = [f'/opt/usr/apps/MiniHub001/res/wgt/{name}' for name in
-             ('config.xml','index.html','style.css','bridge.js','presentation.js','model.js','feedback.js','telemetry.js','hub.js','icon.png','qn90a-idle.js','telemetry-service.js')]
+             ('config.xml','index.html','style.css','bridge.js','presentation.js','model.js','feedback.js','telemetry.js','hub.js','icon.png','qn90a-idle.js','telemetry-service.js','tvos.js','tvos.css','streaming-artwork.js')]
+    files += [f'/opt/usr/apps/MiniHub001/res/wgt/{name}' for name in ('logos/'+p.name for p in sorted((REPO/'web/logos').iterdir()) if p.suffix in ('.svg','.png','.jpg'))]
     # WGT layout differs: the observer resolves res/wgt versus the package root.
     files += [PREFS]
     files += [f'/opt/usr/apps/MiniTelemetry/bin/{name}' for name in ('Service.dll','Service.deps.json','Service.runtimeconfig.json','Bootstrap.dll','Bootstrap.deps.json','Bootstrap.runtimeconfig.json','Telemetry.dll')]

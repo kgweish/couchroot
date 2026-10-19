@@ -9,7 +9,7 @@ let server, browser, base;
 before(async()=>{
  server=http.createServer((req,res)=>{
   const name=req.url==='/'?'index.html':req.url.slice(1);
-  if(!/^[a-z.]+$/.test(name)){res.writeHead(404).end();return;}
+  if(!/^(?:logos\/)?[a-z0-9.-]+$/.test(name)||!fs.existsSync(path.join(__dirname,'../web',name))){res.writeHead(404).end();return;}
   res.setHeader('Content-Type', name.endsWith('.js')?'application/javascript':name.endsWith('.css')?'text/css':'text/html');
   res.end(fs.readFileSync(path.join(__dirname,'../web',name)));
  }).listen(0,'127.0.0.1');
@@ -28,6 +28,11 @@ async function setup(options={}) {
   const discover=tizen.application.getAppsInfo;
   tizen.application.getAppsInfo=(...args)=>{window.bootDiscoveries++;return discover(...args);};
  });
+ if(options.tvos){
+  await page.route(base+'/',route=>route.fulfill({contentType:'text/html',body:fs.readFileSync(path.join(__dirname,'../web/index.html'),'utf8').replace('<body>','<body data-design="tvos">')}));
+  await page.addInitScript(()=>{tizen.systeminfo={getPropertyValue(property,ok){ok({connected:[{type:'TV',number:0},{type:'HDMI',number:2}],disconnected:[{type:'HDMI',number:1}]});}};});
+  await page.route('https://images.unsplash.com/**',route=>route.abort());
+ }
  await page.goto(base);await page.waitForTimeout(80);return page;
 }
 async function key(page,...keys){for(const k of keys)await page.keyboard.press(k);}
@@ -158,12 +163,12 @@ test('gear settings persist sound/layout, navigate four columns, confirm reset, 
  await p.reload();await p.waitForTimeout(80);await p.locator('#settings').click();
  assert.equal(await p.locator(':focus').getAttribute('id'),'setting-sound');
  await key(p,'Enter','ArrowDown','Enter');assert.equal(await p.locator('#sound-value').textContent(),'Off');assert.equal(await p.locator('#layout-value').textContent(),'Compact');
- await key(p,'ArrowDown','ArrowDown','ArrowDown','ArrowDown','ArrowDown','Enter');assert.equal(await p.locator(':focus').getAttribute('id'),'reset-cancel');
+ await key(p,'ArrowDown','ArrowDown','ArrowDown','ArrowDown','Enter');assert.equal(await p.locator(':focus').getAttribute('id'),'reset-cancel');
  await key(p,'Tab');assert.equal(await p.locator(':focus').getAttribute('id'),'reset-confirm');await key(p,'Tab');assert.equal(await p.locator(':focus').getAttribute('id'),'reset-cancel');
  await key(p,'Escape','Escape');assert.equal((await ids(p)).length,12);assert.equal(await p.locator('.apps.compact').count(),1);
  await p.reload();await p.waitForTimeout(80);await key(p,'ArrowDown');assert.equal(await p.locator(':focus').getAttribute('data-id'),'Store00001.app4');
  await p.locator('#settings').click();assert.equal(await p.locator('#sound-value').textContent(),'Off');assert.equal(await p.locator('#layout-value').textContent(),'Compact');
- await key(p,'ArrowDown','ArrowDown','ArrowDown','ArrowDown','ArrowDown','ArrowDown','Enter','ArrowRight','Enter');assert.match(await p.locator('#settings-status').textContent(),/restored/);
+ await key(p,'ArrowDown','ArrowDown','ArrowDown','ArrowDown','ArrowDown','Enter','ArrowRight','Enter');assert.match(await p.locator('#settings-status').textContent(),/restored/);
  await key(p,'Escape');assert.deepEqual(await ids(p),['kIciSQlYEM.plex','9Ur5IzDKqV.TizenYouTube']);
  assert.equal(await p.evaluate(()=>localStorage.getItem('minimal-hub.sound.v1')),'off');assert.equal(await p.evaluate(()=>localStorage.getItem('minimal-hub.layout.v1')),'compact');await p.close();
 });
@@ -175,7 +180,7 @@ test('settings failed saves preserve preferences and shortcuts; repeated Back st
  await key(p,'ArrowDown','Enter');assert.equal(await p.locator('#fade-value').textContent(),'Auto-dim');assert.match(await p.locator('#settings-status').textContent(),/Could not save/);
  await key(p,'ArrowDown','Enter');assert.equal(await p.locator('#clock-value').textContent(),'Off');assert.match(await p.locator('#settings-status').textContent(),/Could not save/);
  await key(p,'ArrowDown','Enter');assert.equal(await p.locator('#start-value').textContent(),'Last selected');assert.match(await p.locator('#settings-status').textContent(),/Could not save/);
- await key(p,'ArrowDown','ArrowDown','Enter','ArrowRight','Enter');assert.match(await p.locator('#settings-status').textContent(),/previous list is unchanged/);
+ await key(p,'ArrowDown','Enter','ArrowRight','Enter');assert.match(await p.locator('#settings-status').textContent(),/previous list is unchanged/);
  await key(p,'Escape','Escape','Escape');assert.equal(await p.locator('#settings-dialog').isVisible(),false);assert.deepEqual(await p.evaluate(()=>launches),[]);
  const consumed=await p.evaluate(()=>[false,true,false].map(repeat=>{const e=new KeyboardEvent('keydown',{key:'Back',keyCode:10009,repeat,bubbles:true,cancelable:true});document.dispatchEvent(e);return e.defaultPrevented;}));assert.deepEqual(consumed,[true,true,true]);
  assert.deepEqual(await p.evaluate(()=>launches),[]);await p.locator('[data-app="home"]').click();assert.deepEqual(await p.evaluate(()=>launches),['com.samsung.tv.csfs']);await p.close();
@@ -215,23 +220,25 @@ test('launch expands selected tile and moves neighbors without delaying launch; 
  await p.evaluate(()=>window.launchFail=false);await p.emulateMedia({reducedMotion:'reduce'});await key(p,'Escape','ArrowRight','Enter');assert.equal(await p.locator('.launch-motion').count(),0);assert.equal((await p.evaluate(()=>launches)).at(-1),'9Ur5IzDKqV.TizenYouTube');await p.close();
 });
 
-test('monitoring config edits endpoint, persists, cancels, and preserves text input keys',async()=>{
+test('core Settings skips monitoring and keeps reset and hold controls reachable',async()=>{
  const p=await setup();
- await p.locator('#settings').click();await p.locator('#setting-telemetry').click();
- await p.locator('#telemetry-enabled').click();await p.locator('#telemetry-endpoint').fill('https://nas.local:20490/v1/s90d');
- const consumed=await p.locator('#telemetry-endpoint').evaluate(e=>{const event=new KeyboardEvent('keydown',{key:'ArrowLeft',bubbles:true,cancelable:true});e.dispatchEvent(event);return event.defaultPrevented;});assert.equal(consumed,false);
- await p.locator('#telemetry-save').click();assert.match(await p.locator('#settings-status').textContent(),/saved/);
- assert.deepEqual(await p.evaluate(()=>JSON.parse(localStorage.getItem('hub-preview.telemetry'))),{schema:1,enabled:true,endpoint:'https://nas.local:20490/v1/s90d'});
- await p.locator('#setting-telemetry').click();await p.locator('#telemetry-endpoint').fill('http://unsafe/v1/s90d');await p.locator('#telemetry-save').click();assert.match(await p.locator('#telemetry-status').textContent(),/HTTPS/);
- await key(p,'Escape');assert.equal(await p.locator('#telemetry-dialog').isVisible(),false);
- assert.equal(await p.evaluate(()=>JSON.parse(localStorage.getItem('hub-preview.telemetry')).endpoint),'https://nas.local:20490/v1/s90d');await p.close();
+ assert.equal(await p.evaluate(()=>typeof window.HubTelemetry),'undefined');
+ await p.locator('#settings').click();
+ assert.equal(await p.getByRole('button',{name:/TV monitoring/}).count(),0);
+ await p.locator('#setting-start').focus();await key(p,'ArrowDown');
+ assert.equal(await p.locator(':focus').getAttribute('id'),'setting-reset');
+ await key(p,'Enter');assert.equal(await p.locator('#reset-dialog').isVisible(),true);
+ await key(p,'Escape','ArrowDown');assert.equal(await p.locator(':focus').getAttribute('id'),'setting-hold');
+ await key(p,'Escape');assert.equal(await p.locator('#favorites').isVisible(),true);
+ await p.clock.install();await p.clock.fastForward(120000);
+ assert.deepEqual(await p.evaluate(()=>launches),[]);await p.close();
 });
 test('scrolled tiles keep the focus-ring gutter and normal opacity; late discovery keeps the added confirmation; options list uses up/down',async()=>{
  const p=await setup({discoveryDelay:200});
  await p.evaluate(()=>localStorage.setItem('minimal-hub.shortcuts.v1',JSON.stringify({version:1,apps:window.testApps.slice(2,13)})));
  await p.reload();await p.waitForTimeout(300);await key(p,'ArrowDown','ArrowDown','ArrowDown');
  const room=await p.evaluate(()=>document.getElementById('favorites').getBoundingClientRect().bottom-document.activeElement.getBoundingClientRect().bottom);
- assert.ok(room>=10,`focus ring gutter was ${room}px`);assert.equal(await p.locator('#home-scroll.can-scroll-up').count(),1);
+ assert.ok(room>=10,`focus ring gutter was ${room}px`);await p.locator('#home-scroll.can-scroll-up').waitFor({state:'attached'});assert.equal(await p.locator('#home-scroll.can-scroll-up').count(),1);
  assert.ok(await p.locator('#favorites > button').evaluateAll(bs=>bs.every(b=>getComputedStyle(b).opacity==='1')));
  await p.locator('#edit-apps').click();await key(p,'Enter');for(let i=0;i<11;i++)await key(p,'ArrowDown');assert.match(await focusText(p),/App 11/);
  await key(p,'Enter');await p.waitForTimeout(300);assert.match(await p.locator('#editor-status').textContent(),/App 11 added/);assert.match(await focusText(p),/App 11/);
@@ -309,7 +316,7 @@ test('scroll cues follow Home and list boundaries at both viewport sizes without
   await p.reload();await p.waitForTimeout(80);
   assert.equal(await p.locator('#home-scroll.can-scroll-down').count(),1);assert.equal(await p.locator('#home-scroll.can-scroll-up').count(),0);
   for(let i=0;i<4;i++)await key(p,'ArrowDown');await p.waitForTimeout(30);
-  assert.equal(await p.locator('#home-scroll.can-scroll-up').count(),1);assert.equal(await p.locator('#home-scroll.can-scroll-down').count(),0);
+  await p.locator('#home-scroll.can-scroll-up').waitFor({state:'attached'});assert.equal(await p.locator('#home-scroll.can-scroll-up').count(),1);assert.equal(await p.locator('#home-scroll.can-scroll-down').count(),0);
   assert.ok(await p.locator('#favorites > button').evaluateAll(bs=>bs.every(b=>getComputedStyle(b).opacity==='1')));
   await p.locator('#edit-apps').click();assert.equal(await p.locator('#editor-scroll.can-scroll-down').count(),1);
   for(let i=0;i<14;i++)await key(p,'ArrowDown');await p.waitForTimeout(30);
@@ -424,4 +431,33 @@ test('Samsung Home overlay can be accepted while Hub stays visible; missing call
  await p.clock.fastForward(11000);
  assert.equal(await p.locator('#launch-error-title').textContent(),'Could not open Samsung Home');
  await key(p,'Escape');assert.equal(await focusText(p),'Samsung Home');await p.close();
+});
+
+test('S89C uses installed IDs, five-column arrows and source fallback while preserving edited and empty Home',async()=>{
+ const p=await setup({tvos:true});p.setDefaultTimeout(3000);const errors=[];p.on('pageerror',e=>errors.push(e.message));
+ await p.waitForFunction(()=>document.querySelectorAll('#favorites button').length===16);
+ const listed=await ids(p);assert.ok(listed.includes('HubInput.HDMI.2'));assert.ok(!listed.includes('HubInput.HDMI.1'));
+ assert.equal(await p.locator('.apps').evaluate(grid=>getComputedStyle(grid).gridTemplateColumns.split(' ').length),5);
+ await p.locator('#favorites button').first().focus();await key(p,'ArrowDown');assert.equal(await p.locator(':focus').getAttribute('data-id'),listed[5]);
+ await p.locator('[data-id="HubInput.HDMI.2"]').click();assert.deepEqual(await p.evaluate(()=>launches),['com.samsung.tv.csfs']);
+ assert.match(await p.locator('#design-date').textContent(),/[A-Za-z]+/);assert.equal(await p.locator('#home-clock').isVisible(),true);
+ await p.evaluate(()=>localStorage.setItem('minimal-hub.clock.v1','off'));await p.reload();assert.equal(await p.locator('#home-clock').isVisible(),false);
+ for(const apps of [[],[{id:'Store00001.app4',name:'My app'}], [{id:'kIciSQlYEM.plex',name:'Plex'},{id:'9Ur5IzDKqV.TizenYouTube',name:'YouTube'}]]){
+  await p.evaluate(apps=>{localStorage.setItem('minimal-hub.shortcuts.v1',JSON.stringify({version:1,apps}));},apps);
+  await p.reload();await p.waitForTimeout(100);assert.deepEqual(await ids(p),apps.map(a=>a.id));
+ }
+ await p.evaluate(()=>localStorage.setItem('minimal-hub.shortcuts.v1',JSON.stringify({version:1,apps:[{id:'kIciSQlYEM.plex',name:'Plex'}]})));await p.reload();
+ const single=await p.locator('#favorites button').boundingBox();assert.ok(single.width>single.height,'A sole app keeps landscape proportions');
+ await p.evaluate(()=>{testApps=Array.from({length:35},(_,i)=>({id:'Store00001.x'+i,name:'Channel '+i,show:true}));localStorage.setItem('minimal-hub.shortcuts.v1',JSON.stringify({version:1,apps:testApps}));});
+ // Wait for discovery to finish replacing the saved tiles before measuring them.
+ await p.reload();await p.locator('#favorites > button.unavailable').nth(34).waitFor();
+ await p.locator('#favorites .design-caption').nth(34).waitFor();
+ await p.locator('#favorites button').first().focus();
+ for(let i=0;i<6;i++)await key(p,'ArrowDown');
+ assert.equal(await p.locator('#favorites > button:focus').getAttribute('data-id'),'Store00001.x30');
+ assert.equal(await p.locator('#favorites > button:focus').evaluate(tile=>{
+  const caption=tile.querySelector('.design-caption'),grid=tile.closest('.apps');
+  return !!caption&&!!grid&&caption.getBoundingClientRect().bottom<=grid.getBoundingClientRect().bottom;
+ }),true);
+ assert.deepEqual(errors,[]);await p.close();
 });

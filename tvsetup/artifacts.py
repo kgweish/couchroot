@@ -173,13 +173,18 @@ class Builder:
         if key in ('hub','saver'):
             source=REPO/('web' if key=='hub' else 'research/qn90a-screensaver/web')
             files=hub_sources(self.profile['id']) if key=='hub' else {n:(source/n).read_bytes() for n in ('index.html','saver.js','icon.png')}
-            for n,data in files.items():(stage/n).write_bytes(data)
+            for n,data in files.items():
+                (stage/n).parent.mkdir(parents=True,exist_ok=True)
+                (stage/n).write_bytes(data)
             if key=='saver':self.generated_saver(stage)
             config=ET.fromstring((source/'config.xml').read_bytes())
             version=next_version(action.options['previous_version'],config.get('version'))
             # Preserve namespace declarations exactly; only the widget version changes.
             import re
             text=(source/'config.xml').read_text()
+            if key=='hub' and self.profile['id']=='s89c':
+                text=text.replace('  <content ', '  <access origin="https://images.unsplash.com" subdomains="false"/>\n  <tizen:privilege name="http://tizen.org/privilege/internet"/>\n  <content ', 1)
+                text=text.replace('metadata/use.network" value="false"', 'metadata/use.network" value="true"')
             text=re.sub(r'(<widget\b[^>]*\bversion=")[^"]+',lambda m:m[1]+version,text,count=1)
             (stage/'config.xml').write_text(text)
             self.command([self.cli,'package','-t','wgt','-s',self.profile['signing_profile'],'-o',stage,'--',stage])

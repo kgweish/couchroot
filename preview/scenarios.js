@@ -17,7 +17,6 @@
     settings: { label: 'Settings', screen: 'settings' },
     'startup-selection': { label: 'Settings · startup selection', screen: 'start' },
     reset: { label: 'Reset confirmation', screen: 'reset' },
-    monitoring: { label: 'TV monitoring', screen: 'monitoring' },
     'launch-error': { label: 'App launch failure', launchFail: true },
     'discovery-error': { label: 'App discovery failure', discoveryFail: true, screen: 'picker' },
     'bad-storage': { label: 'Unreadable saved shortcuts', badStorage: true },

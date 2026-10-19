@@ -27,8 +27,14 @@ output.mkdir(parents=True, exist_ok=True, mode=0o700)
 build = Path(tempfile.mkdtemp(prefix='hub-', dir=output))
 source = build / 'web'
 source.mkdir()
-for name in ('index.html', 'style.css', 'bridge.js', 'presentation.js', 'model.js', 'feedback.js', 'telemetry.js', 'hub.js', 'config.xml', 'icon.png'):
+for name in ('index.html', 'style.css', 'bridge.js', 'presentation.js', 'model.js', 'feedback.js', 'hub.js', 'config.xml', 'icon.png', 'tvos.js', 'tvos.css', 'streaming-artwork.js'):
     shutil.copyfile(root / 'web' / name, source / name)
+(source / 'logos').mkdir()
+for image in (root / 'web/logos').iterdir():
+    if image.suffix in ('.svg','.png','.jpg'): shutil.copyfile(image, source / 'logos' / image.name)
+# Compatibility adapter for the existing S90D/QN90A signing profiles.
+for name in ('telemetry.js', 'telemetry-service.js'):
+    shutil.copyfile(root / 'research/s90d-telemetry/legacy-hub' / name, source / name)
 (source / 'telemetry.js').write_text('window.HUB_DEVICE_ID = '+json.dumps(args.device_id or ('qn90a' if args.profile == 'MinimalHubQN90A' else 's90d'))+';\n'+(source / 'telemetry.js').read_text())
 if args.boot_trace:
     trace = (root / 'research/s90d-boot-inventory/dashboard-trace.js').read_text()
@@ -37,9 +43,8 @@ if args.boot_trace:
     index.write_text(index.read_text().replace('<title>', '<script src="boot-trace.js"></script>\n  <title>', 1))
     config = source / 'config.xml'
     config.write_text(config.read_text().replace('version="0.3.9"', 'version="0.3.10"'))
-shutil.copyfile(root / 'web/telemetry-service.js', source / 'telemetry-service.js')
 index = source / 'index.html'
-index.write_text(index.read_text().replace('</head>', '  <script src="telemetry-service.js" defer></script>\n</head>'))
+index.write_text(index.read_text().replace('</head>', '  <script src="telemetry.js" defer></script>\n  <script src="telemetry-service.js" defer></script>\n</head>'))
 if args.profile == 'MinimalHubQN90A':
     # QN90A-only policy. The other TV's staged package remains unchanged.
     shutil.copyfile(root / 'research/qn90a-screensaver/hub-idle.js', source / 'qn90a-idle.js')

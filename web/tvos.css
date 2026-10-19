@@ -1,18 +1,26 @@
-/* Workbench concept only. Its assets and sample input behavior are not packaged. */
+/* S89C Home design; enabled by its staged body attribute. */
 .design-tvos { font-family: 'Helvetica Neue', Arial, sans-serif; color: #f8f8fc; }
 .design-tvos .ambient { background: radial-gradient(ellipse at 5% 90%, #14344e99, transparent 66%), radial-gradient(ellipse at 90% 8%, #39356e99, transparent 70%), #101522; }
 .design-tvos .orbital { display: none; }
-.design-tvos main.clock-on { padding-top: 12vh; }
+.design-landscape { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.4s ease; }
+.design-landscape.is-active { opacity: 1; }
+.design-tvos .ambient::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; left: 0; background: linear-gradient(180deg, #070b166b, #070b1600 40%, #070b1699), #03071194; }
+.design-tvos main, .design-tvos main.clock-on { padding-top: 12vh; }
+.design-tvos.design-moving main { padding-top: 4vh; }
 #design-title { position: absolute; left: 6.25vw; top: 3.8vh; margin: 0; font-size: 1.85vw; font-weight: 500; letter-spacing: -.03em; }
+#design-date { position: absolute; left: 6.25vw; top: 8.1vh; font-size: 1.05vw; color: #e1e5ee; }
+#design-photo-credit { position: absolute; bottom: 1vh; left: 6.25vw; margin: 0; font-size: .7vw; color: #c7cbd8; }
 .design-tvos #home-clock { top: 4.1vh; font-size: 1.7vw; color: #f4f4fb; letter-spacing: -.02em; }
 .design-tvos .apps:not(.reordering) { row-gap: 5.5vh; padding-bottom: 2.8vw; }
-.design-tvos .apps.compact:not(.reordering) { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5.5vh 1.65vw; padding-bottom: 2.8vw; }
-.design-tvos .apps.compact:not(.reordering) .tile { height: 9.1vw; max-height: none; font-size: 1.9vw; border: 0; border-radius: .85vw; box-shadow: 0 5px 14px #00000038; transition: transform 140ms ease-out, box-shadow 140ms ease-out; }
+.design-tvos .apps.compact { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5.5vh 1.65vw; padding-bottom: 2.8vw; }
+.design-tvos .apps.compact .tile { height: 9.1vw; max-height: none; font-size: 1.9vw; border: 0; border-radius: .85vw; box-shadow: 0 5px 14px #00000038; transition: transform 140ms ease-out, box-shadow 140ms ease-out; }
 .design-tvos .apps.compact .tile:focus { transform: scale(1.065); z-index: 1; box-shadow: 0 0 0 3px #ffffffcc, 0 14px 25px #00000070; }
-.design-caption { position: absolute; top: calc(100% + .7vw); left: -1vw; right: -1vw; color: #c7cbd8; font-size: 1.05vw; line-height: 1.3; font-weight: 400; letter-spacing: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.design-caption { position: absolute; top: calc(100% + .7vw); left: -1vw; right: -1vw; color: #eef0f5; font-size: 1.05vw; line-height: 1.3; font-weight: 400; letter-spacing: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .tile:focus .design-caption { color: #fff; }
-.design-moving #design-title, .design-tvos .apps.reordering .design-caption { display: none; }
+.design-moving #design-title, .design-moving #design-date, .design-tvos .apps.reordering .design-caption { display: none; }
 .design-brand-logo { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 72%; height: 55%; object-fit: contain; pointer-events: none; }
+.design-brand-logo.design-square-art { width: 100%; height: 100%; border-radius: inherit; }
+.design-row-logo { width: 2.2vw; height: 2.2vw; object-fit: contain; border-radius: .3vw; flex-shrink: 0; }
 .design-has-logo .brand-wordmark, .design-has-logo .app-logo { visibility: hidden; }
 .design-has-logo.brand-disney .design-brand-logo, .design-has-logo.brand-espn .design-brand-logo { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
 .design-tvos .brand-art, .design-tvos .card-art { display: none; }
@@ -45,6 +53,9 @@
 .design-tvos #preview { color: #828ba0; letter-spacing: .1em; }
 .design-tvos .hint { color: #9ba5b9; }
 @media (prefers-reduced-motion: reduce) {
+  .design-landscape { transition: none; }
   .design-tvos .apps.compact .tile { transition: none; }
   .design-tvos .apps.compact .tile:focus { transform: none; }
 }
+
+.design-tvos .apps.single { width: calc(100% + 24px); }

@@ -8,7 +8,8 @@ import zipfile
 
 root = Path(__file__).resolve().parents[1]
 web = root / 'web'
-files = ['index.html', 'style.css', 'bridge.js', 'presentation.js', 'model.js', 'feedback.js', 'telemetry.js', 'hub.js', 'config.xml', 'icon.png']
+files = ['index.html', 'style.css', 'bridge.js', 'presentation.js', 'model.js', 'feedback.js', 'hub.js', 'config.xml', 'icon.png', 'tvos.js', 'tvos.css', 'streaming-artwork.js']
+files += ['logos/'+p.name for p in sorted((web/'logos').iterdir()) if p.suffix in ('.svg','.png','.jpg')]
 ET.parse(web / 'config.xml')
 out = root / 'dist'
 out.mkdir(exist_ok=True)

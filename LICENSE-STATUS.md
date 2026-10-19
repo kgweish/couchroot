@@ -20,6 +20,6 @@ Samsung SDKs, firmware, vendor libraries, signing material and installed app
 binaries are not distributed here. Product names and app marks identify compatible
 services; no trademark rights or endorsement are granted by this project's license.
 
-Service artwork under `preview/logos/` retains its owners' rights and is outside
-the 0BSD grant for original project work. See the [artwork sources](preview/logos/README.md)
-for the files used to identify services in the local design mockup.
+Service artwork under `web/logos/` retains its owners' rights and is outside
+the 0BSD grant for original project work. See the [artwork sources](web/logos/README.md)
+for the files used to identify services in the S89C launcher and local workbench.

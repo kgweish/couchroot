@@ -26,17 +26,6 @@
     window.discoveryFail = !!options.discoveryFail;
     window.launchFail = !!options.launchFail;
     window.testApps = options.apps;
-    var fileKey = 'hub-preview.telemetry';
-    var files = { 'telemetry.json': localStorage.getItem(fileKey) || JSON.stringify({
-      schema: 1, enabled: false, endpoint: 'https://receiver.example:20490/v1/s90d'
-    }) };
-    function file(name) {
-      return {
-        fullPath: 'wgt-private/' + name,
-        readAsText: function (ok) { ok(files[name]); },
-        openStream: function (mode, ok) { ok({ write: function (text) { files[name] = text; }, close: function () {} }); }
-      };
-    }
     window.tizen = {
       application: {
         getAppsInfo: function (ok, fail) {
@@ -59,23 +48,7 @@
           if (options.launchDelay) { setTimeout(complete, options.launchDelay); } else { complete(); }
         }
       },
-      tvaudiocontrol: { playSound: function () {} },
-      filesystem: { resolve: function (name, ok) {
-        ok({
-          fullPath: 'wgt-private',
-          resolve: function (name) { if (!(name in files)) throw { name: 'NotFoundError' }; return file(name); },
-          createFile: function (name) { files[name] = ''; return file(name); },
-          moveTo: function (from, to, overwrite, ok, fail) {
-            try {
-              var text = files[from.split('/').pop()];
-              localStorage.setItem(fileKey, text);
-              files[to.split('/').pop()] = text;
-              delete files[from.split('/').pop()];
-              ok();
-            } catch (error) { fail(error); }
-          }
-        });
-      } }
+      tvaudiocontrol: { playSound: function () {} }
     };
     if (options.badStorage) localStorage.setItem('minimal-hub.shortcuts.v1', 'broken');
   }

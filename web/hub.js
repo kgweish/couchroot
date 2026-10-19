@@ -21,10 +21,11 @@
   bootMark('feedback-created');
   var loaded = model.load(storage), favorites = loaded.apps;
   bootMark('model-loaded');
-  var layoutKey = 'minimal-hub.layout.v1', compact = false;
-  try { compact = storage.getItem(layoutKey) === 'compact'; } catch (_) { /* Default layout. */ }
-  var fadeKey = 'minimal-hub.fade.v1', clockKey = 'minimal-hub.clock.v1', idleFade = true, clockFormat = 'off';
-  try { idleFade = storage.getItem(fadeKey) !== 'off'; var savedClock = storage.getItem(clockKey); if (savedClock === '12h' || savedClock === '24h') { clockFormat = savedClock; } } catch (_) { /* Default appearance. */ }
+  var tvos = document.body.getAttribute('data-design') === 'tvos';
+  var layoutKey = 'minimal-hub.layout.v1', compact = tvos;
+  try { var savedLayout = storage.getItem(layoutKey); if (savedLayout !== null) compact = savedLayout === 'compact'; } catch (_) { /* Default layout. */ }
+  var fadeKey = 'minimal-hub.fade.v1', clockKey = 'minimal-hub.clock.v1', idleFade = true, clockFormat = tvos ? '12h' : 'off';
+  try { idleFade = storage.getItem(fadeKey) !== 'off'; var savedClock = storage.getItem(clockKey); if (savedClock === 'off' || savedClock === '12h' || savedClock === '24h') { clockFormat = savedClock; } } catch (_) { /* Default appearance. */ }
   var idleTimer, clockTimer;
   var menu = document.querySelector('.bottom-menu'), clock = document.getElementById('home-clock');
   var catalog = [], catalogById = Object.create(null), discovered = false, discoveryError = '', discoveryBusy = false, discoveryRequest = 0;
@@ -49,10 +50,6 @@
   var resetDialog = document.getElementById('reset-dialog'), resetCancel = document.getElementById('reset-cancel'), resetConfirm = document.getElementById('reset-confirm');
   var launchDialog = document.getElementById('launch-error-dialog'), failedApp = null;
   var launchCancel = document.getElementById('launch-cancel'), launchRetry = document.getElementById('launch-retry'), launchHome = document.getElementById('launch-home');
-  var telemetry = HubTelemetry.create(window.tizen, storage), telemetryBusy = false;
-  var telemetrySetting = document.getElementById('setting-telemetry'), telemetryDialog = document.getElementById('telemetry-dialog');
-  var telemetryEnabled = document.getElementById('telemetry-enabled'), telemetryEndpoint = document.getElementById('telemetry-endpoint');
-  var telemetrySave = document.getElementById('telemetry-save'), telemetryCancel = document.getElementById('telemetry-cancel');
   var settingsDone = document.getElementById('settings-done'), soundSetting = document.getElementById('setting-sound');
   var layoutSetting = document.getElementById('setting-layout'), resetSetting = document.getElementById('setting-reset');
   var fadeSetting = document.getElementById('setting-fade'), clockSetting = document.getElementById('setting-clock');
@@ -60,7 +57,7 @@
   var holdSetting = document.getElementById('setting-hold'), undoRemove = document.getElementById('undo-remove');
   var moveBanner = document.getElementById('move-banner'), moveControls = document.getElementById('move-controls');
   var moveCancel = document.getElementById('move-cancel'), moveSave = document.getElementById('move-save');
-  var settingsRows = [[settingsDone], [soundSetting], [layoutSetting], [fadeSetting], [clockSetting], [startSetting], [telemetrySetting], [resetSetting], [holdSetting]];
+  var settingsRows = [[settingsDone], [soundSetting], [layoutSetting], [fadeSetting], [clockSetting], [startSetting], [resetSetting], [holdSetting]];
   var scrollBoxes = [grid, list, settingsOptions];
   function saveSelection() {
     clearTimeout(selectionTimer);
@@ -108,10 +105,14 @@
     button.focus({ preventScroll: true }); reveal(button);
   }
   // Instant scroll that keeps the 12px focus-ring gutter; scrollIntoView would clip the ring.
+  function cardBounds(button) {
+    var rect = button.getBoundingClientRect(), caption = tvos && button.querySelector('.design-caption');
+    return { top: rect.top, bottom: caption && !grid.classList.contains('reordering') ? Math.max(rect.bottom, caption.getBoundingClientRect().bottom) : rect.bottom };
+  }
   function reveal(button) {
     var box = button.closest('.apps, .editor-list, .settings-options');
     if (!box || box.scrollHeight <= box.clientHeight) { return; }
-    var frame = box.getBoundingClientRect(), item = button.getBoundingClientRect();
+    var frame = box.getBoundingClientRect(), item = cardBounds(button);
     if (item.top < frame.top + 12) { box.scrollTop -= frame.top + 12 - item.top; }
     else if (item.bottom > frame.bottom - 12) { box.scrollTop += item.bottom - frame.bottom + 12; }
     // The scroll event updates edge markers only when the viewport actually moves.
@@ -121,7 +122,7 @@
     var cue = document.getElementById(box.dataset.scrollCue);
     var frame = box.getBoundingClientRect(), first = box.firstElementChild, last = box.lastElementChild;
     var up = !!(frame.height && first && first.getBoundingClientRect().top < frame.top - 1);
-    var down = !!(frame.height && last && last.getBoundingClientRect().bottom > frame.bottom + 1);
+    var down = !!(frame.height && last && cardBounds(last).bottom > frame.bottom + 1);
     cue.hidden = !(up || down);
     cue.classList.toggle('can-scroll-up', up); cue.classList.toggle('can-scroll-down', down);
   }
@@ -165,11 +166,19 @@
         catalog = apps; catalogById = Object.create(null);
         catalog.forEach(function (app) { catalogById[app.id] = app; });
         discovered = true; discoveryError = '';
+        if (tvos && !loaded.warning && catalog.length) {
+          try {
+            if (storage.getItem(model.KEY) === null) favorites = model.save(storage, catalog);
+          } catch (_) { discoveryError = 'Could not save the initial app list. Your shortcuts are still available.'; }
+        }
       }
       if (after) { after(); }
       bootMark('discovery-render-done');
     }
-    bridge.discover(function (apps) { finish(apps); }, function (error) { finish(null, error); });
+    bridge.discover(function (apps) {
+      if (!tvos) { finish(apps); return; }
+      bridge.discoverSources(function (sources) { finish(apps.concat(sources)); });
+    }, function (error) { finish(null, error); });
     bootMark('discovery-call-returned');
   }
   function resetLaunchMotion() {
@@ -205,6 +214,7 @@
   }
   function launch(app) {
     if (busy) { return; }
+    if (/^HubInput\.(TV|HDMI)\.[0-9]{1,2}$/.test(app.id)) { app = HubBridge.apps.home; }
     cancelHold();
     busy = true; var current = ++attempt, accepted = false; animateLaunch(app.id); message('Opening ' + app.name + '… · Back to dismiss');
     launchingTile = Array.prototype.filter.call(grid.children, function (tile) { return tile.dataset.id === app.id; })[0] || null;
@@ -297,7 +307,6 @@
   function renderHome(target, forMove) {
     cancelHold();
     launchDialog.hidden = true; failedApp = null;
-    telemetryDialog.hidden = true;
     resetLaunchMotion(); mode = forMove ? 'move' : 'home'; editor.hidden = true; settingsDialog.hidden = true; resetDialog.hidden = true;
     var apps = forMove ? moving : favorites;
     var signature = JSON.stringify([compact, !!forMove, apps.map(function (saved) { var app = find(saved.id); return [saved.id, app ? app.name : saved.name, app && app.icon, discovered && !app]; })]);
@@ -315,8 +324,8 @@
       });
     }
     var tiles = Array.prototype.slice.call(grid.children);
-    var columns = Math.min(apps.length || 2, compact ? 4 : 3), rows = [];
-    grid.classList.toggle('many', columns >= 3); grid.classList.toggle('compact', columns === 4); grid.classList.toggle('single', favorites.length === 1);
+    var columns = Math.min(apps.length || 2, compact ? (tvos ? 5 : 4) : 3), rows = [];
+    grid.classList.toggle('many', columns >= 3); grid.classList.toggle('compact', compact && (tvos || columns === 4)); grid.classList.toggle('single', favorites.length === 1);
     grid.classList.toggle('reordering', !!forMove);
     for (var i = 0; i < tiles.length; i += columns) { rows.push(tiles.slice(i, i + columns)); }
     if (!tiles.length) { rows.push([emptyAdd]); }
@@ -462,8 +471,6 @@
       name = holdToEdit ? 'Edit from your Home screen' : 'Open immediately with OK';
       detail = holdToEdit ? 'Tap OK to open. Hold for a moment to move or remove a shortcut. Edit apps is always available.' : 'Turn on to hold OK for shortcut actions. Leave off if your remote does not support holding OK.';
       visual.textContent = holdToEdit ? 'Hold OK' : 'Off';
-    } else if (which === 'setting-telemetry') {
-      name = 'TV performance, on your server'; detail = 'Choose the paired receiver and pause or resume monitoring. Changes apply without restarting the TV.'; visual.textContent = 'Netdata';
     } else if (which === 'setting-start') {
       name = startOnLast ? 'Pick up where you left off' : 'A familiar starting point';
       detail = startOnLast ? 'Select your last highlighted app when Hub starts. Your app order stays the same.' : 'Select the first favorite when Hub starts. Returning from an app still restores your selection.';
@@ -479,7 +486,7 @@
       ['Edit apps', 'Samsung Home', '⚙'].forEach(function (label) { var pill = document.createElement('span'); pill.textContent = label; visual.appendChild(pill); });
     } else if (which === 'setting-layout') {
       name = compact ? 'More apps at a glance' : 'A little more breathing room';
-      detail = compact ? 'Up to four tiles in each row.' : 'Up to three tiles in each row.';
+      detail = tvos ? (compact ? 'Five tiles in each row.' : 'Up to three tiles in each row.') : compact ? 'Up to four tiles in each row.' : 'Up to three tiles in each row.';
       visual.classList.toggle('dense', compact);
       for (var i = 0; i < (compact ? 8 : 6); i++) { var cell = document.createElement('span'); visual.appendChild(cell); }
     } else if (which === 'setting-reset') {
@@ -494,10 +501,10 @@
     document.getElementById('setting-preview-title').textContent = name;
     document.getElementById('setting-preview-detail').textContent = detail;
   }
-  [soundSetting, layoutSetting, fadeSetting, clockSetting, startSetting, telemetrySetting, resetSetting, holdSetting].forEach(function (b) { b.addEventListener('focus', function () { settingPreview(b.id); }); });
+  [soundSetting, layoutSetting, fadeSetting, clockSetting, startSetting, resetSetting, holdSetting].forEach(function (b) { b.addEventListener('focus', function () { settingPreview(b.id); }); });
   function openSettings(target) {
     cancelHold(); cancelLaunch();
-    telemetryDialog.hidden = true; mode = 'settings'; editor.hidden = true; resetDialog.hidden = true; settingsDialog.hidden = false;
+    mode = 'settings'; editor.hidden = true; resetDialog.hidden = true; settingsDialog.hidden = false;
     document.getElementById('sound-value').textContent = feedback.enabled() ? 'On' : 'Off';
     soundSetting.setAttribute('aria-pressed', String(feedback.enabled()));
     document.getElementById('layout-value').textContent = compact ? 'Compact' : 'Comfortable';
@@ -510,30 +517,6 @@
     setNav(settingsRows, target || soundSetting);
     settingPreview((target || soundSetting).id);
   }
-  function showMonitoring(enabled) {
-    telemetryEnabled.setAttribute('aria-pressed', String(enabled)); document.getElementById('telemetry-value').textContent = enabled ? 'On' : 'Off';
-  }
-  function telemetryNote(text, error) { var line = document.getElementById('telemetry-status'); line.textContent = text; line.classList.toggle('error', !!error); }
-  telemetrySetting.addEventListener('click', function () {
-    mode = 'telemetry'; telemetryDialog.hidden = false; telemetryBusy = true; telemetrySave.disabled = true;
-    telemetryNote('Loading preferences…');
-    setNav([[telemetryEnabled], [telemetryEndpoint], [telemetryCancel, telemetrySave]], telemetryCancel);
-    telemetry.load(function (value) {
-      if (mode !== 'telemetry') { return; }
-      telemetryBusy = false; telemetrySave.disabled = false; telemetryEndpoint.value = value.endpoint;
-      showMonitoring(value.enabled); telemetryNote(''); focus(telemetryEnabled);
-    }, function () { if (mode === 'telemetry') { telemetryNote('Monitoring preferences are unavailable on this TV.', true); } });
-  });
-  telemetryEnabled.addEventListener('click', function () {
-    if (!telemetryBusy) { showMonitoring(telemetryEnabled.getAttribute('aria-pressed') !== 'true'); }
-  });
-  telemetrySave.addEventListener('click', function () {
-    if (telemetryBusy) { return; } telemetryBusy = true; telemetrySave.disabled = true;
-    telemetry.save({ schema: 1, enabled: telemetryEnabled.getAttribute('aria-pressed') === 'true', endpoint: telemetryEndpoint.value.trim() }, function () {
-      telemetryBusy = false; telemetrySave.disabled = false; openSettings(telemetrySetting); message('Monitoring preferences saved. Changes apply within 10 seconds.');
-    }, function (error) { telemetryBusy = false; telemetrySave.disabled = false; telemetryNote(error.message || 'Could not save monitoring preferences.', true); });
-  });
-  telemetryCancel.addEventListener('click', function () { if (!telemetryBusy || telemetrySave.disabled) { openSettings(telemetrySetting); } });
   settings.addEventListener('click', function () { openSettings(); });
   settingsDone.addEventListener('click', function () { renderHome('settings'); });
   soundSetting.addEventListener('click', function () {
@@ -569,7 +552,6 @@
   });
   function back() {
     if (mode === 'launch-error') { closeLaunchError(); }
-    else if (mode === 'telemetry') { openSettings(telemetrySetting); }
     else if (mode === 'reset') { openSettings(resetSetting); }
     else if (mode === 'settings') { renderHome('settings'); }
     else if (mode === 'move' || mode === 'options') { returnFromOptions(); }
@@ -593,7 +575,6 @@
     wakeMenu();
     var key = event.key || ({ 37: 'ArrowLeft', 38: 'ArrowUp', 39: 'ArrowRight', 40: 'ArrowDown', 13: 'Enter' })[event.keyCode];
     if (event.keyCode === 10009 || key === 'Escape' || key === 'Back' || key === 'GoBack') { cancelHold(); event.preventDefault(); event.stopImmediatePropagation(); if (!event.repeat) { back(); feedback.play('BACK'); } return; }
-    if (mode === 'telemetry' && document.activeElement === telemetryEndpoint && (key === 'Enter' || key === 'ArrowLeft' || key === 'ArrowRight')) { return; }
     if (key === 'Enter') {
       event.preventDefault();
       if (event.repeat || heldButton || document.activeElement.tagName !== 'BUTTON') { return; }
@@ -610,7 +591,7 @@
     cancelHold();
     if (mode === 'move' && grid.contains(document.activeElement) && /^Arrow/.test(key)) {
       event.preventDefault();
-      var columns = Math.min(moving.length, compact ? 4 : 3), lengths = [];
+      var columns = Math.min(moving.length, compact ? (tvos ? 5 : 4) : 3), lengths = [];
       for (var offset = 0; offset < moving.length; offset += columns) { lengths.push(Math.min(columns, moving.length - offset)); }
       var currentRow = Math.floor(moveIndex / columns);
       if (key === 'ArrowDown' && currentRow === lengths.length - 1) { focus(moveCancel); feedback.play('MOVE'); return; }
