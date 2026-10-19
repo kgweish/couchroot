@@ -170,7 +170,7 @@ class Engine:
             old=before['ledger'] or {};new=self.ledger();new['run']=self.doc['run']
             new['files']={**old.get('files',{}),**new['files']}
             new['artifact_sources']={**old.get('artifact_sources',{}),**new['artifact_sources']}
-            choices=before['choices'] if self.doc.get('scope')=='ui' else self.choices
+            choices=before['choices'] if self.doc.get('scope') in ('ui','launcher-web','launcher-native') else self.choices
             self.doc['local_commit']={'before':before,'after':{'choices':choices,'ledger':new}}
         self.doc['phase']='finalizing';self.save()
         self.write_local_state(reverse=False)

@@ -34,9 +34,9 @@ for review PNGs, then inspect affected states at 1920×1080 and a smaller viewpo
 Exercise affected error/empty states and remote navigation. Run relevant checks
 while iterating and `npm test` before handoff; screenshots are not visual assertions.
 
-If adding shipped assets, update `scripts/package.py`, `scripts/sign.py`,
-`tvsetup/planner.py::hub_sources`, and the installed-file inventory in
-`tvsetup/transport.py` together. Those explicit lists must describe the same app;
+If adding shipped assets, update the shared `tvsetup/planner.py::hub_sources`
+manifest; the installed-file inventory in `tvsetup/transport.py` derives from it.
+Packaging and signing consume that manifest;
 retain model-specific idle/monitoring additions when packaging QN90A.
 
 Document visible changes and remaining hardware checks. UI work alone does not

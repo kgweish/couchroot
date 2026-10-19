@@ -1,0 +1,100 @@
+{
+  "schema": 1,
+  "date": "2026-10-15",
+  "version": "0.7.36",
+  "production_source_commit": "6ca39e1",
+  "scope": "Guardian loss during connected native production readiness before selection commit",
+  "service_sha256": {
+    "agent.js": "771c7766ad2e3ce1e7c5812a27010b6aeeba71362e37d55e88e709d965dc1fc1",
+    "production-session.js": "d589f1cfe2d8dee091d7e3170fcbe636f3800c2fd73d6e824b0de33b681318b8",
+    "production-readiness.js": "53cd7c84fe624a50c2a7657bc2ac4a646438d47e81cd811065b66e4ee3f035a5",
+    "restart-rollback.js": "b206807a569b021288ba1e590e163cb604a2db8869b09b30f6f27533073e4f58",
+    "restart-cleanup.js": "d12a93f10613f46fc55f52fdbbae0e9c9e213c7f7c4c6a94455d9239398fa838",
+    "observer-recovery.js": "c1004e4bd2e666064466e093471d35dd5c372226a988b52f97b667bb7f2580b1"
+  },
+  "local": {
+    "node_passed": 404,
+    "node_skipped": 143,
+    "fresh_rehearsal_process_cases": 6,
+    "fresh_restart_and_live_process_cases": 19,
+    "python_source_changed": false
+  },
+  "devices": {
+    "qn90a": {
+      "package_version": "0.7.36",
+      "phases": [
+        "production-readiness-loss"
+      ],
+      "managed_ready": true,
+      "history_entries": 28,
+      "committed_entries": 22,
+      "rolled_back_entries": 6,
+      "retained_jobs_preserved": true,
+      "enrollment_preserved": true,
+      "managed_recovery_unchanged": true,
+      "original_requests_not_replayed": true,
+      "original_requests_not_rewritten_as_success": true,
+      "same_boot": true,
+      "sdk_loopback": true,
+      "settled": true,
+      "pending_setup": false,
+      "trial_witness_scopes_removed": true,
+      "production_readiness_interrupted": true,
+      "coordinator_unchanged": true,
+      "owned_units_inactive": 3,
+      "original_migration_request_state": "submitted",
+      "cleanup_request_state": "completed",
+      "production_record_phase_at_fault": "submitted",
+      "readiness_intent_preserved_until_cleanup": true,
+      "original_production_guardian_absent": true,
+      "retired_handoff_units_inactive": 3,
+      "coordinator_unchanged_scope": "Production readiness fault, automatic rollback/readmission and explicit cleanup",
+      "installed_members_verified": 82
+    },
+    "s90d": {
+      "package_version": "0.7.36",
+      "phases": [
+        "production-readiness-loss"
+      ],
+      "managed_ready": true,
+      "history_entries": 29,
+      "committed_entries": 22,
+      "rolled_back_entries": 7,
+      "retained_jobs_preserved": true,
+      "enrollment_preserved": true,
+      "managed_recovery_unchanged": true,
+      "original_requests_not_replayed": true,
+      "original_requests_not_rewritten_as_success": true,
+      "same_boot": true,
+      "sdk_loopback": true,
+      "settled": true,
+      "pending_setup": false,
+      "trial_witness_scopes_removed": true,
+      "production_readiness_interrupted": true,
+      "coordinator_unchanged": true,
+      "owned_units_inactive": 3,
+      "original_migration_request_state": "submitted",
+      "cleanup_request_state": "completed",
+      "production_record_phase_at_fault": "submitted",
+      "readiness_intent_preserved_until_cleanup": true,
+      "original_production_guardian_absent": true,
+      "retired_handoff_units_inactive": 3,
+      "coordinator_unchanged_scope": "Production readiness fault, automatic rollback/readmission and explicit cleanup",
+      "installed_members_verified": 82
+    }
+  },
+  "qualification": [
+    "Existing signed package contents were verified against the prior accepted installation inventory before each trial; no production source or package changed.",
+    "The unpaused watcher required state-ready selection, a submitted production record, the matching production readiness intent, an active running unit, the expected executable inode/digest and a fresh guardian PID/start-time binding before SIGTERM.",
+    "Both original coordinators automatically acquired a distinct held managed executor, verified old process/unit absence and retained state, and committed rollback under the original transaction.",
+    "The submitted production record and readiness intent survived rollback for explicit cleanup. Cleanup completed through the service, retired the original handoff units and removed staging and intents.",
+    "Original migration requests remain submitted in the journal; separate cleanup requests are completed. Retained jobs, enrollment/configuration, protected files and managed rescue hashes are unchanged.",
+    "Each device ended managed-ready and settled on SDK loopback. All three trial/rescue units and all three recorded handoff units are inactive; test witness scopes are absent."
+  ],
+  "limits": [
+    "This qualifies one pre-commit production-readiness guardian-loss boundary, not every interruption, post-commit failure, pressure or power-loss case.",
+    "The earlier unexplained paused S90D coordinator exit remains unresolved. These trials did not pause or restart the coordinator.",
+    "Native-only capability entry, wider lifecycle/pressure/endurance coverage and native-default rollout remain open.",
+    "The .NET capability-entry bridge, managed worker fallback and independent rescue remain deployed. No reboot, standby or platform-policy change occurred."
+  ]
+}

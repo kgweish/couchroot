@@ -37,20 +37,20 @@ test('permission failures retain the acquisition step and file path',async()=>{
  finally {a.stop();}
 });
 test('mutual TLS, enrollment pin, request replay, disable and unknown outcomes',async()=>{
- // Keep the test's TLS policy on its agent so current Node can reuse sockets.
- const checkServerIdentity=()=>undefined;
- const dir=tmp();let server;const pool=new https.Agent({keepAlive:true,maxSockets:1,checkServerIdentity});
+ const dir=tmp();let server;const pool=new https.Agent({keepAlive:true,maxSockets:1});
  try{
-  function cert(name){execFileSync('openssl',['req','-x509','-newkey','rsa:2048','-nodes','-keyout',dir+'/'+name+'-key.pem','-out',dir+'/'+name+'.pem','-days','1','-subj','/CN='+name],{stdio:'ignore'});return {key:fs.readFileSync(dir+'/'+name+'-key.pem'),cert:fs.readFileSync(dir+'/'+name+'.pem')};}
+  function cert(name){execFileSync('openssl',['req','-x509','-newkey','rsa:2048','-nodes','-keyout',dir+'/'+name+'-key.pem','-out',dir+'/'+name+'.pem','-days','1','-subj','/CN='+name,...(name==='server'?['-addext','subjectAltName=IP:127.0.0.1']:[])],{stdio:'ignore'});return {key:fs.readFileSync(dir+'/'+name+'-key.pem'),cert:fs.readFileSync(dir+'/'+name+'.pem')};}
   const serverCert=cert('server'),clientCert=cert('client'),foreign=cert('foreign');
   const pin=hash(new crypto.X509Certificate(clientCert.cert).raw);
-  let calls=0,enabled=true,uncertain=false,exitCode=0,badChunk=false;
+  let calls=0,enabled=true,uncertain=false,exitCode=0,badChunk=false,operationUncertain=false,operationCalls=0;
   const downloadBytes=Buffer.from([0,10,13,128,255]);
-  const agent={status:()=>({connected:enabled}),start:()=>{enabled=true;},stop:()=>{enabled=false;},execute:async()=>{calls++;if(uncertain)throw Error('lost response');return {exit_code:exitCode,timed_out:false,stdout:'uid=0',stderr:''};},operation:async (op,data)=>{if(op.op==='file.read')return {data:downloadBytes,offset:7,sha256:badChunk?'0'.repeat(64):hash(downloadBytes)};if(op.op==='file.commit')throw Object.assign(Error('Target hash conflict'),{outcome:'failed'});if(op.op==='file.write'){assert.equal(op.data,undefined);assert.equal(op.length,5);assert.ok(Buffer.isBuffer(data));assert.equal(data.toString(),'chunk');return {offset:5};}return {state:'running'};}};
+  const agent={status:()=>({connected:enabled}),start:()=>{enabled=true;},stop:()=>{enabled=false;},execute:async()=>{calls++;if(uncertain)throw Error('lost response');return {exit_code:exitCode,timed_out:false,stdout:'uid=0',stderr:''};},operation:async (op,data)=>{operationCalls++;if(operationUncertain)throw Object.assign(Error('Operation outcome unknown'),{outcome:'unknown'});if(op.op==='file.read')return {data:downloadBytes,offset:7,sha256:badChunk?'0'.repeat(64):hash(downloadBytes)};if(op.op==='file.commit')throw Object.assign(Error('Target hash conflict'),{outcome:'failed'});if(op.op==='file.write'){assert.equal(op.data,undefined);assert.equal(op.length,5);assert.ok(Buffer.isBuffer(data));assert.equal(data.toString(),'chunk');return {offset:5};}return {state:'running'};}};
   const journal=new Journal(dir+'/requests.json');
+  let probeCalls=0,probeLost=false;
+  agent.probeObserver=async (digest,requestId)=>{probeCalls++;assert.equal(digest,'a'.repeat(64));assert.ok(journal.rows.some(r=>r.id===requestId&&r.state==='submitted'&&r.sha256===hash('observer.probe:'+digest)));if(probeLost==='failed')throw Object.assign(Error('probe execution refused'),{outcome:'failed'});if(probeLost)throw Error('probe result unknown');return {verified:true,worker_stopped:false};};
   server=createApi({credentials:{...serverCert,ca:clientCert.cert},clientPin:pin,agent,journal,setEnabled:v=>{enabled=v;}});
   await new Promise(r=>server.listen(0,'127.0.0.1',r));const port=server.address().port;
-  function request(route,body,credentials=clientCert,extra={},reuse=false){return new Promise((resolve,reject)=>{const r=https.request({host:'127.0.0.1',port,path:route,method:body===undefined?'GET':'POST',...credentials,ca:serverCert.cert,checkServerIdentity,agent:reuse?pool:false,headers:{'Content-Type':'application/json',...extra}},res=>{const socket=res.socket;let parts=[];res.on('data',d=>parts.push(d));res.on('end',()=>{const data=Buffer.concat(parts);resolve({socket,status:res.statusCode,headers:res.headers,body:res.headers['content-type']==='application/octet-stream'?data:JSON.parse(data)});});});r.on('error',reject);r.end(body===undefined?undefined:Buffer.isBuffer(body)?body:JSON.stringify(body));});}
+  function request(route,body,credentials=clientCert,extra={},reuse=false){return new Promise((resolve,reject)=>{const r=https.request({host:'127.0.0.1',port,path:route,method:body===undefined?'GET':'POST',...credentials,ca:serverCert.cert,agent:reuse?pool:false,headers:{'Content-Type':'application/json',...extra}},res=>{const socket=res.socket;let parts=[];res.on('data',d=>parts.push(d));res.on('end',()=>{const data=Buffer.concat(parts);resolve({socket,status:res.statusCode,headers:res.headers,body:res.headers['content-type']==='application/octet-stream'?data:JSON.parse(data)});});});r.on('error',reject);r.end(body===undefined?undefined:Buffer.isBuffer(body)?body:JSON.stringify(body));});}
   let connections=0;server.on('secureConnection',()=>connections++);
   const clientConfig={host:'127.0.0.1',port,server_certificate:dir+'/server.pem',client_certificate:dir+'/client.pem',client_key:dir+'/client-key.pem',server_sha256:hash(new crypto.X509Certificate(serverCert.cert).raw)};
   fs.writeFileSync(dir+'/client.json',JSON.stringify(clientConfig),{mode:0o600});
@@ -69,25 +69,53 @@ with api.Session(c) as session:
   for(let i=1;i<=129;i++){
    const r=await request('/v1/status',undefined,clientCert,{'Connection':'keep-alive'},true);
    assert.equal(r.status,200);assert.ok(Number(r.headers['content-length'])>0);
-   if(i>1&&i<=128)assert.equal(r.socket,prior);
+   if(i>1&&i<=128)assert.ok(r.socket===prior, `request ${i} should reuse the preceding TLS socket`);
    if(i===128)assert.equal(r.headers.connection,'close');
-   if(i===129)assert.notEqual(r.socket,prior);
+   if(i===129)assert.ok(r.socket!==prior, `request ${i} should use a new TLS socket`);
    prior=r.socket;
   }
   const rejected=await request('/v1/status',undefined,clientCert,{Connection:'keep-alive',Origin:'https://example.invalid'},true);
-  assert.equal(rejected.status,403);assert.equal(rejected.socket,prior);assert.equal(rejected.headers.connection,'close');
-  const next=await request('/v1/status',undefined,clientCert,{Connection:'keep-alive'},true);assert.notEqual(next.socket,prior);
+  assert.equal(rejected.status,403);assert.equal(rejected.headers['server-timing'],undefined);assert.ok(rejected.socket===prior, 'Origin rejection should use the existing socket');assert.equal(rejected.headers.connection,'close');
+  const next=await request('/v1/status',undefined,clientCert,{Connection:'keep-alive'},true);assert.ok(next.socket!==prior, 'request after rejection should use a new socket');
   assert.equal(server.keepAliveTimeout,5000);
   await assert.rejects(request('/v1/status',undefined,{}));await assert.rejects(request('/v1/status',undefined,foreign));
   assert.equal((await request('/v1/status')).status,200);
   assert.equal((await request('/v1/status',undefined,clientCert,{Origin:'https://example.invalid'})).status,403);
+  const probe={id:crypto.randomUUID(),manifest_sha256:'a'.repeat(64)};
+  await assert.rejects(request('/v1/observer/probe',probe,foreign));
+  assert.equal((await request('/v1/observer/probe',probe,clientCert,{Origin:'https://example.invalid'})).status,403);
+  for(const invalid of [{...probe,pid:42},{...probe,manifest_sha256:'a'.repeat(64)+'\n'},{...probe,id:'short'}])assert.equal((await request('/v1/observer/probe',invalid)).body.outcome,'rejected');
+  assert.equal(probeCalls,0);
+  const probed=await request('/v1/observer/probe',probe);assert.equal(probed.status,200);assert.equal(probed.body.worker_stopped,false);
+  assert.equal(journal.rows.find(r=>r.id===probe.id).state,'completed');
+  assert.equal((await request('/v1/observer/probe',probe)).status,409);assert.equal(probeCalls,1);
+  probeLost=true;const lostProbe={...probe,id:crypto.randomUUID()};
+  assert.equal((await request('/v1/observer/probe',lostProbe)).body.outcome,'unknown');
+  assert.equal(journal.rows.find(r=>r.id===lostProbe.id).state,'submitted');
+  assert.equal((await request('/v1/observer/probe',lostProbe)).status,409);assert.equal(probeCalls,2);
+  probeLost='failed';const failedProbe={...probe,id:crypto.randomUUID()};
+  assert.equal((await request('/v1/observer/probe',failedProbe)).body.outcome,'failed');
+  assert.equal(journal.rows.find(r=>r.id===failedProbe.id).state,'completed');
+  let nativeCalls=0,rejectNative;const originalStatus=agent.status;
+  agent.status=()=>({...originalStatus(),worker_ready:true,selected_implementation:'managed',admission_held:false});
+  agent.rehearseNative=async(m,r)=>{nativeCalls++;assert.equal(m,'a'.repeat(64));assert.equal(r,'b'.repeat(64));return new Promise((_,reject)=>{rejectNative=reject;});};
+  agent.resumeManagedActivation=async()=>{nativeCalls++;return {selected_implementation:'managed',admission_held:false};};
+  const rehearsal={id:crypto.randomUUID(),manifest_sha256:'a'.repeat(64),runtime_sha256:'b'.repeat(64)};
+  await assert.rejects(request('/v1/native/rehearse',rehearsal,foreign));assert.equal((await request('/v1/native/rehearse',rehearsal,clientCert,{Origin:'https://example.invalid'})).status,403);
+  assert.equal((await request('/v1/native/rehearse',{...rehearsal,extra:true})).body.outcome,'rejected');assert.equal(nativeCalls,0);
+  assert.equal((await request('/v1/native/rehearse',rehearsal)).status,202);assert.equal((await request('/v1/native/status')).body.operation.state,'submitted');assert.equal((await request('/v1/disable',{})).status,409);assert.equal((await request('/v1/exec',command())).status,409);assert.equal((await request('/v1/status')).status,200);assert.equal(nativeCalls,1);
+  rejectNative(Error('activation acknowledgement lost'));await new Promise(r=>setImmediate(r));assert.equal((await request('/v1/native/status')).body.operation.state,'unknown');assert.equal(journal.rows.find(r=>r.id===rehearsal.id).state,'submitted');assert.equal((await request('/v1/native/rehearse',rehearsal)).status,409);
+  const recovery={id:crypto.randomUUID(),rehearsal_id:rehearsal.id};assert.equal((await request('/v1/native/resume-managed',recovery)).status,202);await new Promise(r=>setImmediate(r));assert.equal((await request('/v1/native/status')).body.operation.state,'completed');assert.equal(journal.rows.find(r=>r.id===recovery.id).state,'completed');assert.equal(journal.rows.find(r=>r.id===rehearsal.id).state,'submitted');assert.equal(nativeCalls,2);
+  const migration={id:crypto.randomUUID(),manifest_sha256:'a'.repeat(64),runtime_sha256:'b'.repeat(64)};assert.equal((await request('/v1/native/migrate',migration)).status,409,'one native task per live coordinator');
+  assert.equal(journal.rows.some(r=>r.id===migration.id),false);
+  agent.status=originalStatus;
   const v=command();assert.equal((await request('/v1/exec',v)).body.stdout,'uid=0');assert.equal(calls,1);assert.equal((await request('/v1/exec',v)).status,409);assert.equal(calls,1);
   exitCode=1;const nonzero=await request('/v1/exec',command());assert.equal(nonzero.status,200);assert.equal(nonzero.body.exit_code,1);assert.equal(nonzero.body.stdout,'uid=0');calls=1;
   const operationId=crypto.randomUUID();
   const failed=await request('/v1/op',{id:operationId,operation:{op:'file.commit',transfer_id:'example'}});
   assert.equal(failed.body.outcome,'failed');assert.equal(journal.rows.find(r=>r.id===operationId).state,'completed');
   const binary=await request('/v1/files/write',Buffer.from('chunk'),clientCert,{'X-Operation':JSON.stringify({id:crypto.randomUUID(),operation:{op:'file.write',transfer_id:'example',offset:0,sha256:hash('chunk')}})});
-  assert.equal(binary.status,200);assert.equal(binary.body.offset,5);
+  assert.equal(binary.status,200);assert.equal(binary.body.offset,5);assert.match(binary.headers['server-timing'],/^journal_begin;dur=\d+\.\d{3}, journal_begin_file_sync;dur=\d+\.\d{3};desc="1 calls", journal_begin_directory_sync;dur=\d+\.\d{3};desc="1 calls", worker;dur=\d+\.\d{3}, journal_finish;dur=\d+\.\d{3}, journal_finish_file_sync;dur=\d+\.\d{3};desc="1 calls", journal_finish_directory_sync;dur=\d+\.\d{3};desc="1 calls", handler;dur=\d+\.\d{3}$/);
   const uploadId=crypto.randomUUID(),uploadOp={op:'file.write',transfer_id:'example',offset:0,sha256:hash('chunk')};
   const upload=op=>request('/v1/files/write',Buffer.from('chunk'),clientCert,{'X-Operation':JSON.stringify({id:uploadId,operation:op})});
   assert.equal((await upload({...uploadOp,sha256:hash('other')})).body.outcome,'rejected');
@@ -99,8 +127,15 @@ with api.Session(c) as session:
 
   assert.equal((await request('/v1/op',{id:crypto.randomUUID(),operation:{op:'file.write'}})).body.outcome,'rejected');
   const read=()=>request('/v1/files/read',{id:crypto.randomUUID(),operation:{op:'file.read',transfer_id:'example',offset:7,length:5}});
-  const downloaded=await read();assert.equal(downloaded.status,200);assert.deepEqual(downloaded.body,downloadBytes);assert.equal(downloaded.headers['x-sha256'],hash(downloadBytes));assert.equal(downloaded.headers['x-offset'],'7');
+  const downloaded=await read();assert.equal(downloaded.status,200);assert.deepEqual(downloaded.body,downloadBytes);assert.equal(downloaded.headers['x-sha256'],hash(downloadBytes));assert.equal(downloaded.headers['x-offset'],'7');assert.match(downloaded.headers['server-timing'],/^worker;dur=\d+\.\d{3}, handler;dur=\d+\.\d{3}$/);
   badChunk=true;assert.equal((await read()).status,409);
+  operationUncertain=true;const beforeUnknown=operationCalls,unknownId=crypto.randomUUID();
+  const unknownOperation={id:unknownId,operation:{op:'file.open',path:'/fixture'}};
+  assert.equal((await request('/v1/op',unknownOperation)).body.outcome,'unknown');
+  assert.equal(journal.rows.find(r=>r.id===unknownId).state,'submitted');
+  assert.equal((await request('/v1/op',unknownOperation)).body.outcome,'rejected');
+  assert.equal(operationCalls,beforeUnknown+1,'Unknown operation must not be replayed');
+  operationUncertain=false;
   uncertain=true;const lost=command();assert.equal((await request('/v1/exec',lost)).status,409);assert.equal((await request('/v1/exec',lost)).status,409);assert.equal(calls,2);assert.equal(journal.rows.find(r=>r.id===lost.id).state,'submitted');
   assert.equal((await request('/v1/disable',{})).status,200);assert.equal((await request('/v1/exec',command())).status,503);
   const snapshot=await request('/v1/requests');assert.equal(snapshot.body.sha256,journal.digest());

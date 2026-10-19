@@ -1,5 +1,15 @@
 # TV setup and reapplication (unreleased)
 
+For a separately reviewed S90D helper/cache boot trial, see
+[S90D boot checkpoints and recovery](s90d-boot-recovery.md). Its checkpoints use
+the shared device lock and journal, preserving the prior composite helper and
+patched cache rather than restoring the historical splash-only build.
+
+For launcher-focused setup, start with the [unified installer](universal-installer.md).
+It adds offline web/native preparation and a scoped web installation path on this
+shared engine. The [native boot-hook backend](native-installation.md) uses the
+same engine and locks with explicit baseline enrollment; it is offline-tested only.
+
 For a routine Hub interface update on a configured TV, use the shorter
 [UI deployment workflow](ui-deployment.md). It shares this engine’s locks,
 journals and signing checks while preserving full-setup choices.
@@ -33,9 +43,11 @@ telemetry migration retires only the old collector marker. See
 Model, platform, firmware, runtime/launcher hashes, signing identity,
 resource hashes and protected-package checks cannot be disabled by choices.
 
-Host validation targets macOS and Linux (Python 3.12–3.14). CI covers macOS ARM64
-and Linux x86-64. Other host architectures are experimental; native Windows and
-WSL are unsupported. CI results are host tests, not proof of TV behavior.
+Host validation targets macOS and Linux. CI uses Python 3.12: the full offline
+suite runs on Linux x86-64; macOS 14 ARM64 runs the setup, installer and UI-deploy
+Python tests. Newer Python versions can be checked locally. Other host
+architectures are experimental; native Windows and WSL are unsupported. CI
+results are host tests, not proof of TV behavior.
 
 ## Install from source
 

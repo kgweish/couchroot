@@ -1,0 +1,106 @@
+{
+  "schema": 1,
+  "date": "2026-10-15",
+  "package_version": "0.7.44",
+  "source_parent_commit": "dcde98b2e2fabb3087a8197908ef3c5fc77db317",
+  "scope": "Selected-native service recovery of guardian-owned job persistence debris after committed guardian loss",
+  "local_validation": {
+    "repository_tests_passed": 413,
+    "repository_optional_tests_skipped": 150,
+    "retained_state_tests_passed": 46,
+    "retained_state_optional_tests_skipped": 1,
+    "restart_metadata_and_startup_tests_passed": 7,
+    "restart_integration_cases": 21,
+    "rehearsal_integration_cases": 6,
+    "fresh_native_and_managed_fixtures": true
+  },
+  "devices": {
+    "qn90a": {
+      "installed_files_verified": true,
+      "all_19_payload_members_unchanged": true,
+      "managed_dlls_unchanged": true,
+      "real_guardian_sigkill": true,
+      "crash_state_files_created_under_scope_lock_after_guardian_exit": true,
+      "synthetic_crash_states": [
+        "empty-initial-intent",
+        "partial-intent-and-partial-repair",
+        "initial-publication-hard-link",
+        "repair-publication-hard-link",
+        "live-record-save-temporary",
+        "terminal-record-save-temporary"
+      ],
+      "same_coordinator_reacquired_native": true,
+      "unpublished_intents_interrupted_without_launch": true,
+      "live_job_interrupted_with_unknown_exit": true,
+      "witness_executed_once": true,
+      "terminal_record_bytes_preserved": true,
+      "committed_receipts_preserved": true,
+      "temporary_metadata_removed_by_native": true,
+      "records_preserved_on_managed_return": true,
+      "fixture_records_forgotten_via_public_managed_api": true,
+      "original_retained_jobs_preserved": true,
+      "bootstrap_retired": true,
+      "enrollment_and_protected_hashes_preserved": true,
+      "original_boot_unchanged": true,
+      "final_selection": "managed",
+      "final_ready": true,
+      "final_inventory": "settled",
+      "history_count": 32,
+      "history_outcomes": {
+        "committed": 26,
+        "rolled-back": 6
+      },
+      "sdk_loopback": true,
+      "owned_units_inactive": 14,
+      "old_and_replacement_native_processes_absent": true,
+      "old_and_replacement_runtime_and_freezer_scopes_absent": true,
+      "independent_dotnet_rescue_unused_and_disarmed": true
+    },
+    "s90d": {
+      "installed_files_verified": true,
+      "all_19_payload_members_unchanged": true,
+      "managed_dlls_unchanged": true,
+      "real_guardian_sigkill": true,
+      "crash_state_files_created_under_scope_lock_after_guardian_exit": true,
+      "synthetic_crash_states": [
+        "empty-initial-intent",
+        "partial-intent-and-partial-repair",
+        "initial-publication-hard-link",
+        "repair-publication-hard-link",
+        "live-record-save-temporary",
+        "terminal-record-save-temporary"
+      ],
+      "same_coordinator_reacquired_native": true,
+      "unpublished_intents_interrupted_without_launch": true,
+      "live_job_interrupted_with_unknown_exit": true,
+      "witness_executed_once": true,
+      "terminal_record_bytes_preserved": true,
+      "committed_receipts_preserved": true,
+      "temporary_metadata_removed_by_native": true,
+      "records_preserved_on_managed_return": true,
+      "fixture_records_forgotten_via_public_managed_api": true,
+      "original_retained_jobs_preserved": true,
+      "bootstrap_retired": true,
+      "enrollment_and_protected_hashes_preserved": true,
+      "original_boot_unchanged": true,
+      "final_selection": "managed",
+      "final_ready": true,
+      "final_inventory": "settled",
+      "history_count": 32,
+      "history_outcomes": {
+        "committed": 25,
+        "rolled-back": 7
+      },
+      "sdk_loopback": true,
+      "owned_units_inactive": 14,
+      "old_and_replacement_native_processes_absent": true,
+      "old_and_replacement_runtime_and_freezer_scopes_absent": true,
+      "independent_dotnet_rescue_unused_and_disarmed": true
+    }
+  },
+  "limits": [
+    "The hardware trials model exact persistence boundaries with owned files after a real guardian kill; they do not simulate a power failure or crash during filesystem synchronization.",
+    "Incomplete, malformed or differently owned guardian journals remain held. Pre-readiness startup journals still need a durable binding to their original launch attempt.",
+    "Native-only capability entry, broader lifecycle coverage, performance/endurance and native-default rollout remain open. The managed fallback and independent .NET rescue are retained."
+  ]
+}

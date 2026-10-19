@@ -1,17 +1,18 @@
 name: Offline release validation
 on:
   push:
+    branches: [main]
   pull_request:
+  workflow_dispatch:
 permissions:
   contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 jobs:
-  host:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-24.04, macos-14]
-        python: ['3.12', '3.14']
-    runs-on: ${{ matrix.os }}
+  web-and-offline:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
     env:
       SAMSUNG_TV_TOOLKIT: ${{ github.workspace }}/.ci/empty-tv-toolkit
       TV_SETUP_STATE: ${{ github.workspace }}/.ci/tv-state
@@ -22,15 +23,25 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python }}
+          python-version: '3.12'
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - uses: actions/setup-dotnet@v4
-        with:
-          global-json-file: global.json
+      # Hosted runners may have .NET preinstalled. Fail if this job invokes it.
+      - name: Block managed tooling in the SDK-free checks
+        run: |
+          mkdir -p "$RUNNER_TEMP/no-dotnet"
+          cat > "$RUNNER_TEMP/no-dotnet/dotnet" <<'SH'
+          #!/bin/sh
+          touch "$RUNNER_TEMP/dotnet-invoked"
+          echo '.NET belongs in the managed job' >&2
+          exit 1
+          SH
+          chmod +x "$RUNNER_TEMP/no-dotnet/dotnet"
+          echo "$RUNNER_TEMP/no-dotnet" >> "$GITHUB_PATH"
       - run: python -m pip install -r tvsetup/requirements.txt
-      - run: python scripts/check-dependencies.py
+      - run: python scripts/check-dependencies.py --component offline
+      - run: python scripts/check-dependencies.py --component web
       - run: python scripts/privacy-audit.py --check
       - run: python -m unittest discover -s tests -p '*_test.py'
       - run: python -m unittest discover -s research/s90d-telemetry/tests
@@ -40,11 +51,51 @@ jobs:
       - run: node native/webview/tests/native-shim.cjs
       - run: node native/webview/tests/diagnostic.cjs
       - run: npm test
-      - run: python scripts/check-reproducible.py
+      - run: python scripts/check-reproducible.py --component web
+      - name: Verify no managed tooling was invoked
+        run: test ! -e "$RUNNER_TEMP/dotnet-invoked"
+  macos-setup:
+    runs-on: macos-14
+    timeout-minutes: 10
+    env:
+      SAMSUNG_TV_TOOLKIT: ${{ github.workspace }}/.ci/empty-tv-toolkit
+      TV_SETUP_STATE: ${{ github.workspace }}/.ci/tv-state
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r tvsetup/requirements.txt
+      - run: python -m unittest discover -s tests -p 'tv_setup_*_test.py'
+      - run: python -m unittest discover -s tests -p 'installer_test.py'
+      - run: python -m unittest discover -s tests -p 'ui_deploy_test.py'
+  managed:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      SAMSUNG_TV_TOOLKIT: ${{ github.workspace }}/.ci/empty-tv-toolkit
+      TV_SETUP_STATE: ${{ github.workspace }}/.ci/tv-state
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - run: python scripts/check-dependencies.py --component managed
+      - run: python tests/telemetry_service_test.py
+      - run: python tests/inspector_collector_test.py
+      - run: python tests/root_agent_worker_test.py
       - run: python tests/qn90a_boot_relay_test.py
-      - run: python scripts/package.py
+      - run: python scripts/check-reproducible.py --component managed
   root-native-launcher:
     runs-on: ubuntu-24.04
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
         with:
@@ -54,10 +105,27 @@ jobs:
           global-json-file: global.json
       - run: docker build -t samsung-native-collector:bullseye research/native-telemetry/collector
       - run: python3 scripts/check-root-launcher.py
+      - name: Native collector host checks
+        run: |
+          mkdir -p test-results/native-telemetry
+          docker run --rm --pull never --network none -v "$PWD:/src:ro" -v "$PWD/test-results/native-telemetry:/out" -e OUTPUT_DIR=/out samsung-native-collector:bullseye sh research/native-telemetry/collector/build.sh --host-only
+          docker run --rm --pull never --network none -v "$PWD:/src:ro" -v "$PWD/test-results/native-telemetry:/out:ro" samsung-native-collector:bullseye python3 research/native-telemetry/collector/test_collector.py
+      - run: docker build -t couchroot-native-tests:py312 -f tests/native-worker.Dockerfile .
+      - name: Native worker protocol and recovery checks
+        run: |
+          mkdir -p test-results/native-worker
+          docker run --rm --init --pull never --network none --cap-add SYS_PTRACE --security-opt seccomp=unconfined -v "$PWD:/src:ro" -v "$PWD/test-results/native-worker:/out" couchroot-native-tests:py312 sh -eu -c '
+            gcc -std=c99 -O2 -Wall -Wextra -Werror -Wno-unused-function -DNATIVE_WORKER_TEST -DNATIVE_WORKER_FAULT_TEST research/autonomous-root/native-worker/worker.c -ldl -pthread -o /out/worker
+            gcc -std=c99 -O2 -Wall -Wextra -Werror -Wno-unused-function research/autonomous-root/native-worker/accept.c -ldl -pthread -o /out/accept
+            gcc -shared -fPIC -Wall -Wextra -Werror tests/native-io/delay.c -ldl -o /out/io-delay.so
+            # Mount-dependent and extended lifetime checks need separate local runs.
+            NATIVE_WORKER=/out/worker NATIVE_WORKER_FAULT_TEST=1 COUCHROOT_PARITY_CONTAINER=1 NATIVE_ACCEPT=/out/accept NATIVE_IO_DELAY=/out/io-delay.so python3 -m unittest discover -s tests -p "native_*_test.py"
+          '
       - run: dotnet build tests/root-agent-harness/Harness.csproj -c Release
       - run: docker run --rm --network none -v "$PWD/tests/root-agent-harness/bin/Release/net10.0:/app:ro" mcr.microsoft.com/dotnet/sdk:10.0.301-noble dotnet /app/Harness.dll
   qn90a-web-saver:
     runs-on: ubuntu-24.04
+    timeout-minutes: 10
     container: emscripten/emsdk:3.1.64
     steps:
       - uses: actions/checkout@v4

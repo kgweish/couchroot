@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Reflection;
 using System.Threading;
 static class Harness {
@@ -13,6 +14,18 @@ static class Harness {
   }
   Check((bool)Call("ValidEndpoint","https://nas/v1/s90d","s90d"),"Legacy S90D URL rejected");
   Check(!(bool)Call("ValidEndpoint","https://nas/v1/s90d","qn90a"),"Cross-device URL accepted");
+  string data=Path.Combine(Path.GetTempPath(),"native-adapter-"+Guid.NewGuid());
+  Directory.CreateDirectory(data);
+  try {
+   Check(!(bool)Call("NativeSelected",data,"qn90a"),"Missing selection disabled managed collection");
+   File.WriteAllText(Path.Combine(data,"native-enabled"),"");
+   Check((bool)Call("NativeSelected",data,"qn90a"),"Native selection ignored");
+   Check(!(bool)Call("NativeSelected",data,"s90d"),"QN90A selection affected S90D");
+   File.WriteAllText(Path.Combine(data,"native-enabled"),"malformed");
+   Check((bool)Call("NativeSelected",data,"qn90a"),"Malformed selection silently fell back to managed");
+   File.Delete(Path.Combine(data,"native-enabled"));
+   Check(!(bool)Call("NativeSelected",data,"qn90a"),"Managed rollback did not restore selection");
+  }finally{Directory.Delete(data,true);}
   foreach(string device in new[]{"s90d","qn90a"}) {
    Telemetry.Entered.Reset();Telemetry.Release.Reset();Telemetry.Fail=device=="s90d";
    int before=Telemetry.Calls;

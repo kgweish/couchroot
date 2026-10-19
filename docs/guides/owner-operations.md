@@ -2,7 +2,11 @@
 
 For current UI updates, use [UI deployment](ui-deployment.md). Full installation
 and recovery use [tv-setup](tv-setup.md). The signing and rollback records below
-describe historical procedures and evidence.
+describe historical procedures and evidence. The direct SDB addresses below are
+documentation placeholders, not current destinations. Historical `restore.py`,
+`enable.py` and splash-only shell commands are not the current recovery interface.
+Use the original setup journal for setup rollback; for a future S90D boot trial,
+use [boot checkpoints and recovery](s90d-boot-recovery.md).
 
 A local Tizen TV launcher for the owner’s QN55S90DAFXZA.
 Remote-editable shortcuts start with Plex and YouTube. Samsung Home remains
@@ -55,7 +59,9 @@ Restore the original UI with:
 This installs the original UI under version 0.2.3, avoiding a version downgrade,
 and leaves Home/startup configuration intact. Its signed package was prepared
 before the final update; this particular visual rollback has not been installed
-on the TV. Full startup rollback remains `python3 tools/s90d/restore.py`.
+on the TV. That historical Home-settings restore is not a composite-helper or
+cache rollback.
+Use the relevant current journal and the boot recovery guide linked above.
 
 ## Preview and checks
 
@@ -125,29 +131,21 @@ see the integration notes for the current rollback command.
 
 ## Startup integration
 
-On the S90D firmware 2130.0, the custom Home app needs Samsung's native splash
-handoff. Build and install the compatibility variant of the existing screensaver
-boot helper after assigning the custom Home app:
+On S90D firmware 2130.0, Samsung prelaunches the web Hub and its native splash
+handoff controls the later resume request. The current design uses an AT-HUB
+composite helper for splash and screensaver integration; telemetry revisions
+superseded the original splash-only helper.
 
-```sh
-python3 research/s90d-splash/build-helper.py
-python3 tools/s90d/splash.py apply
-python3 tools/s90d/splash.py status
-```
+Do not rebuild/install the historical splash variant or use its original-helper
+rollback against a composite. `tools/s90d/splash.py` now provides offline planning
+and explicitly gated live checkpoints/recovery through the shared setup journal.
+It preserves exact prior helper/cache bytes and marker state. See
+[S90D boot recovery](s90d-boot-recovery.md) for commands, failure handling and limits.
+No boot optimization or S90D native Hub port is enabled by that tooling.
 
-The installer requires the reviewed original helper or this exact variant. It
-backs up the original, checks firmware/native/resource/build hashes, and enables
-a bounded launch of Samsung's unmodified splash with its existing resource path.
-The launch uses the existing AT-HUB startup entry; no new boot service, widget
-rebuild or filesystem overlay is added. This integration is S90D-specific.
-
-`python3 tools/s90d/splash.py rollback` disables the addition and restores the exact
-original screensaver helper. The renderer, widget and favorites remain intact.
-Use this before replacing the screensaver helper with another variant: boot
-tracing and splash compatibility currently use separate helper builds. For full
-startup rollback, use `python3 tools/s90d/restore.py` to select Samsung Home. The compatible
-helper also skips its splash when the custom Home app is not selected. See the
-[boot-splash record](../devices/s90d/splash-acknowledgement.md) for details.
+The [offline assessment](../devices/s90d/native-boot-assessment.md) recommends
+measurement first: the 22-second acknowledgement/resume records do not measure
+when the panel shows the Hub or when the remote first works.
 
 The native Home-operation assignment points to `MiniHub001.Hub`,
 `db/appfw/home_appid` names the hub, and Smart Hub `auto_start` is integer `1`.
@@ -155,20 +153,13 @@ This configuration survived a controlled real reboot with the hub running in the
 foreground. Samsung Home remains installed and `db/first_screen/type` remains
 unchanged. Writing the derived startup-app string alone was insufficient.
 
-After installing the signed package, run `python3 tools/s90d/enable.py` to select the hub
-and enable autostart. Both configuration and rollback use native setters that
-preserve the settings' access privileges. The original settings and owner
-assignment have private backups. The complete restore command was exercised
-successfully:
-
-```sh
-python3 tools/s90d/restore.py
-```
-
-It requires the existing Mac toolkit and developer-mode connection. It uploads
-its own temporary helper and removes it afterward, so recovery does not depend
-on a helper being left on the TV. Restore settings before uninstalling the hub.
-See [verification and rollback details](../devices/s90d/README.md).
+For new setup use the [shared setup workflow](tv-setup.md); its journal records
+the exact prior Home settings. Recover a setup run with that run's rollback and
+original checkout. The old `enable.py`/`restore.py` commands describe historical
+native-setting experiments with fixed placeholder addressing and no current
+shared journal. Do not run them as today's recovery procedure. Restoring a boot
+checkpoint does not change Home assignment or uninstall the Hub.
+See [historical verification details](../devices/s90d/README.md).
 
 ## Verification
 

@@ -53,6 +53,12 @@ public static class Telemetry {
             ["collector_rss_bytes"]=self.WorkingSet64
         };
     }
+    // QN90A intentionally keeps counters only, including the managed rollback path.
+    static bool AddInspector(Dictionary<string,object> sample, string device, double now, double next) {
+        if(device=="qn90a" || now<next)return false;
+        sample["inspector"]=Inspector.Sample((double)sample["uptime"]);
+        return true;
+    }
     public static int Main(string[] args) {
         if(args.Length==1 && args[0]=="--sample") {
             Console.WriteLine(JsonSerializer.Serialize(Sample(1,Read("/proc/sys/kernel/random/boot_id",64).Trim())));return 0;
@@ -111,8 +117,7 @@ public static class Telemetry {
                 if(monitoring && now>=nextSend-0.05) {
                     try {
                         var sample=Sample(++sequence,boot);
-                        bool inspected=now>=nextInspector;
-                        if(inspected)sample["inspector"]=Inspector.Sample((double)sample["uptime"]);
+                        bool inspected=AddInspector(sample,device,now,nextInspector);
                         sample["device"]=device;sample["session"]=session;
                         using var body=new StringContent(JsonSerializer.Serialize(sample),Encoding.UTF8,"application/json");
                         using var response=client.PostAsync(uri,body).GetAwaiter().GetResult();

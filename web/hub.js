@@ -49,7 +49,7 @@
   var resetDialog = document.getElementById('reset-dialog'), resetCancel = document.getElementById('reset-cancel'), resetConfirm = document.getElementById('reset-confirm');
   var launchDialog = document.getElementById('launch-error-dialog'), failedApp = null;
   var launchCancel = document.getElementById('launch-cancel'), launchRetry = document.getElementById('launch-retry'), launchHome = document.getElementById('launch-home');
-  var telemetry = HubTelemetry.create(window.tizen, storage), telemetryBusy = false;
+  var telemetry = HubTelemetry.create(window.tizen, storage), telemetryBusy = false, telemetryGeneration = 0;
   var telemetrySetting = document.getElementById('setting-telemetry'), telemetryDialog = document.getElementById('telemetry-dialog');
   var telemetryEnabled = document.getElementById('telemetry-enabled'), telemetryEndpoint = document.getElementById('telemetry-endpoint');
   var telemetrySave = document.getElementById('telemetry-save'), telemetryCancel = document.getElementById('telemetry-cancel');
@@ -436,7 +436,7 @@
   }
   function updateMovePosition() { document.getElementById('move-position').textContent = 'Position ' + (moveIndex + 1) + ' of ' + moving.length; }
   function returnFromOptions() {
-    moving = null;
+    homeSignature = ''; moving = null;
     if (optionsOrigin === 'home') { renderHome(chosen); } else { renderEdit(chosen); }
   }
   function finishMove() { if (moving && commit(moving)) { returnFromOptions(); message('New order saved.'); } }
@@ -515,23 +515,26 @@
   }
   function telemetryNote(text, error) { var line = document.getElementById('telemetry-status'); line.textContent = text; line.classList.toggle('error', !!error); }
   telemetrySetting.addEventListener('click', function () {
+    var generation = ++telemetryGeneration;
     mode = 'telemetry'; telemetryDialog.hidden = false; telemetryBusy = true; telemetrySave.disabled = true;
     telemetryNote('Loading preferences…');
     setNav([[telemetryEnabled], [telemetryEndpoint], [telemetryCancel, telemetrySave]], telemetryCancel);
     telemetry.load(function (value) {
-      if (mode !== 'telemetry') { return; }
+      if (mode !== 'telemetry' || generation !== telemetryGeneration) { return; }
       telemetryBusy = false; telemetrySave.disabled = false; telemetryEndpoint.value = value.endpoint;
       showMonitoring(value.enabled); telemetryNote(''); focus(telemetryEnabled);
-    }, function () { if (mode === 'telemetry') { telemetryNote('Monitoring preferences are unavailable on this TV.', true); } });
+    }, function () { if (mode === 'telemetry' && generation === telemetryGeneration) { telemetryNote('Monitoring preferences are unavailable on this TV.', true); } });
   });
   telemetryEnabled.addEventListener('click', function () {
     if (!telemetryBusy) { showMonitoring(telemetryEnabled.getAttribute('aria-pressed') !== 'true'); }
   });
   telemetrySave.addEventListener('click', function () {
     if (telemetryBusy) { return; } telemetryBusy = true; telemetrySave.disabled = true;
+    var generation = telemetryGeneration;
     telemetry.save({ schema: 1, enabled: telemetryEnabled.getAttribute('aria-pressed') === 'true', endpoint: telemetryEndpoint.value.trim() }, function () {
+      if (mode !== 'telemetry' || generation !== telemetryGeneration) { return; }
       telemetryBusy = false; telemetrySave.disabled = false; openSettings(telemetrySetting); message('Monitoring preferences saved. Changes apply within 10 seconds.');
-    }, function (error) { telemetryBusy = false; telemetrySave.disabled = false; telemetryNote(error.message || 'Could not save monitoring preferences.', true); });
+    }, function (error) { if (mode !== 'telemetry' || generation !== telemetryGeneration) { return; } telemetryBusy = false; telemetrySave.disabled = false; telemetryNote(error.message || 'Could not save monitoring preferences.', true); });
   });
   telemetryCancel.addEventListener('click', function () { if (!telemetryBusy || telemetrySave.disabled) { openSettings(telemetrySetting); } });
   settings.addEventListener('click', function () { openSettings(); });

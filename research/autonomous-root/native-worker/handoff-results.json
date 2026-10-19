@@ -1,0 +1,134 @@
+{
+  "date": "2026-10-14",
+  "worker_source_commit": "cced593",
+  "scope": "Ordinary native sidecars; matching service-identity observer probes. No production service update or live job-state installation.",
+  "deployed_implementation": ".NET unchanged",
+  "tv_reboots": 0,
+  "devices": {
+    "qn90a": {
+      "checks": [
+        "service_identity_reads_live_process_start_times",
+        "helper_digest_readonly_and_namespace",
+        "handoff_app_helper_identity_and_release",
+        "service_identity_observes_process_exit",
+        "handoff_shutdown_releases_runtime_journal_and_freezer",
+        "handoff_retained_outcomes_and_owned_fixture_cleanup"
+      ],
+      "inventory_phases": [
+        "initial",
+        "upload",
+        "helper",
+        "running",
+        "drained"
+      ],
+      "worker_exit_code": 0,
+      "shutdown_and_cleanup_ms": 112.0,
+      "sample_count": 1,
+      "observation_backend": "proc stat",
+      "observer_context": "Separate probe with matching service UID/GID, supplementary groups, Smack label and effective capabilities; not the running wrt-service process.",
+      "kernel_version": "4.1.10",
+      "production_lifetime_mode": true,
+      "deployed_fallback_preserved": true,
+      "cleanup_and_preservation": {
+        "boot_unchanged": true,
+        "deployed_pid_unchanged": true,
+        "deployed_worker_unchanged": true,
+        "files_removed": true,
+        "helpers_released": true,
+        "launcher_hash_unchanged": true,
+        "native_helper_storage_removed": true,
+        "original_cgroup_membership_unchanged": true,
+        "original_execution_mounts_unchanged": true,
+        "protected_files_unchanged": true,
+        "prototype_freezer_groups_removed": true
+      },
+      "kernel_observation": {
+        "method": "full before/after ring snapshots with exact suffix overlap; not continuous capture",
+        "before_lines": 6209,
+        "after_lines": 6209,
+        "overlap_lines": 5668,
+        "new_lines": 541,
+        "warning_pattern_lines": 0,
+        "coverage": "retained interval"
+      },
+      "preexisting_managed_jobs_migrated": false,
+      "owned_trial_jobs_created_and_forgotten": true
+    },
+    "s90d": {
+      "checks": [
+        "service_identity_pidfds_bound_to_live_processes",
+        "helper_digest_readonly_and_namespace",
+        "handoff_app_helper_identity_and_release",
+        "service_identity_pidfds_report_process_exit",
+        "handoff_shutdown_releases_runtime_journal_and_freezer",
+        "handoff_retained_outcomes_and_owned_fixture_cleanup"
+      ],
+      "inventory_phases": [
+        "initial",
+        "upload",
+        "helper",
+        "running",
+        "drained"
+      ],
+      "worker_exit_code": 0,
+      "shutdown_and_cleanup_ms": 32.0,
+      "sample_count": 1,
+      "observation_backend": "pidfd poll",
+      "observer_context": "Separate probe with matching service UID/GID, supplementary groups, Smack label and effective capabilities; not the running wrt-service process.",
+      "kernel_version": "5.4.249",
+      "production_lifetime_mode": true,
+      "deployed_fallback_preserved": true,
+      "cleanup_and_preservation": {
+        "boot_unchanged": true,
+        "deployed_pid_unchanged": true,
+        "deployed_worker_unchanged": true,
+        "files_removed": true,
+        "helpers_released": true,
+        "launcher_hash_unchanged": true,
+        "native_helper_storage_removed": true,
+        "original_cgroup_membership_unchanged": true,
+        "original_execution_mounts_unchanged": true,
+        "protected_files_unchanged": true,
+        "prototype_freezer_groups_removed": true
+      },
+      "kernel_observation": {
+        "method": "full before/after ring snapshots with exact suffix overlap; not continuous capture",
+        "before_lines": 6212,
+        "after_lines": 6205,
+        "overlap_lines": 6015,
+        "new_lines": 190,
+        "warning_pattern_lines": 0,
+        "coverage": "retained interval"
+      },
+      "preexisting_managed_jobs_migrated": false,
+      "owned_trial_jobs_created_and_forgotten": true,
+      "direct_proc_observation": {
+        "qualified": false,
+        "errno": 13,
+        "classification": "Permission denied, never exit evidence",
+        "failed_diagnostic_trials": 2,
+        "diagnostic_cleanup_verified": true
+      }
+    }
+  },
+  "artifacts": {
+    "worker": {
+      "bytes": 107792,
+      "sha256": "e17dee11cd459ce51e0f3f742b27cef624d352d4cf4c9232500f5553d7714009"
+    },
+    "accept": {
+      "bytes": 92140,
+      "sha256": "00853847808b02859faf7099fa442dcc823d5fe006922b3a567ea09651c60f81"
+    },
+    "app-launcher": {
+      "bytes": 13296,
+      "sha256": "4ba756c8b725ba2e375ca02608c9ca7579f6d6275c4ed96348ba93bf5b8a6d55"
+    }
+  },
+  "remaining_gates": [
+    "Production pidfd observer bridge and identity binding on S90D; never reinterpret EACCES as absence.",
+    "Actual wrt-service integration on both TVs, including native launch and interrupted handoff recovery.",
+    "Live retained-state installation and rollback.",
+    "Long-duration, pressure and separately authorized power-lifecycle qualification."
+  ]
+}

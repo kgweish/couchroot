@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "date": "2026-10-15",
+  "version": "0.7.32",
+  "scope": "Same-boot native bootstrap interruption reconciliation through a held managed executor, without original launch replay",
+  "local": {
+    "node_passed": 377,
+    "node_skipped": 135,
+    "bootstrap_recovery_host_cases": 6,
+    "bootstrap_recovery_linux_cases": 6,
+    "held_bootstrap_process_cases": 4,
+    "rehearsal_process_cases": 6,
+    "restart_process_cases": 11
+  },
+  "devices": {
+    "qn90a": {
+      "bootstrap_scopes_and_processes_absent": true,
+      "enrollment_preserved": true,
+      "history_entries": 22,
+      "interrupted_bootstraps_reconciled": 2,
+      "managed_ready": true,
+      "managed_recovery_digest_unchanged": true,
+      "native_bootstrap_instances": 3,
+      "native_service_acquisition": true,
+      "owned_units_inactive": 23,
+      "package_version": "0.7.32",
+      "pending_setup": false,
+      "same_boot": true,
+      "sdk_loopback": true,
+      "settled": true,
+      "interrupted_phases": [
+        "submitted",
+        "ready"
+      ],
+      "retained_jobs_preserved": true,
+      "native_created_jobs_survived_return": true,
+      "normal_managed_return": true,
+      "installed_service_matches_source": true,
+      "original_bootstrap_launch_replayed": false
+    },
+    "s90d": {
+      "bootstrap_scopes_and_processes_absent": true,
+      "enrollment_preserved": true,
+      "history_entries": 22,
+      "interrupted_bootstraps_reconciled": 2,
+      "managed_ready": true,
+      "managed_recovery_digest_unchanged": true,
+      "native_bootstrap_instances": 3,
+      "native_service_acquisition": true,
+      "owned_units_inactive": 33,
+      "package_version": "0.7.32",
+      "pending_setup": false,
+      "same_boot": true,
+      "sdk_loopback": true,
+      "settled": true,
+      "interrupted_phases": [
+        "submitted",
+        "ready"
+      ],
+      "retained_jobs_preserved": true,
+      "native_created_jobs_survived_return": true,
+      "normal_managed_return": true,
+      "installed_service_matches_source": true,
+      "original_bootstrap_launch_replayed": false
+    }
+  },
+  "limitations": [
+    "NativeEntry remains a managed capability bridge. The managed worker, explicit acquisition fallback and independent 300-second .NET SDK rescue remain available.",
+    "Recovery requires the same boot and selection bytes, a schema-2 receipt, an idle owned unit and absent recorded processes, with exact or absent known staging files. Other evidence remains blocked for independent inspection.",
+    "Launch fence lock/seal tombstones remain intentionally; deleting them could permit a delayed original launch.",
+    "QN90A 0.7.31 failed autonomous recovery because systemd retained failed state after stop. Independent managed rescue restored access; the inspected same receipt was retired after the guarded reset-failed correction. Only 0.7.32 is accepted here.",
+    "S90D application-manager restart left the coordinator running. A subsequent targeted timer failed before signalling. Inspection confirmed the original identity; a fresh rescue and separately journaled corrected timer restarted only the boot/PID/start-time-bound endpoint coordinator. The original migration was not replayed.",
+    "No reboot, standby, native-default rollout, final production endurance or fully native capability-entry qualification."
+  ]
+}

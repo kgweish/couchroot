@@ -1,0 +1,111 @@
+{
+  "schema": 1,
+  "date": "2026-10-15",
+  "version": "0.7.42",
+  "source_base_commit": "af540a7",
+  "scope": "Committed native guardian SIGKILL with live work, automatic selected-native reacquisition, and normal managed return",
+  "local": {
+    "previous_startup_refusal_reproduced": true,
+    "focused_snapshot_cases": 3,
+    "fresh_restart_cases": 20,
+    "fresh_rehearsal_cases": 6,
+    "retained_and_startup_passed": 48,
+    "retained_and_startup_skipped": 1,
+    "node_passed": 404,
+    "node_skipped": 147,
+    "init_reaps_orphaned_exitkill_victims": true
+  },
+  "devices": {
+    "qn90a": {
+      "ordinary_worker_sha256": "4b6f19a3badd74734fe254258b5c80f0af43e1766338f69f69f922e38b108f4a",
+      "managed_fallback_dlls_unchanged": 3,
+      "history_entries": 32,
+      "committed_entries": 26,
+      "rolled_back_entries": 6,
+      "installed_members_verified": 82,
+      "pending_setup": false,
+      "managed_selected_ready": true,
+      "settled": true,
+      "retained_jobs_preserved_across_update": true,
+      "selection_history_unchanged_during_reacquisition": true,
+      "history_added_by_roundtrip": 2,
+      "coordinator_unchanged": true,
+      "same_boot": true,
+      "retained_jobs_preserved": true,
+      "live_job_interrupted_unknown_exit": true,
+      "no_replay": true,
+      "committed_receipts_unchanged": true,
+      "bootstrap_retired": true,
+      "scopes_removed": true,
+      "sdk_loopback": true,
+      "rescue_inactive": true,
+      "enrollment_and_protected_hashes_preserved": true,
+      "owned_units_inactive": 20,
+      "old_and_replacement_native_processes_absent": true,
+      "old_and_replacement_runtime_and_freezer_scopes_absent": true,
+      "owned_interrupted_fixture_retired_by_hash_bound_maintenance": true
+    },
+    "s90d": {
+      "ordinary_worker_sha256": "4b6f19a3badd74734fe254258b5c80f0af43e1766338f69f69f922e38b108f4a",
+      "managed_fallback_dlls_unchanged": 3,
+      "history_entries": 31,
+      "committed_entries": 24,
+      "rolled_back_entries": 7,
+      "installed_members_verified": 82,
+      "pending_setup": false,
+      "managed_selected_ready": true,
+      "settled": true,
+      "retained_jobs_preserved_across_update": true,
+      "selection_history_unchanged_during_reacquisition": true,
+      "history_added_by_roundtrip": 2,
+      "coordinator_unchanged": true,
+      "same_boot": true,
+      "retained_jobs_preserved": true,
+      "live_job_interrupted_unknown_exit": true,
+      "no_replay": true,
+      "committed_receipts_unchanged": true,
+      "bootstrap_retired": true,
+      "scopes_removed": true,
+      "sdk_loopback": true,
+      "rescue_inactive": true,
+      "enrollment_and_protected_hashes_preserved": true,
+      "owned_units_inactive": 10,
+      "old_and_replacement_native_processes_absent": true,
+      "old_and_replacement_runtime_and_freezer_scopes_absent": true,
+      "owned_interrupted_fixture_retired_by_hash_bound_maintenance": true
+    }
+  },
+  "preliminary_trials": {
+    "qn90a": {
+      "read_only_status_probe_rejected": true,
+      "first_fault_unit_failed_before_signal": true,
+      "original_guardian_survived": true,
+      "failed_trial_cleaned": true,
+      "next_migration_refused_by_one_task_per_coordinator_gate": true,
+      "service_restarted_before_fresh_qualified_trial": true,
+      "original_requests_not_replayed": true,
+      "qualified_round_first_guard_unit_refused_before_signal": true,
+      "terminal_failure_and_unchanged_guardian_verified_before_new_signal_intent": true,
+      "encoded_shell_command_used_for_actual_signal": true
+    }
+  },
+  "source_sha256": {
+    "research/autonomous-root/service/native-retained-state.js": "3210b3701fa02627cd3e66649379d179269a23688709c05381b2d184f106fba7",
+    "research/autonomous-root/service/native-startup.js": "fc1315e1b269d2cb979ef0394687d69b3adbe6bb44057d050ad28bc919c27aef",
+    "tests/native-restart-integration.test.cjs": "1bfcf4df80753c3c4ab4f3fab202c5c1a4321c0b613b6eecf1c5aa335cc7b1f9",
+    "tests/native-retained-state.test.cjs": "5465840eb75534ef4fbe31d616c27a8b0277dc71efa779c29684d19dc1ec3b2d"
+  },
+  "qualification": [
+    "Each TV migrated normally, then a separate owned systemd timer delivered one SIGKILL to the freshly authenticated committed guardian after checking boot, PID, start ticks, executable and production-unit MainPID. The coordinator remained running and unchanged.",
+    "A live job wrote one witness and slept across the fault boundary. Automatic held-bootstrap acquisition restored selected native under the original committed transaction and unchanged selection history. The ordinary worker reported stale guardian reconciliation; the job became interrupted with unknown exit code and its witness remained singular.",
+    "Production and activation receipts and a completed native job record remained byte-identical across reacquisition. Normal return to managed preserved the completed native result, the interrupted job and the original managed fixture. Only owned test jobs and scopes were removed; prior retained job hashes and enrollment were preserved.",
+    "The independent 300-second .NET SDK rescue was armed for each trial and disarmed after verified recovery and cleanup. Both TVs finished managed-ready and settled on their original boots with SDK on loopback."
+  ],
+  "limits": [
+    "This service path admits only a complete schema-4 ready journal bound to the last accepted runtime. Partial startup or job-persistence metadata, foreign or changed evidence, unreaped identities and nonempty units still refuse. Wider interruption boundaries remain open.",
+    "No reboot, standby, whole-TV OOM, broad pressure, endurance or native-default observation was performed. This is a bounded same-boot guardian-loss case.",
+    "The unchanged managed API refuses same-boot saved interrupted job.forget. Returned records were first verified, then only the owned interrupted fixture was removed using exact-byte and process-disappearance guards. This existing managed limitation remains open.",
+    "The .NET capability-entry bridge, managed worker fallback and independent SDK rescue remain deployed. Native-only capability entry is still unqualified.",
+    "The historical 0.7.40 QN90A command-fault timeout and earlier paused S90D coordinator exit remain unexplained; this trial neither repeats those conditions nor establishes their causes."
+  ]
+}

@@ -175,11 +175,12 @@ class Builder:
             files=hub_sources(self.profile['id']) if key=='hub' else {n:(source/n).read_bytes() for n in ('index.html','saver.js','icon.png')}
             for n,data in files.items():(stage/n).write_bytes(data)
             if key=='saver':self.generated_saver(stage)
-            config=ET.fromstring((source/'config.xml').read_bytes())
+            config_bytes=files['config.xml'] if key=='hub' else (source/'config.xml').read_bytes()
+            config=ET.fromstring(config_bytes)
             version=next_version(action.options['previous_version'],config.get('version'))
             # Preserve namespace declarations exactly; only the widget version changes.
             import re
-            text=(source/'config.xml').read_text()
+            text=config_bytes.decode()
             text=re.sub(r'(<widget\b[^>]*\bversion=")[^"]+',lambda m:m[1]+version,text,count=1)
             (stage/'config.xml').write_text(text)
             self.command([self.cli,'package','-t','wgt','-s',self.profile['signing_profile'],'-o',stage,'--',stage])

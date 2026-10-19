@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "date": "2026-10-15",
+  "version": "0.7.32",
+  "source_commit": "f8f03f4",
+  "scope": "Installed same-boot forward rollback after coordinator interruption and provider loss, followed by explicit original-transaction cleanup",
+  "local": {
+    "node_passed": 377,
+    "node_skipped": 135,
+    "fresh_rehearsal_process_cases": 6,
+    "fresh_restart_process_cases": 11,
+    "production_code_changed": false
+  },
+  "devices": {
+    "qn90a": {
+      "committed_entries": 22,
+      "enrollment_preserved": true,
+      "history_entries": 25,
+      "managed_ready": true,
+      "managed_recovery_unchanged": true,
+      "original_requests_not_replayed": true,
+      "original_requests_not_rewritten_as_success": true,
+      "owned_units_inactive": 25,
+      "package_version": "0.7.32",
+      "pending_setup": false,
+      "phases": [
+        "provider-ready",
+        "state-ready",
+        "provider-loss"
+      ],
+      "retained_jobs_preserved": true,
+      "rolled_back_entries": 3,
+      "same_boot": true,
+      "sdk_loopback": true,
+      "settled": true,
+      "trial_witness_scopes_removed": true
+    },
+    "s90d": {
+      "committed_entries": 22,
+      "enrollment_preserved": true,
+      "history_entries": 25,
+      "managed_ready": true,
+      "managed_recovery_unchanged": true,
+      "original_requests_not_replayed": true,
+      "original_requests_not_rewritten_as_success": true,
+      "owned_units_inactive": 25,
+      "package_version": "0.7.32",
+      "pending_setup": false,
+      "phases": [
+        "provider-ready",
+        "state-ready",
+        "provider-loss"
+      ],
+      "retained_jobs_preserved": true,
+      "rolled_back_entries": 3,
+      "same_boot": true,
+      "sdk_loopback": true,
+      "settled": true,
+      "trial_witness_scopes_removed": true
+    }
+  },
+  "limits": [
+    "Provider loss was followed by an explicitly scheduled coordinator restart; this does not qualify automatic recovery from provider loss while the same coordinator continues running.",
+    "Witness capture briefly stops only the boot/PID/start-time-bound endpoint coordinator, rereads the exact phase with no selection writer present, then terminates and relaunches it. A separate identity-bound resume timer and 300-second .NET SDK rescue protect the trial.",
+    "The provider-loss case terminates only the guardian bound in the ready provider receipt; post-restart process/unit absence and explicit cleanup are verified.",
+    "Original migration request rows remain submitted after process interruption. They are preserved as uncertain and never rewritten as success or replayed.",
+    "Later production submission/readiness interruption, power lifecycle, final production endurance and native-default rollout remain unqualified.",
+    "All device behavior uses the existing signed 0.7.32 implementation. No deployment or production fault interface was added. The .NET bridge, fallback and independent rescue remain available."
+  ]
+}

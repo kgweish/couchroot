@@ -1,0 +1,112 @@
+{
+  "schema": 1,
+  "date": "2026-10-16",
+  "scope": "Offline overlapping capture verifier and one two-window managed-selected trial per TV",
+  "package_version": "0.7.48",
+  "installed_package_changed": false,
+  "source_sha256": {
+    "research/autonomous-root/native-worker/verify-observer-series.py": "6f6cfbea41a854a9ffa73b0ba7ea9d01da706fc9dc561f9866a8687c400f86d2",
+    "tests/native_observer_series_test.py": "1cc36fdddfd888b1f1faba3629b2cc62aa29423448e5666e9afce1269cfd7176",
+    "research/autonomous-root/native-worker/observe.c": "597f8d9499c6695abaeeff6f1774f748abf3891b113d179b416ae528c1d50792",
+    "research/autonomous-root/native-worker/bench-kernel.h": "3d1065b9a42a6518e2749e0e103852e2f247aeb642fc54f3f0a91185909d012d"
+  },
+  "observer_sha256": "a298920bf9530e1b413df958e3b83614708a55f8e8f3b5f4fde60853965c3c5d",
+  "ordinary_worker_sha256": "613c21fa9231097d51540f06873775a3f4d6f9173f48ec896c84e99432dd1f8e",
+  "local_tests": {
+    "focused_passed": 17,
+    "npm_passed": 423,
+    "npm_skipped": 157
+  },
+  "devices": {
+    "qn90a": {
+      "continuity": {
+        "complete": true,
+        "covered_ms": 55000.0,
+        "duplicate_kernel_records_verified": 100,
+        "maximum_sample_gap_ms": 1000.98,
+        "resource_samples": 80,
+        "schema": 1,
+        "unique_kernel_records": 285,
+        "windows": 2
+      },
+      "windows": [
+        {
+          "seconds": 40,
+          "resource_samples": 40,
+          "resource_bytes": 65376,
+          "kernel_records": 193,
+          "kernel_bytes": 15788,
+          "skipped_intervals": 0
+        },
+        {
+          "seconds": 40,
+          "resource_samples": 40,
+          "resource_bytes": 65350,
+          "kernel_records": 192,
+          "kernel_bytes": 15635,
+          "skipped_intervals": 0
+        }
+      ],
+      "preservation": {
+        "enrollment_protected_files_preserved": true,
+        "owned_scopes_removed": true,
+        "owned_units_inactive": true,
+        "rescue_never_fired": true,
+        "retained_jobs_preserved": true,
+        "same_boot": true,
+        "same_coordinator": true,
+        "same_worker": true,
+        "sdk_loopback": true
+      }
+    },
+    "s90d": {
+      "continuity": {
+        "complete": true,
+        "covered_ms": 55000.0,
+        "duplicate_kernel_records_verified": 101,
+        "maximum_sample_gap_ms": 1001.778,
+        "resource_samples": 80,
+        "schema": 1,
+        "unique_kernel_records": 317,
+        "windows": 2
+      },
+      "windows": [
+        {
+          "seconds": 40,
+          "resource_samples": 40,
+          "resource_bytes": 65575,
+          "kernel_records": 214,
+          "kernel_bytes": 19378,
+          "skipped_intervals": 0
+        },
+        {
+          "seconds": 40,
+          "resource_samples": 40,
+          "resource_bytes": 65567,
+          "kernel_records": 204,
+          "kernel_bytes": 18417,
+          "skipped_intervals": 0
+        }
+      ],
+      "preservation": {
+        "enrollment_protected_files_preserved": true,
+        "owned_scopes_removed": true,
+        "owned_units_inactive": true,
+        "rescue_never_fired": true,
+        "retained_jobs_preserved": true,
+        "same_boot": true,
+        "same_coordinator": true,
+        "same_worker": true,
+        "sdk_loopback": true
+      }
+    }
+  },
+  "limits": [
+    "Predeclared coverage was 55 seconds per TV, with two 40-second collectors started approximately 20 seconds apart. Overlaps are deduplicated, not summed.",
+    "Both trials kept the managed implementation selected. This does not qualify sustained native operation or 24-hour endurance.",
+    "Artifact hashes and caller bindings do not independently authenticate source or process provenance. The host retains firmware guards, signed-install provenance, executable pins, durable launch/exit receipts and private capture hashes.",
+    "Resource observations are periodic and mapping detail is sparse; these are not exact process-tree peaks or complete short-lived-process coverage.",
+    "The current utility only verifies offline captures. Rolling collection, bounded cleanup, recovery renewal and sustained native identity assertions remain to be implemented and qualified.",
+    "No reboot, standby, package update, global policy, persistent capability or SMACK change occurred. Managed bridge/worker fallback and independent 300-second .NET SDK rescue remain available."
+  ]
+}

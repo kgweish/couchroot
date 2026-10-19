@@ -54,6 +54,16 @@ class InspectorTests(unittest.TestCase):
         new=dict(old,inspector=inventory(120));carry(new,old)
         self.assertEqual(new['inspector']['uptime'],120)
 
+    def test_qn90a_drops_legacy_inventory_and_never_carries_it_forward(self):
+        for value in (inventory(), {'malformed':'retired inventory'}):
+            clean=validate_sample(dict(sample(),device='qn90a',inspector=value))
+            self.assertNotIn('inspector',clean)
+            self.assertEqual(clean['stat'],sample()['stat'])
+        old={'device':'qn90a','boot':'a','session':'b','inspector':inventory()}
+        for current in (dict(old),{k:v for k,v in old.items() if k!='inspector'}):
+            carry(current,old)
+            self.assertNotIn('inspector',current)
+
     def test_managed_context_scope_preserves_unknown_memory(self):
         value=inventory();value['processes']['scope']='managed-apps'
         value['processes']['rows'][0].update(rss_bytes=None,state='?')
@@ -76,7 +86,8 @@ class InspectorTests(unittest.TestCase):
             with patch.object(server,'DATA',root),patch.object(server,'query',return_value={'labels':[],'data':[]}):
                 for d in registry:
                     result=server.snapshot(900,d)
-                    self.assertEqual(result['inspector']['apps']['rows'][0]['label'],d)
+                    if d=='qn90a':self.assertIsNone(result['inspector'])
+                    else:self.assertEqual(result['inspector']['apps']['rows'][0]['label'],d)
                     self.assertTrue(all('inspector' not in entry['latest'] for entry in result['devices']))
         server.POOL.shutdown()
 

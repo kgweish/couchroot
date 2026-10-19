@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "date": "2026-10-16",
+  "scope": "Stopped S90D endurance trial and owner-authorized recovery; private raw evidence retained outside Git",
+  "installed_version_during_trial": "0.7.48",
+  "observer_sha256": "a298920bf9530e1b413df958e3b83614708a55f8e8f3b5f4fde60853965c3c5d",
+  "trial": {
+    "elapsed_minutes": 96.444,
+    "verified_windows_before_failure": 34,
+    "failed_collector_index": 34,
+    "following_collector_index": 35,
+    "endurance_accepted": false
+  },
+  "failed_capture": {
+    "samples": 219,
+    "skipped_intervals": 1,
+    "first_sample_delay_ms": 1104.967042,
+    "interval_complete": false,
+    "kernel_complete": true,
+    "kernel_records": 4429,
+    "kernel_sequence_gaps": 0,
+    "kernel_overruns": 0,
+    "unit_exit_code": 1,
+    "five_files_downloaded_and_hash_verified": true
+  },
+  "reconciliation": {
+    "endurance_accepted": false,
+    "failed_collector_accepted": false,
+    "managed_ready": true,
+    "native_processes_exited": true,
+    "new_rescue_retired_without_firing": true,
+    "previous_rescues_retired_without_firing": true,
+    "quiet_cancelled_and_preserved_then_forgotten": true,
+    "remaining_collectors_preserved_and_cleaned": true,
+    "retained_jobs_enrollment_protected_hashes_preserved": true,
+    "same_boot": true,
+    "same_coordinator": true,
+    "sdk_loopback": true
+  },
+  "qualification_limits": [
+    "The failed capture is preserved and remains rejected; the interval was not shortened or joined to a later trial.",
+    "The symptom matches the previously observed QN90A startup gap. This observer revision predates the readiness-persistence fix; no per-syscall timing attributes the delay to one fsync.",
+    "A following complete collector does not repair the original endurance interval.",
+    "The independent QN90A trial continues with the corrected observer; no 24-hour acceptance is claimed.",
+    "S90D recovery stayed on the original trial boot; cross-boot startup is not qualified by this recovery."
+  ]
+}

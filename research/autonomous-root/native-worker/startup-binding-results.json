@@ -1,0 +1,111 @@
+{
+  "schema": 1,
+  "date": "2026-10-15",
+  "package_version": "0.7.45",
+  "source_parent_commit": "fa80422560363d7e7f0ddf47df5490868bf6b834",
+  "scope": "Selected-native recovery of launch-bound pre-readiness guardian checkpoints",
+  "local_validation": {
+    "repository_tests_passed": 414,
+    "repository_optional_tests_skipped": 157,
+    "native_regression_tests_passed": 49,
+    "native_regression_optional_tests_skipped": 1,
+    "startup_binding_groups_passed": 5,
+    "launch_fence_cases_passed": 3,
+    "bootstrap_recovery_cases_passed": 6,
+    "retained_state_cases_passed": 49,
+    "ordinary_restart_cases_passed": 21,
+    "interrupted_startup_fault_cases_passed": 3,
+    "rehearsal_cases_passed": 6,
+    "fresh_native_and_managed_fixtures": true
+  },
+  "devices": {
+    "qn90a": {
+      "installed_files_verified": 85,
+      "managed_dlls_unchanged": true,
+      "changed_payload_members": [
+        "payload/manifest.json",
+        "payload/native-manifest.json",
+        "payload/native-worker"
+      ],
+      "ordinary_signed_worker": true,
+      "modeled_checkpoint_states": [
+        "partial-successor",
+        "unpublished-initial"
+      ],
+      "partial_successor_after_real_guardian_sigkill": true,
+      "initial_checkpoint_after_graceful_exit": true,
+      "independent_sdk_fixture_readback": true,
+      "same_coordinator_recovered_native": true,
+      "original_attempt_sealed_and_archived": true,
+      "replacement_attempt_distinct": true,
+      "committed_receipts_and_retained_record_bytes_preserved": true,
+      "normal_managed_return": true,
+      "fixture_jobs_forgotten_through_public_api": true,
+      "original_retained_jobs_preserved": true,
+      "enrollment_and_protected_hashes_preserved": true,
+      "original_boot_unchanged": true,
+      "final_selection": "managed",
+      "final_ready": true,
+      "final_inventory": "settled",
+      "history_count": 32,
+      "history_outcomes": {
+        "committed": 26,
+        "rolled-back": 6
+      },
+      "sdk_loopback": true,
+      "owned_trial_units_inactive": 21,
+      "deployment_units_inactive": true,
+      "old_and_replacement_native_processes_absent": true,
+      "old_and_replacement_runtime_and_freezer_scopes_absent": true,
+      "independent_dotnet_rescues_never_fired_and_disarmed": true,
+      "pending_setup": false
+    },
+    "s90d": {
+      "installed_files_verified": 85,
+      "managed_dlls_unchanged": true,
+      "changed_payload_members": [
+        "payload/manifest.json",
+        "payload/native-manifest.json",
+        "payload/native-worker"
+      ],
+      "ordinary_signed_worker": true,
+      "modeled_checkpoint_states": [
+        "partial-successor",
+        "unpublished-initial"
+      ],
+      "partial_successor_after_real_guardian_sigkill": true,
+      "initial_checkpoint_after_graceful_exit": true,
+      "independent_sdk_fixture_readback": true,
+      "same_coordinator_recovered_native": true,
+      "original_attempt_sealed_and_archived": true,
+      "replacement_attempt_distinct": true,
+      "committed_receipts_and_retained_record_bytes_preserved": true,
+      "normal_managed_return": true,
+      "fixture_jobs_forgotten_through_public_api": true,
+      "original_retained_jobs_preserved": true,
+      "enrollment_and_protected_hashes_preserved": true,
+      "original_boot_unchanged": true,
+      "final_selection": "managed",
+      "final_ready": true,
+      "final_inventory": "settled",
+      "history_count": 32,
+      "history_outcomes": {
+        "committed": 25,
+        "rolled-back": 7
+      },
+      "sdk_loopback": true,
+      "owned_trial_units_inactive": 21,
+      "deployment_units_inactive": true,
+      "old_and_replacement_native_processes_absent": true,
+      "old_and_replacement_runtime_and_freezer_scopes_absent": true,
+      "independent_dotnet_rescues_never_fired_and_disarmed": true,
+      "pending_setup": false
+    }
+  },
+  "limits": [
+    "Hardware fixtures model lost-readiness publication by restoring the last accepted runtime receipt and marking the actual bound launch attempt submitted while acquisition is disabled. They do not prove a natural crash at the exact checkpoint-write or runtime-publication instruction.",
+    "Real pre-readiness fault exits and coordinator restart are qualified with disposable local fixtures; no fault build or failure-injection API was deployed.",
+    "Power loss, reboot and standby were not exercised. Small sealed launch fences remain intentionally to exclude delayed original commands.",
+    "Fully native capability entry, broader lifecycle coverage, performance/endurance and native-default rollout remain open. The managed entry bridge, worker fallback and independent .NET rescue are retained."
+  ]
+}

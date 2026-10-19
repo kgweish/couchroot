@@ -1,5 +1,11 @@
 # Samsung S90D minimal hub integration
 
+> **2026-10-12 recovery correction:** direct `tools/s90d/restore.py` commands
+> below are historical Home-settings procedures with placeholder addressing, not
+> current composite-helper/cache recovery. Use the original shared setup journal
+> for setup rollback and [boot checkpoints](../../guides/s90d-boot-recovery.md) for a future
+> S90D boot trial. No current live state or physical boot timing was verified.
+
 2026-09-19, QN55S90DAFXZA at `192.0.2.12`, firmware 2130.0, Tizen 9,
 build `T-PTMDAKUC-0090-REL-202605141701`.
 

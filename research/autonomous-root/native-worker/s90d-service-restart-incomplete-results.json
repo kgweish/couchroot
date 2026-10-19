@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "date": "2026-10-16",
+  "scope": "Incomplete S90D same-boot service-restart qualification; preserve uncertain request without replay",
+  "installed_version": "0.7.49",
+  "restart_submission_confirmed": true,
+  "retained_job_inventory_equal_at_post_readiness_check": true,
+  "final_preservation_request": {
+    "local_state": "submitted",
+    "result_confirmed": false,
+    "transport_error": "RemoteDisconnected",
+    "contained_rescue_timer_stop": true,
+    "replayed": false
+  },
+  "subsequent_observations": {
+    "tv_api_port_reachable": true,
+    "couchroot_connection_refused": true,
+    "sdk_connect_unavailable_after_rescue_deadline": true,
+    "reboot_submitted": false,
+    "service_restart_accepted": false,
+    "rescue_fired_or_retired_confirmed": false
+  },
+  "recovery_status": "Subsequently recovered on the same boot after the owner reapplied Developer Mode Host PC IP; see s90d-service-recovery-results.json. The original final request remains submitted and unreplayed.",
+  "qualification_limits": [
+    "The previous 0.7.49 native migration/disable-enable/managed-return acceptance is separate and remains recorded.",
+    "The last script stopped before its acceptance receipt. Passing an earlier readiness check is not final service-restart qualification.",
+    "The final request may have stopped its rescue before the response was lost; this is a hypothesis, not a confirmed result.",
+    "Do not replay the restart or unknown request. Inspect the original journal, launcher output and unit state once independent access is restored.",
+    "QN90A endurance remains a separate live invocation; it has not been restarted or redeployed."
+  ]
+}

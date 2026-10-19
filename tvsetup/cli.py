@@ -8,7 +8,7 @@ from pathlib import Path
 import sys
 import time
 from .common import STATE, Refused, DeadlineExpired, atomic_json, lock, read_json, safe_id
-from .config import COMPONENTS, profile, resolve, selected
+from .config import COMPONENTS, LAUNCHER_COMPONENTS, profile, resolve, selected
 from .engine import Engine, pending, run_id
 from .nas import NAS
 from .operations import Driver
@@ -161,10 +161,19 @@ def ui_scope(choices, actions=()):
             raise Refused('UI deployment cannot modify other components; use tv-setup for this run')
 
 
-def main(argv=None, *, ui_only=False):
+def launcher_scope(choices, actions=()):
+    if set(selected(choices)) != set(LAUNCHER_COMPONENTS) or choices.get('artifacts') or choices.get('remove'):
+        raise Refused('Launcher installation requires Hub/Home/AirPlay/startup from current source')
+    for action in actions:
+        if action.component not in LAUNCHER_COMPONENTS or action.kind in ('nas', 'uninstall', 'pairing', 'preferences'):
+            raise Refused('Launcher installation cannot modify unrelated components; use tv-setup for this run')
+
+
+def main(argv=None, *, ui_only=False, launcher_only=False):
     os.umask(0o077)
     args=parser().parse_args(argv)
     try:
+        if ui_only and launcher_only:raise Refused('Conflicting setup scopes')
         site=load_site(args.site)
         p=configured_profile(args.device,site)
         target_binding=binding(site,args.device)
@@ -186,6 +195,9 @@ def main(argv=None, *, ui_only=False):
                 if ui_only:
                     if doc.get('scope')!='ui':raise Refused('Not a UI deployment run; recover it with tv-setup')
                     ui_scope(doc['choices'],[Action(**row['action']) for row in doc['actions']])
+                if launcher_only:
+                    if doc.get('scope')!='launcher-web':raise Refused('Not a web launcher installation run; recover it with its original entry point')
+                    launcher_scope(doc['choices'],[Action(**row['action']) for row in doc['actions']])
                 if doc.get('target_binding')!=target_binding:raise Refused('Run destination/trust differs or predates site binding; recover using its original checkout and configuration')
                 choices=resolve(args.device,doc['choices'])
                 local_only=(args.command=='apply' and doc.get('phase') in ('configuration-applied','finalizing')) or (args.command=='rollback' and all(row['phase'] in ('planned','prepared','backing-up','backed-up','rolled-back') for row in doc.get('actions',[])))
@@ -206,7 +218,9 @@ def main(argv=None, *, ui_only=False):
             unfinished=pending(STATE,args.device)
             if args.command=='apply' and unfinished:
                 raise Refused('Unfinished run '+unfinished[0][0]+': use apply --resume or rollback --run before a new apply')
-            if ui_only:
+            if launcher_only:
+                choices=resolve(args.device,overrides={'components':list(LAUNCHER_COMPONENTS),'exclude':[],'keep':[],'remove':[],'artifacts':{}})
+            elif ui_only:
                 choices=resolve(args.device,overrides={'components':['hub'],'exclude':[],'keep':[],'remove':[],'artifacts':{}})
             else:
                 choices=resolve(args.device,read_json(STATE/(args.device+'-choices.json')),
@@ -230,6 +244,7 @@ def main(argv=None, *, ui_only=False):
                     proposal.unsupported('dashboard',str(e) if isinstance(e,Refused) else 'NAS inspection failed; inspect private evidence and connection settings')
             order_actions(proposal)
             if ui_only:ui_scope(choices,proposal.actions)
+            if launcher_only:launcher_scope(choices,proposal.actions)
             unfinished=pending(STATE,args.device)
             for run,doc in unfinished:
                 proposal.issues.append('Unfinished run '+run+': use apply --resume '+run+' or rollback --run '+run)
@@ -252,7 +267,7 @@ def main(argv=None, *, ui_only=False):
                 summary(proposal,args.json);return 2 if proposal.issues else 0
             if proposal.issues:
                 summary(proposal,args.json);raise Refused('Preflight blocked; no setup mutations were submitted')
-            driver=Driver(tv,p,choices,folder,nas);engine=Engine(driver,folder,args.device,choices,nas,target_binding=target_binding,state_dir=STATE,scope='ui' if ui_only else 'setup')
+            driver=Driver(tv,p,choices,folder,nas);engine=Engine(driver,folder,args.device,choices,nas,target_binding=target_binding,state_dir=STATE,scope='ui' if ui_only else 'launcher-web' if launcher_only else 'setup')
             engine.prepare(proposal,state)
             proposal.actions=[Action(**row['action']) for row in engine.doc['actions']]
             extra={'run':identifier}
@@ -273,7 +288,7 @@ def main(argv=None, *, ui_only=False):
                     engine.doc['activation']='uncertain; inspect the TV before requesting another launch'
                     if not ui_only:engine.doc['phase']='activation-uncertain'
                     engine.save();raise
-            saved='Setup choices preserved.' if ui_only else 'Choices saved.'
+            saved='Setup choices preserved.' if ui_only or launcher_only else 'Choices saved.'
             refresh='Explicit activation submitted.' if args.activate else (
                 'Hub refreshes on its next normal start; use deploy-ui apply --launch to open it now.' if ui_only else
                 'Running apps refresh on their next normal start; use --activate when applying to refresh now.')

@@ -21,10 +21,11 @@
       var raw = storage.getItem(KEY);
       if (raw === null) { return { apps: clean(defaults), warning: '' }; }
       var saved = JSON.parse(raw);
-      if (!saved || saved.version !== 1 || !Array.isArray(saved.apps) || saved.apps.length > 256 || saved.apps.some(function (a) { return !valid(a); })) {
+      if (!saved || saved.version !== 1 || !Array.isArray(saved.apps) || saved.apps.length > 256) {
         throw new Error('Invalid saved shortcuts');
       }
-      return { apps: clean(saved.apps), warning: '' };
+      var apps = clean(saved.apps);
+      return { apps: apps, warning: apps.length < saved.apps.length ? 'Some saved apps were invalid or duplicated and were skipped.' : '' };
     } catch (error) { return { apps: clean(defaults), warning: 'Saved apps could not be read. Showing Plex and YouTube. Your next edit will replace the saved list.' }; }
   }
   function save(storage, apps) {

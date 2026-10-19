@@ -1,0 +1,179 @@
+{
+  "schema": 1,
+  "date": "2026-10-15",
+  "kind": "native-sdk-entry-receipt-investigation",
+  "hardware": [
+    {
+      "model": "QN90A",
+      "package_version": "0.7.33",
+      "build": {
+        "artifacts": {
+          "libentry-receipt.so": {
+            "abi": "armv7-eabi5-softfp",
+            "glibc_max": "2.4.0",
+            "needed": [
+              "ld-linux.so.3",
+              "libc.so.6"
+            ],
+            "sha256": "92961a03dc7a68439616073662c1b4903318fab89eaeb9ea3080a2280f7f1c89",
+            "size": 12152
+          }
+        },
+        "code_path": "/opt/usr/apps/MiniRoot01/res/wgt/payload/libentry-receipt.so",
+        "kind": "native-entry-receipt",
+        "loader": "/usr/bin/launchpad-loader",
+        "model": "qn90a",
+        "reproducible_builds": 2,
+        "schema": 1,
+        "source": {
+          "build.sh": "f50b341493e7c9c0a3febfc4c75832e1542edd2e51b7e6815f53144dc69e3dcd",
+          "probe.c": "312da90b193e958e1a5423f3aae7cd4d0f32d5bda672c67213388b854a4d290e",
+          "receipt.h": "3b22f699586c1b2b9098ddab7e323a72ed4a1e25f216710c828bca483600bd43"
+        },
+        "toolchain": {
+          "compiler": "10.2.1",
+          "image": "sha256:8d04ca4a4d08ce5a17ffb904b6c5a7742f51e885506f2e3215b8e2db7659a3c4"
+        }
+      },
+      "sdk_trial": {
+        "worker_disabled": true,
+        "sdk_uid_gid_all_slots": 901,
+        "receipt_observed": false,
+        "exit_code": 255,
+        "fresh_nonce": true,
+        "exact_socket_absent": true,
+        "code_and_loader_hashes_verified": true,
+        "independent_process_bound_watchdog": true,
+        "independent_dotnet_rescue_seconds": 300,
+        "result": "unqualified; no constructor receipt"
+      },
+      "codec_oracle": {
+        "exact_target_library": true,
+        "managed_diagnostic": true,
+        "decoded_loader_type": "common-loader",
+        "decoded_preload_count": 1,
+        "decoded_preload_matches_fixed_path": true,
+        "roundtrip_identical": true
+      },
+      "final_verification": {
+        "enrollment_preserved": true,
+        "history_entries": 25,
+        "history_unchanged": true,
+        "managed_ready": true,
+        "managed_recovery_unchanged": true,
+        "native_entry_qualified": false,
+        "owned_units_inactive": 14,
+        "package_version": "0.7.33",
+        "pending_setup": false,
+        "probe_and_oracle_scopes_removed": true,
+        "retained_jobs_preserved": true,
+        "same_boot": true,
+        "sdk_loopback": true,
+        "settled": true
+      }
+    },
+    {
+      "model": "S90D",
+      "package_version": "0.7.33",
+      "build": {
+        "artifacts": {
+          "libentry-receipt.so": {
+            "abi": "armv7-eabi5-softfp",
+            "glibc_max": "2.4.0",
+            "needed": [
+              "ld-linux.so.3",
+              "libc.so.6"
+            ],
+            "sha256": "7cf278b040579e0a4422e7af0370256f3a59a981e7445f7027715366f021e41a",
+            "size": 12152
+          }
+        },
+        "code_path": "/opt/usr/apps/MiniRoot01/res/wgt/payload/libentry-receipt.so",
+        "kind": "native-entry-receipt",
+        "loader": "/usr/bin/app-defined-loader",
+        "model": "s90d",
+        "reproducible_builds": 2,
+        "schema": 1,
+        "source": {
+          "build.sh": "f50b341493e7c9c0a3febfc4c75832e1542edd2e51b7e6815f53144dc69e3dcd",
+          "probe.c": "312da90b193e958e1a5423f3aae7cd4d0f32d5bda672c67213388b854a4d290e",
+          "receipt.h": "3b22f699586c1b2b9098ddab7e323a72ed4a1e25f216710c828bca483600bd43"
+        },
+        "toolchain": {
+          "compiler": "10.2.1",
+          "image": "sha256:8d04ca4a4d08ce5a17ffb904b6c5a7742f51e885506f2e3215b8e2db7659a3c4"
+        }
+      },
+      "sdk_trial": {
+        "worker_disabled": true,
+        "sdk_uid_gid_all_slots": 901,
+        "receipt_observed": false,
+        "exit_code": 137,
+        "fresh_nonce": true,
+        "exact_socket_absent": true,
+        "code_and_loader_hashes_verified": true,
+        "independent_process_bound_watchdog": true,
+        "independent_dotnet_rescue_seconds": 300,
+        "result": "unqualified; no constructor receipt"
+      },
+      "codec_oracle": {
+        "exact_target_library": true,
+        "managed_diagnostic": true,
+        "decoded_loader_type": "common-loader",
+        "decoded_preload_count": 1,
+        "decoded_preload_matches_fixed_path": true,
+        "roundtrip_identical": true
+      },
+      "final_verification": {
+        "enrollment_preserved": true,
+        "history_entries": 25,
+        "history_unchanged": true,
+        "managed_ready": true,
+        "managed_recovery_unchanged": true,
+        "native_entry_qualified": false,
+        "owned_units_inactive": 14,
+        "package_version": "0.7.33",
+        "pending_setup": false,
+        "probe_and_oracle_scopes_removed": true,
+        "retained_jobs_preserved": true,
+        "same_boot": true,
+        "sdk_loopback": true,
+        "settled": true
+      }
+    }
+  ],
+  "local_tests": {
+    "python_macos": {
+      "total": 399,
+      "passed": 263,
+      "skipped": 136
+    },
+    "focused_linux": {
+      "passed": 10
+    },
+    "node": {
+      "passed": 377,
+      "skipped": 135
+    },
+    "fresh_native_rehearsal": {
+      "passed": 6
+    },
+    "fresh_native_restart": {
+      "passed": 11
+    }
+  },
+  "observations": [
+    "Neither direct SDK vendor-loader trial produced the nonce-bound constructor receipt. No native-only capability entry or acquisition is qualified.",
+    "QN90A emitted EFL diagnostics and exited 255. Exact loader analysis places EFL initialization after the preload loop. The matching vendor bundle decoder confirmed the fixed preload array; loading the probe did not reach its terminating constructor.",
+    "S90D emitted a runtime-directory diagnostic and terminated with signal 9 during the bounded trial. The fixed process watchdog covered the expected loader; later inspection proved process absence. No receipt or precise loader failure cause was observed.",
+    "Both target libbundle implementations decoded the fixed host bundle and re-encoded identical bytes through a private managed diagnostic. Temporary diagnostics were removed.",
+    "Both own WGT probe files are package-labeled regular files on writable VDFS. Existing signed-TPK research already distinguishes package signing from native executable verification; no TPK workaround is claimed.",
+    "The first full macOS Python run hit an existing deadline-test process-group PermissionError. A focused deadline recheck and the full 399-test rerun passed."
+  ],
+  "limitations": [
+    "No private read-only code view, persistent file capability, loader registration, SMACK rule, HOME/XDG override, firmware change, reboot or standby was introduced by the entry experiment.",
+    "The managed capability-entry bridge, identity children, acquisition fallback, worker fallback and SDK recovery utility remain required or retained as before.",
+    "Binary-parser evidence and codec agreement do not establish a successful native entry. Code mapping and actual vendor-loader credentials must be proven before acquisition integration.",
+    "Private identities, vendor binaries, raw receipts, signed packages and detailed process/watchdog evidence remain outside Git."
+  ]
+}

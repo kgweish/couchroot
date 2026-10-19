@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "date": "2026-10-16",
+  "scope": "Owner-authorized S90D signed installation and bounded same-boot native qualification",
+  "source_commit": "4f39d1d42b1975f9b10de856f42b684052bb92da",
+  "package_version": "0.7.49",
+  "native_worker_sha256": "1dfa73afb9a983c9361943b87bf0dc30dc1e491e7000d7566b1bd846fcbab93a",
+  "installation": {
+    "signed_package_verified": true,
+    "installed_entries_verified": 86,
+    "retained_job_bytes_preserved": true,
+    "enrollment_and_protected_files_preserved": true,
+    "managed_ready": true,
+    "same_boot": true,
+    "owned_units_inactive": true,
+    "rescue_unfired": true,
+    "sdk_loopback": true
+  },
+  "native_round": {
+    "migration_committed": true,
+    "public_root_exec_uid": 0,
+    "retained_managed_job_exit_code": 7,
+    "native_job_exit_code": 9,
+    "native_stdout_verified": true,
+    "selected_native_disable_enable_reacquired": true,
+    "worker_identity_replaced": true,
+    "selection_history_unchanged_across_restart": true,
+    "production_activation_and_native_job_bytes_unchanged_across_restart": true,
+    "normal_managed_return_committed": true,
+    "native_created_job_survived_return": true,
+    "fixture_jobs_forgotten_after_preservation_checks": true,
+    "original_retained_job_inventory_preserved": true,
+    "owned_scopes_removed": true,
+    "enrollment_and_protected_hashes_preserved": true,
+    "managed_ready": true,
+    "rescue_inactive_and_unfired": true,
+    "same_boot": true,
+    "same_managed_worker": true,
+    "sdk_loopback": true,
+    "full_native_created_record_fields_preserved_after_return": true
+  },
+  "local_deployment_admission": {
+    "focused_cases_passed": 12,
+    "refuses_live_original_processes": true,
+    "requires_successful_full_run_or_explicit_failed_run_reconciliation": true,
+    "pins_signed_candidate_baseline_and_inventory_artifacts": true,
+    "retained_inventory_shell_fixtures_passed": 4
+  },
+  "qualification_limits": [
+    "QN90A remains on 0.7.48 with its corrected-observer endurance run active; its prepared 0.7.49 candidate is not installed.",
+    "This round qualifies same-boot migration, public native operations, selected-native disable/enable recovery and normal managed return only.",
+    "No service-process restart, software reboot, standby, deep suspend or interrupted-power test was performed in this round.",
+    "Cross-boot startup, interrupted bootstrap and pending managed-return recovery are still locally tested only; installing their code is not hardware qualification.",
+    "S90D endurance remains unaccepted after its separately recorded observer startup gap.",
+    "The .NET entry bridge, managed fallback and independent 300-second rescue remain unchanged."
+  ]
+}

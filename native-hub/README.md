@@ -1,10 +1,18 @@
 # Native Hub startup experiment
 
 > **Status:** experimental, QN90A firmware T-NKM2AKUC-2301.1 only. This folder contains
-> the launcher source, tests, card styles and records. Installing it on a TV currently uses a
-> private journaled boot-hook driver that has not yet been generalized into `./tv-setup`.
+> the launcher source, tests, card styles and records. The
+> [unified installer](../docs/guides/native-installation.md) now implements enrolled
+> native boot-hook installation and journaled recovery with offline validation.
+> It has not been deployed or hardware-tested; existing private trials still use
+> their original retained drivers for recovery.
 > Use the [web Hub](../web/) for a supported installation, and see
 > [choosing a launcher](../docs/guides/choosing-a-launcher.md).
+
+The [S90D offline assessment](../docs/devices/s90d/native-boot-assessment.md)
+defers a graphical port: web startup already precedes the splash/resume gate,
+and panel-visible/input-ready times remain unknown. S90D native headless-service
+evidence is separate from graphical Hub compatibility.
 
 QN90A-only research prototype, not a supported replacement deployment default. It renders
 a native app grid with the TV's EFL 1.25 libraries, without a web or .NET host.

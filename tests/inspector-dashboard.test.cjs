@@ -14,7 +14,7 @@ function snapshot(device='s90d'){
   processes:section([{pid:42,name:'small',state:'S',rss_bytes:1048576,cpu_percent:null},{pid:43,name:'large',state:'R',rss_bytes:2097152,cpu_percent:25}])}};
 }
 test('inspector handles search, paging, startup unknowns, process sort, device switch, stale and absent data safely',async()=>{
- const server=http.createServer((req,res)=>{const name=req.url==='/'?'index.html':req.url.slice(1);if(!['index.html','dashboard.css','dashboard.js','inspector.js'].includes(name)){res.writeHead(404);res.end();return;}res.setHeader('Content-Type',name.endsWith('.js')?'text/javascript':name.endsWith('.css')?'text/css':'text/html');res.end(fs.readFileSync(path.join(root,name)));});
+ const server=http.createServer((req,res)=>{const pathname=new URL(req.url,'http://localhost').pathname,name=pathname==='/'?'index.html':pathname.slice(1);if(!['index.html','dashboard.css','dashboard.js','inspector.js'].includes(name)){res.writeHead(404);res.end();return;}res.setHeader('Content-Type',name.endsWith('.js')?'text/javascript':name.endsWith('.css')?'text/css':'text/html');res.end(fs.readFileSync(path.join(root,name)));});
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
  const browser=await chromium.launch({headless:true});
  try {
@@ -40,10 +40,29 @@ test('inspector handles search, paging, startup unknowns, process sort, device s
   mode='managed';await page.locator('[data-range="900"]').click();await page.waitForFunction(()=>document.querySelector('#inspector-description').textContent.includes('restricts /proc'));
   assert.match(await page.locator('#inspector-body tr').last().textContent(),/Unknown——/);mode='normal';
   await page.locator('#pause').click();assert.match(await page.locator('#inspector-age').textContent(),/View paused/);
-  await page.locator('#device').selectOption('qn90a');await page.waitForFunction(()=>document.querySelector('#inspector-caption').textContent.startsWith('QN90A'));
-  await page.locator('[data-inspector="apps"]').click();assert.match(await page.locator('#inspector-body').textContent(),/qn90a.app/);assert.doesNotMatch(await page.locator('#inspector-body').textContent(),/s90d.app/);
+  await page.locator('#device').selectOption('qn90a');await page.waitForFunction(()=>document.querySelector('#inspector-age').textContent==='Retired on QN90A');
+  assert.equal(await page.locator('#inspector-body tr').count(),0);
+  assert.equal(await page.locator('.inspector-tools').isVisible(),false);
+  assert.equal(await page.locator('.inspector-table').isVisible(),false);
+  assert.match(await page.locator('#inspector-note').textContent(),/Basic telemetry only/);
+  await page.setViewportSize({width:1920,height:1080});
   if(process.env.INSPECTOR_SCREENSHOT)await page.screenshot({path:process.env.INSPECTOR_SCREENSHOT,fullPage:true});
-  await page.setViewportSize({width:390,height:844});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+  await page.setViewportSize({width:390,height:844});
+  if(process.env.INSPECTOR_SCREENSHOT)await page.screenshot({path:process.env.INSPECTOR_SCREENSHOT.replace('.png','-small.png'),fullPage:true});
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+  mode='outage';await page.locator('[data-range="900"]').click();
+  await page.waitForFunction(()=>document.querySelector('#notice').textContent.includes('Cannot reach'));
+  assert.equal(await page.locator('#inspector-age').textContent(),'Retired on QN90A');
+  await page.goto('http://127.0.0.1:'+server.address().port+'/?device=qn90a');
+  await page.waitForFunction(()=>document.querySelector('#notice').textContent.includes('Cannot reach'));
+  assert.equal(await page.locator('.inspector-tools').isVisible(),false);
+  assert.equal(await page.locator('#inspector-age').textContent(),'Retired on QN90A');
+  mode='normal';await page.locator('[data-range="900"]').click();
+  await page.waitForFunction(()=>document.querySelector('#device option[value="s90d"]'));
+  await page.locator('#device').selectOption('s90d');
+  await page.waitForFunction(()=>document.querySelector('#inspector-body').children.length===30);
+  assert.equal(await page.locator('.inspector-tools').isVisible(),true);
+  assert.doesNotMatch(await page.locator('#inspector-body').textContent(),/qn90a.app/);
   for(const next of ['stale','partial','absent','outage']){
    mode=next;await page.locator('[data-range="900"]').click();
    await page.waitForFunction(mode=>mode==='stale'?document.querySelector('#inspector-age').textContent.includes('Stale'):mode==='partial'?document.querySelector('#inspector-status').textContent.includes('Partial'):mode==='absent'?document.querySelector('#inspector-status').textContent.includes('No inventory'):document.querySelector('#inspector-age').textContent.includes('Disconnected'),next);

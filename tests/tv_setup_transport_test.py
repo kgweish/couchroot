@@ -7,10 +7,11 @@ from pathlib import Path
 import tempfile
 from types import SimpleNamespace
 import unittest
-from unittest.mock import patch
-from tvsetup.common import Refused
+from unittest.mock import Mock, patch
+from tvsetup.common import Refused, sha
 from tvsetup.config import profile
 from tvsetup.root import execute
+from tvsetup.transport import identity_guard, managed_guard
 
 
 class RootTransportTests(unittest.TestCase):
@@ -39,7 +40,10 @@ class RootTransportTests(unittest.TestCase):
                     with self.assertRaisesRegex(Refused,'lost callback'):execute(p,'true\n')
                 self.assertEqual([label for label,_ in calls],['setup-root-stage','setup-root-operation','setup-root-cleanup'])
                 self.assertNotIn('test-private.pem',[name for name,_ in uploads])
-                for _,script in calls:
+                for label,script in calls:
+                    if label != 'setup-root-cleanup':
+                        self.assertIn(p['host_sha256'], script)
+                        self.assertIn('/usr/share/dotnet/shared/Microsoft.NETCore.App/', script)
                     if device=='qn90a':self.assertNotIn('codex-namespace-proof',script)
                     else:self.assertNotIn('codex-qn90a-root-proof',script)
                 self.assertIn('sha256sum /etc/passwd',calls[-1][1])
@@ -52,6 +56,43 @@ class RootTransportTests(unittest.TestCase):
 
 
 class IdentityTests(unittest.TestCase):
+    def test_identity_checks_do_not_require_managed_profile_fields(self):
+        for device in ('qn90a', 's90d'):
+            p = profile(device)
+            script = identity_guard({key: p[key] for key in ('firmware', 'architecture')})
+            self.assertIn(p['firmware'], script)
+            self.assertIn(p['architecture'], script)
+            self.assertNotIn('dotnet', script)
+            managed = managed_guard(p)
+            self.assertTrue(managed.startswith(script))
+            self.assertIn(p['runtime'], managed)
+            self.assertIn(p['host_sha256'], managed)
+            if p.get('launcher_sha256'):
+                self.assertIn(p['launcher_sha256'], managed)
+
+    def test_managed_package_install_and_recovery_keep_runtime_guards(self):
+        from tvsetup.operations import Driver
+        with tempfile.TemporaryDirectory() as tmp:
+            artifact = Path(tmp)/'fixture.tpk'
+            artifact.write_bytes(b'fixture signed package')
+            for device in ('qn90a', 's90d'):
+                for package in ('MiniHubBoot', 'MiniTelemetry'):
+                    driver = object.__new__(Driver)
+                    driver.profile = profile(device)
+                    driver.tv = Mock()
+                    driver.tv.sdk.side_effect = Refused('runtime changed')
+                    action = SimpleNamespace(kind='package', before=None, options={'package': package})
+                    info = {'artifact': str(artifact), 'sha256': sha(artifact.read_bytes())}
+                    with patch('tvsetup.operations.observed', return_value=None), \
+                         patch('tvsetup.operations.verify_package'), patch('tvsetup.operations.run') as install:
+                        with self.assertRaisesRegex(Refused, 'runtime changed'):
+                            driver.execute(action, info, {})
+                        with self.assertRaisesRegex(Refused, 'runtime changed'):
+                            driver.reinstall_recovery(action, {})
+                        install.assert_not_called()
+                    for call in driver.tv.sdk.call_args_list:
+                        self.assertIn(driver.profile['host_sha256'], call.args[0])
+
     def test_tracked_sdb_subclass_calls_raw_connector_without_recursing(self):
         import importlib.util
         import sys

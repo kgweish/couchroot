@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "date": "2026-10-15",
+  "version": "0.7.27",
+  "scope": "Same-boot selected-native lifecycle; no reboot or standby",
+  "local": {
+    "node_passed": 359,
+    "node_skipped": 125,
+    "restart_process_cases": 11,
+    "rehearsal_process_cases": 6
+  },
+  "devices": {
+    "qn90a": {
+      "installed_version": "0.7.27",
+      "native_disable_enable": true,
+      "native_transport_loss": true,
+      "native_service_restart": true,
+      "replacement_worker_identities": true,
+      "history_unchanged_on_reacquisition": true,
+      "retained_jobs_preserved": true,
+      "returned_to_managed": true,
+      "native_and_provider_scopes_removed": true,
+      "rescue_disarmed": true,
+      "sdk_loopback": true,
+      "same_boot": true,
+      "final_history_entries": 14
+    },
+    "s90d": {
+      "installed_version": "0.7.27",
+      "native_disable_enable": true,
+      "native_transport_loss": true,
+      "native_service_restart": true,
+      "replacement_worker_identities": true,
+      "history_unchanged_on_reacquisition": true,
+      "retained_jobs_preserved": true,
+      "returned_to_managed": true,
+      "native_and_provider_scopes_removed": true,
+      "rescue_disarmed": true,
+      "sdk_loopback": true,
+      "same_boot": true,
+      "final_history_entries": 14
+    }
+  },
+  "limitations": [
+    "Pending to-managed interruption recovery is locally qualified; hardware qualification remains for the next round.",
+    "Transport loss was induced by terminating the identity-bound native worker; no network failure was induced.",
+    "QN90A first test timer exited before signalling; inspection confirmed unchanged worker, and a fresh corrected timer ran the test.",
+    "Previous managed staging is intentionally retained after restart-return recovery."
+  ]
+}

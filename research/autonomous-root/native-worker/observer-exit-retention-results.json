@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "observed_at_utc": "2026-10-16T07:54:13.245056+00:00",
+  "scope": "Retained collector exit proof and fresh endurance start; no 24-hour acceptance",
+  "package_version": "0.7.48",
+  "installed_package_changed": false,
+  "source_sha256": {
+    "research/autonomous-root/native-worker/observer-series-controller.py": "0c48f713092a806455eccf7b0dceefe888d2727759227672b5afa27e9fec00dd",
+    "research/autonomous-root/native-worker/verify-observer-series.py": "fa89a649e584490cd5cf83b710e32fad3dd5a73f22ee161d71e542a447685501",
+    "tests/native_observer_controller_test.py": "23a03611bc619aae1629e8fcc2cb3e920c32d6a9725ef3b733739b66ebb80716",
+    "tests/native_observer_series_test.py": "7ca42655135ea72341ced50bb0d87c0b16b5c2bd02c02b381a2666d524ed8d12"
+  },
+  "local_tests": {
+    "controller_passed": 21,
+    "series_passed": 21,
+    "resources_passed": 13,
+    "linux_observer_skipped": 13,
+    "npm_passed": 423,
+    "npm_skipped": 157
+  },
+  "stopped_serialized_trial": {
+    "duration_minutes": 14.705,
+    "reason": "Collector still active at estimated collection deadline",
+    "later_pending_capture_files_complete": true,
+    "reconciliation": {
+      "endurance_accepted": false,
+      "managed_ready": true,
+      "native_processes_exited": true,
+      "new_rescue_retired_without_firing": true,
+      "old_rescue_execution_observed": false,
+      "quiet_cancelled_and_preserved_then_forgotten": true,
+      "remaining_collector_collected_and_cleaned": true,
+      "retained_jobs_enrollment_protected_hashes_preserved": true,
+      "same_boot": true,
+      "same_coordinator": true,
+      "sdk_loopback": true
+    }
+  },
+  "qn90a_retained_exit_probe": {
+    "active_zero_status_observed": true,
+    "capture_complete": true,
+    "exit_wait_seconds": 5.224930291995406,
+    "observations": 13,
+    "owned_scope_cleaned": true,
+    "rescue_retired_without_firing": true,
+    "retained_exit_success_observed": true,
+    "same_boot": true,
+    "same_managed_worker": true,
+    "coverage_seconds": 5.0,
+    "successful_exit_evidence": "retained-unit-receipts",
+    "resource_samples": 5,
+    "unique_kernel_records": 23,
+    "maximum_sample_gap_ms": 1000.617,
+    "load_state": "loaded",
+    "remain_after_exit": "yes",
+    "active_state": "active",
+    "substate": "exited",
+    "normal_exit": true,
+    "exit_status_zero": true,
+    "executed_pid_matches_ready": true,
+    "execution_start_timestamp_positive": true
+  },
+  "new_qn90a_trial": {
+    "state": "running-at-observation",
+    "native_ready": true,
+    "quiet_job_running": true,
+    "manifest_schema": 2,
+    "serialized_storage_checks": true,
+    "retained_collector_units": true,
+    "independent_rescue_seconds": 300,
+    "full_coverage_seconds": 86460,
+    "endurance_accepted": false,
+    "completed_windows_at_observation": 1,
+    "latest_completed_window_samples": 220,
+    "latest_completed_window_successful_exit_evidence": "retained-unit-receipts"
+  },
+  "s90d_probe": "Not performed: recovery access remains unavailable",
+  "limits": [
+    "A preceding five-second unretained probe became not-found with a default zero start timestamp/status. It was refused, its process/mount absence verified, and its owned files cleaned; no successful-exit acceptance was claimed.",
+    "Earlier schema-1 resource results remain descriptive file analysis, with only caller-asserted exit status. They do not provide the retained execution proof required for new endurance acceptance.",
+    "Retained unit receipts must be authenticated by the caller and recorded before owned unit stop. Schema 2 verifies internal fields, observer PID/time binding and distinct unit identities; it does not authenticate live provenance.",
+    "Only QN90A has completed the retained-unit hardware probe. S90D recovery, both-TV endurance, performance, native-only entry, power lifecycle, native-default observation and .NET retirement remain open.",
+    "No package, native binary, managed bridge, worker fallback, power state, global policy or persistent capability was changed."
+  ]
+}

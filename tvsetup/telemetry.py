@@ -21,5 +21,6 @@ def legacy_action(profile, action):
 
 
 def service_ready(profile):
+    if profile['id'] == 'qn90a':return hash_guard(DATA+'/native-enabled', None)
     if profile['id'] != 's90d': return ''
     return hash_guard(LEGACY_MARKER, None)+drain(LEGACY_RUNTIME)

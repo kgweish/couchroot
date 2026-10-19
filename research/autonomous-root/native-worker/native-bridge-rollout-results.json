@@ -1,0 +1,78 @@
+{
+  "schema": 1,
+  "date": "2026-10-19",
+  "scope": "Owner-authorized signed native-agent rollout with small managed entry bridge",
+  "runtime_source_commit": "85868a9b0d3ddafddee3a40d3eef2fd292d7b794",
+  "devices": {
+    "qn90a": {
+      "package_version": "0.7.52",
+      "installed_entries_verified": 86,
+      "selected_implementation": "native-prototype",
+      "root_acquisition": "native-managed-entry",
+      "entry_bridge_bytes": 7168,
+      "managed_agent_processes": 0,
+      "normal_managed_return_verified": true,
+      "native_disable_enable_verified": true,
+      "original_jobs_preserved": true,
+      "enrollment_and_protected_hashes_preserved": true,
+      "fixture_jobs_forgotten": true,
+      "managed_fallback_retained": true,
+      "final_rescue_retired_unfired": true,
+      "service_restart_verified": true
+    },
+    "s90d": {
+      "package_version": "0.7.52",
+      "installed_entries_verified": 86,
+      "selected_implementation": "native-prototype",
+      "root_acquisition": "native-managed-entry",
+      "entry_bridge_bytes": 7168,
+      "managed_agent_processes": 0,
+      "normal_managed_return_verified": true,
+      "native_disable_enable_verified": true,
+      "original_jobs_preserved": true,
+      "enrollment_and_protected_hashes_preserved": true,
+      "fixture_jobs_forgotten": true,
+      "managed_fallback_retained": true,
+      "final_rescue_retired_unfired": true,
+      "service_restart_verified": false,
+      "service_restart_recovery": {
+        "observed": "Replacement became ready, then HTTPS refused connections after restart-helper cleanup.",
+        "cause": "unresolved",
+        "sdk_access_restored_after_rescue": true,
+        "service_independently_confirmed_stopped": true,
+        "fresh_sdk_launch_verified": true,
+        "same_boot": true,
+        "original_restart_not_replayed": true
+      }
+    }
+  },
+  "recovery_fix": {
+    "trigger": "On S90D 0.7.51, provider files were removed but teardown completion remained uncertain; native admission stayed held.",
+    "recovery": "Independent same-boot inspection reconciled owned receipts; the original request journal remained submitted and was not replayed.",
+    "change": "0.7.52 connects explicit native activation recovery to the existing bound provider teardown reconciler, without repeating provider launch or shutdown.",
+    "validation": "Failure and ownership cases passed locally; normal 0.7.52 migration and return passed on both TVs. No teardown fault was deliberately injected on TV."
+  },
+  "local_validation": {
+    "node22_full_suite": {
+      "passed": 434,
+      "environment_gated_skips": 178,
+      "failed": 0
+    },
+    "linux_recovery_boundary": {
+      "passed": 62,
+      "skipped": 0,
+      "failed": 0
+    },
+    "node22_ui_suite_after_scroll_wait_fix": {
+      "passed": 26,
+      "failed": 0
+    }
+  },
+  "qualification_limits": [
+    "S90D service-restart qualification remains open; its independent recovery does not retroactively pass the failed restart.",
+    "No TV reboot, standby, interrupted-power or new endurance test was performed.",
+    "The small .NET entry bridge, firmware runtime, signed managed fallback and original recovery journals remain required.",
+    "This updates MiniRoot01 only; Hub, telemetry/settings adapter and NAS services were not redeployed.",
+    "Main was not changed; the release-preparation and native-worker changes are published on separate feature branches."
+  ]
+}

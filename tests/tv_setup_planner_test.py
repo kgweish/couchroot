@@ -8,7 +8,7 @@ from tvsetup.config import profile as saved_profile, resolve
 from tvsetup.planner import (plan, hub_sources, HOME_DESIRED, AIRPLAY_RULES, BOOT_RULE,
                             CACHE_PATCHED,CACHE_TABLE,DIAGNOSTIC,SPLASH_NATIVE,SPLASH_RESOURCE,
                             RENDERER,EMPTY,HUB,source_revision,component_revision,MANAGED)
-from tvsetup.transport import CACHE,SAVER,STOCK,PREFS,TABLES,decode_rows,guard
+from tvsetup.transport import CACHE,SAVER,STOCK,PREFS,TABLES,decode_rows,managed_guard
 from tvsetup.operations import route_sql
 
 # An accepted fixture represents a reviewed build of the current source. Pin
@@ -111,8 +111,8 @@ class PlannerTests(unittest.TestCase):
         s=accepted('s90d');s['files'][CACHE]='a'*64
         p=plan(profile('s90d'),resolve('s90d'),s)
         self.assertEqual(p.states['startup'],'unsupported');self.assertTrue(p.issues)
-        self.assertIn(profile('qn90a')['host_sha256'],guard(profile('qn90a')))
-        self.assertNotIn(profile('s90d')['host_sha256'],guard(profile('qn90a')))
+        self.assertIn(profile('qn90a')['host_sha256'],managed_guard(profile('qn90a')))
+        self.assertNotIn(profile('s90d')['host_sha256'],managed_guard(profile('qn90a')))
 
     def test_signer_update_ledger_makes_reapply_noop(self):
         s=accepted('s90d');path=SAVER+'/Boot.dll';s['files'][path]='b'*64

@@ -10,3 +10,9 @@ test('lost launch response is never replayed',async()=>{const {calls,b}=fixture(
 test('persistent boot claim prevents repeated launch after service restart',async()=>{const {calls,b}=fixture([output('',40,true)]);await b.tick();assert.equal(calls.length,1);assert.equal(b.status(),'previous-attempt');});
 test('accepted relay request still requires Hub foreground',async()=>{const {calls,b}=fixture([output(),{exit_code:0},output('MiniHub001.Hub')]);await b.tick();assert.equal(b.status(),'waiting-foreground');await b.tick();assert.equal(b.status(),'foreground-confirmed');assert.equal(calls.length,3);});
 test('boot launcher cannot be enabled on S90D',()=>assert.throws(()=>config({device:'s90d',boot_launcher:true}),/QN90A-only/));
+test('connected but unvalidated worker does not consume boot-launch attempt',async()=>{
+ let ready=false,calls=0;
+ const agent={status:()=>({connected:true,worker_ready:ready}),execute:async()=>{calls++;return output('com.example.player');}};
+ const boot=createBootLaunch(agent,true);await boot.tick();assert.equal(calls,0);assert.equal(boot.status(),'waiting-agent');
+ ready=true;await boot.tick();assert.equal(calls,1);assert.equal(boot.status(),'other-app');
+});

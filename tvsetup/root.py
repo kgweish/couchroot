@@ -10,7 +10,7 @@ from pathlib import Path, PurePosixPath
 import tarfile
 import tempfile
 from .common import PRIVATE, REPO, Refused, lock, run, sha
-from .transport import guard, hash_guard, Q
+from .transport import managed_guard, hash_guard, Q
 from .toolkit import load
 
 BASE = '/home/owner/share/tmp/sdk_tools/'
@@ -58,16 +58,21 @@ def build(profile, folder, script, cleanup_index=None):
     return outputs
 
 
-def execute(profile, script, cleanup_index=None):
+def execute(profile, script, cleanup_index=None, *, native_bundle=None):
     toolkit = load()
     cfg = dict(tv_host=profile['host'], expected_model=profile['model'], expected_platform=profile['platform'],expected_device_id=profile['device_id'])
     probe = 'codex-qn90a-root-proof' if profile['id']=='qn90a' else 'codex-namespace-proof'
+    if native_bundle is not None:
+        from . import native_root
+        probe = native_root.probe_name(profile)
     prefix = BASE+probe
-    guards = guard(profile)+hash_guard('/usr/sbin/sdbd-tarlauncher', LAUNCHER[profile['id']])
+    guards = managed_guard(profile)+hash_guard('/usr/sbin/sdbd-tarlauncher', LAUNCHER[profile['id']])
     with lock(PRIVATE/(profile['id']+'-root-check.lock')), tempfile.TemporaryDirectory(prefix='setup-root-', dir=PRIVATE) as tmp:
         folder = Path(tmp)
         # Compile and sign locally before even creating target staging directories.
-        artifacts = {p:probe+'/'+name for p,name in build(profile,folder,guards+script,cleanup_index).items()}
+        outputs = (build(profile,folder,guards+script,cleanup_index) if native_bundle is None else
+                   native_root.prepare(profile,native_bundle,folder,guards+script,cleanup_index))
+        artifacts = {p:probe+'/'+name for p,name in outputs.items()}
         archive = folder/(probe+'.tar.gz')
         with tarfile.open(archive,'w:gz') as tar:
             payload=b'Authorized bounded setup operation.\n';entry=tarfile.TarInfo('identity-proof.txt')
@@ -88,17 +93,24 @@ def execute(profile, script, cleanup_index=None):
             raise Refused('Cannot verify original root-transport resources')
         originals=''.join(hash_guard(p,h) for p,h in hashes.items())
         stage=guards+originals+f'test ! -e {prefix} && test ! -L {prefix}\ntest ! -e {BASE}on-demand && test ! -L {BASE}on-demand\nmkdir {prefix} {BASE}on-demand\n'
+        if native_bundle is not None:
+            stage+=f'mkdir {prefix}/code\n'
         toolkit.capture(cfg,callback,stage,20,'setup-root-stage')
         cleanup='\n'.join('rm -f '+Q(BASE+v) for v in artifacts.values())
+        if native_bundle is not None:
+            cleanup+=f'\nif test -d {prefix}/code; then rmdir {prefix}/code; fi\n'
         cleanup+=f'\nrm -f {prefix}/passwd-view\nfor d in {prefix} {BASE}on-demand; do if test -d "$d"; then rmdir "$d"; fi; done\n'
         try:
             for source,target in artifacts.items():client.push(source,PurePosixPath(BASE+target))
             check=''.join(hash_guard(BASE+target,sha(source.read_bytes())) for source,target in artifacts.items())
             command=guards+originals+"cleanup() {\n"+cleanup+"}\ntrap cleanup EXIT\n"+check
-            command+=f'/usr/bin/dotnet {prefix}/NamespaceRootProbe.dll {prefix}\n'
+            if native_bundle is None:
+                command+=f'/usr/bin/dotnet {prefix}/NamespaceRootProbe.dll {prefix}\n'
+            else:
+                command+=f'env -i PATH=/usr/sbin:/usr/bin:/sbin:/bin DBUS_SYSTEM_BUS_ADDRESS=kernel:path=/sys/fs/kdbus/0-system/bus /usr/bin/dotnet {prefix}/NativeEntry.dll probe\n'
             toolkit.capture(cfg,callback,command,45,'setup-root-operation')
         finally:
             # Only known temporary files; never retry the operation on an uncertain result.
             toolkit.capture(cfg,callback,'set -eu\n'+cleanup+originals+
                             f'test ! -e {prefix}\ntest ! -e {BASE}on-demand\n'
-                            'if ps -eo args | grep -E "[N]amespaceRootProbe.dll|[R]ootIdentity.dll"; then exit 1; fi\n',20,'setup-root-cleanup')
+                            'if ps -eo args | grep -E "[N]amespaceRootProbe.dll|[R]ootIdentity.dll|[N]ativeEntry.dll"; then exit 1; fi\n',20,'setup-root-cleanup')

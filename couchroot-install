@@ -1,0 +1,6 @@
+#!/usr/bin/env python3
+"""Couchroot installer: offline preparation and explicit device operations."""
+from tvsetup.installer import main
+
+if __name__ == '__main__':
+    raise SystemExit(main())

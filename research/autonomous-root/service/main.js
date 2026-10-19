@@ -1,11 +1,13 @@
 'use strict';
-const path=require('path'),{read,config,atomic}=require('./policy'),{Journal}=require('./policy'),{createAgent}=require('./agent'),{createApi}=require('./api');
+const {read,config,atomic}=require('./policy'),{Journal}=require('./policy'),{createAgent}=require('./agent'),{createApi}=require('./api');
+const {prepareWorkerState}=require('./worker-state');
 const DATA='/opt/usr/home/owner/apps_rw/MiniRoot01/data';
 const {createBootLaunch}=require('./policy');
 let server,agent,bootTimer;
 function start(){
  const c=config(JSON.parse(read(DATA+'/config.json')));
- agent=createAgent(c);
+ const state=prepareWorkerState(DATA);
+ agent=createAgent(c,{selectionFile:state.selectionFile,stagePackagedObserver:c.device==='s90d',retirementProbeDirectory:state.directory,observerChildProcess:false,externalObserverDirectory:c.device==='s90d'?state.directory:undefined});
  const boot=createBootLaunch(agent,c.boot_launcher===true);
  const originalStatus=agent.status;
  agent.status=()=>Object.assign(originalStatus(),{boot_launcher:boot.status()});

@@ -1,0 +1,426 @@
+{
+  "schema": 1,
+  "date": "2026-10-16",
+  "scope": "Authenticated journal sync subintervals with unchanged storage format and persistence barriers; one signed integrated round per TV",
+  "package_version": "0.7.48",
+  "source_sha256": {
+    "research/autonomous-root/service/api.js": "de0beebe09e556e7e48fe0b675e16ff63831233e0a17c4334776f72f4fafda0d",
+    "research/autonomous-root/service/policy.js": "9296148726a6afacfe93657ae7c299f5b3061a1968ae95b376f10aaae58d1049",
+    "tests/autonomous-root.test.cjs": "909b732b25d96b13259f2fe22bb1744f17cca8a09e1f95b5b2af47f43e3aba07",
+    "tests/root-api-timing.test.cjs": "f0fe5f8834ef8f385254b427a2988ac1c2c782ab5bd92733d8e7e065f6476995",
+    "tests/root-journal-timing.test.cjs": "ea708b32e1aba45f836d56232631065daef5d77d261075e36539bb0d222f302c"
+  },
+  "ordinary_worker_sha256": "613c21fa9231097d51540f06873775a3f4d6f9173f48ec896c84e99432dd1f8e",
+  "observer_sha256": "a298920bf9530e1b413df958e3b83614708a55f8e8f3b5f4fde60853965c3c5d",
+  "local_tests": {
+    "focused_passed": 44,
+    "focused_skipped": 1,
+    "npm_passed": 423,
+    "npm_skipped": 157,
+    "rehearsal_passed": 6,
+    "restart_passed": 21,
+    "restart_skipped": 3
+  },
+  "devices": {
+    "qn90a": {
+      "timed_successful_requests": 147,
+      "all_expected_main_and_nested_metrics_verified": true,
+      "sync_summary": {
+        "file_sync": {
+          "calls": 198,
+          "measured_phase_aggregates": 198,
+          "total_elapsed_ms": 4455.238,
+          "maximum_phase_aggregate_ms": 1048.478,
+          "maximum_single_call_ms": 1048.478
+        },
+        "directory_sync": {
+          "calls": 198,
+          "measured_phase_aggregates": 198,
+          "total_elapsed_ms": 3623.514,
+          "maximum_phase_aggregate_ms": 863.684,
+          "maximum_single_call_ms": 863.684
+        }
+      },
+      "public_job_samples": {
+        "managed-public/job.start": {
+          "samples": 4,
+          "https_median_ms": 122.52,
+          "https_maximum_ms": 133.563,
+          "worker_median_ms": 27.392,
+          "service_sync_median_ms": 41.207
+        },
+        "managed-public/job.forget": {
+          "samples": 4,
+          "https_median_ms": 103.322,
+          "https_maximum_ms": 111.29,
+          "worker_median_ms": 13.91,
+          "service_sync_median_ms": 40.545
+        },
+        "native-public/job.start": {
+          "samples": 4,
+          "https_median_ms": 116.729,
+          "https_maximum_ms": 143.755,
+          "worker_median_ms": 20.406,
+          "service_sync_median_ms": 40.425
+        },
+        "native-public/job.forget": {
+          "samples": 4,
+          "https_median_ms": 103.375,
+          "https_maximum_ms": 119.405,
+          "worker_median_ms": 14.492,
+          "service_sync_median_ms": 36.37
+        }
+      },
+      "long_sync_requests": [
+        {
+          "phase": "managed-public",
+          "operation": "file.write",
+          "wire_elapsed_ms": 1449.828,
+          "metrics_ms": {
+            "journal_begin": 532.538,
+            "journal_begin_file_sync": 10.764,
+            "journal_begin_directory_sync": 516.503,
+            "worker": 668.817,
+            "journal_finish": 27.681,
+            "journal_finish_file_sync": 7.106,
+            "journal_finish_directory_sync": 10.724,
+            "handler": 1349.249
+          },
+          "sync_calls": {
+            "journal_begin_file_sync": 1,
+            "journal_begin_directory_sync": 1,
+            "journal_finish_file_sync": 1,
+            "journal_finish_directory_sync": 1
+          }
+        },
+        {
+          "phase": "native-public",
+          "operation": "file.write",
+          "wire_elapsed_ms": 1467.207,
+          "metrics_ms": {
+            "journal_begin": 1247.413,
+            "journal_begin_file_sync": 1048.478,
+            "journal_begin_directory_sync": 192.594,
+            "worker": 45.496,
+            "journal_finish": 24.636,
+            "journal_finish_file_sync": 11.074,
+            "journal_finish_directory_sync": 8.197,
+            "handler": 1427.386
+          },
+          "sync_calls": {
+            "journal_begin_file_sync": 1,
+            "journal_begin_directory_sync": 1,
+            "journal_finish_file_sync": 1,
+            "journal_finish_directory_sync": 1
+          }
+        },
+        {
+          "phase": "observer-stop",
+          "operation": "file.open",
+          "wire_elapsed_ms": 1254.059,
+          "metrics_ms": {
+            "journal_begin": 24.968,
+            "journal_begin_file_sync": 9.309,
+            "journal_begin_directory_sync": 9.454,
+            "worker": 3.142,
+            "journal_finish": 1176.113,
+            "journal_finish_file_sync": 308.133,
+            "journal_finish_directory_sync": 863.684,
+            "handler": 1217.235
+          },
+          "sync_calls": {
+            "journal_begin_file_sync": 1,
+            "journal_begin_directory_sync": 1,
+            "journal_finish_file_sync": 1,
+            "journal_finish_directory_sync": 1
+          }
+        },
+        {
+          "phase": "final-preservation",
+          "operation": "exec",
+          "wire_elapsed_ms": 1253.974,
+          "metrics_ms": {
+            "journal_begin": 979.996,
+            "journal_begin_file_sync": 761.964,
+            "journal_begin_directory_sync": 214.031,
+            "worker": 47.422,
+            "journal_finish": 149.094,
+            "journal_finish_file_sync": 132.22,
+            "journal_finish_directory_sync": 10.888,
+            "handler": 1185.008
+          },
+          "sync_calls": {
+            "journal_begin_file_sync": 1,
+            "journal_begin_directory_sync": 1,
+            "journal_finish_file_sync": 1,
+            "journal_finish_directory_sync": 1
+          }
+        }
+      ],
+      "package_diff": {
+        "changed_members": [
+          ".manifest.tmp",
+          "author-signature.xml",
+          "config.xml",
+          "service/api.js",
+          "service/policy.js",
+          "signature1.xml"
+        ],
+        "native_manifest_unchanged": true,
+        "unchanged_payload_members": 19
+      },
+      "observer": {
+        "resource_samples": 40,
+        "kernel_records": 329,
+        "kernel_bytes": 29242,
+        "kernel_complete": true,
+        "skipped_intervals": 0,
+        "max_sample_gap_ms": 1000.831,
+        "native_identity_bound_samples": {
+          "guardian": {
+            "samples": 13,
+            "mapping_detail_samples": 4
+          },
+          "worker": {
+            "samples": 13,
+            "mapping_detail_samples": 4
+          }
+        }
+      },
+      "preservation": {
+        "same_boot": true,
+        "same_coordinator": true,
+        "retained_jobs_preserved": true,
+        "sdk_loopback": true,
+        "rescue_inactive": true,
+        "enrollment_and_protected_hashes_preserved": true,
+        "managed_ready": true,
+        "installed_contents_verified": true,
+        "deployment_units_inactive": true,
+        "deployment_and_trial_rescue_start_counters_zero": true,
+        "owned_trial_scopes_removed": true
+      }
+    },
+    "s90d": {
+      "timed_successful_requests": 147,
+      "all_expected_main_and_nested_metrics_verified": true,
+      "sync_summary": {
+        "file_sync": {
+          "calls": 198,
+          "measured_phase_aggregates": 198,
+          "total_elapsed_ms": 4712.718,
+          "maximum_phase_aggregate_ms": 1050.4,
+          "maximum_single_call_ms": 1050.4
+        },
+        "directory_sync": {
+          "calls": 198,
+          "measured_phase_aggregates": 198,
+          "total_elapsed_ms": 6327.836,
+          "maximum_phase_aggregate_ms": 1307.263,
+          "maximum_single_call_ms": 1307.263
+        }
+      },
+      "public_job_samples": {
+        "managed-public/job.start": {
+          "samples": 4,
+          "https_median_ms": 147.269,
+          "https_maximum_ms": 840.698,
+          "worker_median_ms": 26.199,
+          "service_sync_median_ms": 55.925
+        },
+        "managed-public/job.forget": {
+          "samples": 4,
+          "https_median_ms": 139.428,
+          "https_maximum_ms": 807.75,
+          "worker_median_ms": 20.947,
+          "service_sync_median_ms": 61.392
+        },
+        "native-public/job.start": {
+          "samples": 4,
+          "https_median_ms": 140.94,
+          "https_maximum_ms": 161.377,
+          "worker_median_ms": 29.055,
+          "service_sync_median_ms": 49.055
+        },
+        "native-public/job.forget": {
+          "samples": 4,
+          "https_median_ms": 124.686,
+          "https_maximum_ms": 1488.142,
+          "worker_median_ms": 20.157,
+          "service_sync_median_ms": 52.277
+        }
+      },
+      "long_sync_requests": [
+        {
+          "phase": "preflight",
+          "operation": "exec",
+          "wire_elapsed_ms": 2301.729,
+          "metrics_ms": {
+            "journal_begin": 969.734,
+            "journal_begin_file_sync": 12.745,
+            "journal_begin_directory_sync": 952.829,
+            "worker": 806.979,
+            "journal_finish": 368.446,
+            "journal_finish_file_sync": 352.735,
+            "journal_finish_directory_sync": 12.511,
+            "handler": 2153.377
+          },
+          "sync_calls": {
+            "journal_begin_file_sync": 1,
+            "journal_begin_directory_sync": 1,
+            "journal_finish_file_sync": 1,
+            "journal_finish_directory_sync": 1
+          }
+        },
+        {
+          "phase": "managed-public",
+          "operation": "job.start",
+          "wire_elapsed_ms": 840.698,
+          "metrics_ms": {
+            "journal_begin": 27.172,
+            "journal_begin_file_sync": 13.415,
+            "journal_begin_directory_sync": 10.107,
+            "worker": 24.419,
+            "journal_finish": 722.269,
+            "journal_finish_file_sync": 18.307,
+            "journal_finish_directory_sync": 697.116,
+            "handler": 783.941
+          },
+          "sync_calls": {
+            "journal_begin_file_sync": 1,
+            "journal_begin_directory_sync": 1,
+            "journal_finish_file_sync": 1,
+            "journal_finish_directory_sync": 1
+          },
+          "profile": "app"
+        },
+        {
+          "phase": "managed-public",
+          "operation": "job.forget",
+          "wire_elapsed_ms": 807.75,
+          "metrics_ms": {
+            "journal_begin": 718.217,
+            "journal_begin_file_sync": 704.676,
+            "journal_begin_directory_sync": 8.044,
+            "worker": 14.856,
+            "journal_finish": 29.289,
+            "journal_finish_file_sync": 15.055,
+            "journal_finish_directory_sync": 11.062,
+            "handler": 771.955
+          },
+          "sync_calls": {
+            "journal_begin_file_sync": 1,
+            "journal_begin_directory_sync": 1,
+            "journal_finish_file_sync": 1,
+            "journal_finish_directory_sync": 1
+          }
+        },
+        {
+          "phase": "native-public",
+          "operation": "job.forget",
+          "wire_elapsed_ms": 1488.142,
+          "metrics_ms": {
+            "journal_begin": 34.848,
+            "journal_begin_file_sync": 14.883,
+            "journal_begin_directory_sync": 14.414,
+            "worker": 23.04,
+            "journal_finish": 1323.156,
+            "journal_finish_file_sync": 11.304,
+            "journal_finish_directory_sync": 1307.263,
+            "handler": 1395.221
+          },
+          "sync_calls": {
+            "journal_begin_file_sync": 1,
+            "journal_begin_directory_sync": 1,
+            "journal_finish_file_sync": 1,
+            "journal_finish_directory_sync": 1
+          }
+        },
+        {
+          "phase": "native-public",
+          "operation": "file.write",
+          "wire_elapsed_ms": 2044.382,
+          "metrics_ms": {
+            "journal_begin": 1510.381,
+            "journal_begin_file_sync": 1050.4,
+            "journal_begin_directory_sync": 442.63,
+            "worker": 328.254,
+            "journal_finish": 28.853,
+            "journal_finish_file_sync": 13.04,
+            "journal_finish_directory_sync": 10.515,
+            "handler": 1930.417
+          },
+          "sync_calls": {
+            "journal_begin_file_sync": 1,
+            "journal_begin_directory_sync": 1,
+            "journal_finish_file_sync": 1,
+            "journal_finish_directory_sync": 1
+          }
+        }
+      ],
+      "package_diff": {
+        "changed_members": [
+          ".manifest.tmp",
+          "author-signature.xml",
+          "config.xml",
+          "service/api.js",
+          "service/policy.js",
+          "signature1.xml"
+        ],
+        "native_manifest_unchanged": true,
+        "unchanged_payload_members": 19
+      },
+      "observer": {
+        "resource_samples": 51,
+        "kernel_records": 448,
+        "kernel_bytes": 43298,
+        "kernel_complete": true,
+        "skipped_intervals": 0,
+        "max_sample_gap_ms": 1001.069,
+        "native_identity_bound_samples": {
+          "guardian": {
+            "samples": 17,
+            "mapping_detail_samples": 4
+          },
+          "worker": {
+            "samples": 15,
+            "mapping_detail_samples": 4
+          }
+        }
+      },
+      "preservation": {
+        "same_boot": true,
+        "same_coordinator": true,
+        "retained_jobs_preserved": true,
+        "sdk_loopback": true,
+        "rescue_inactive": true,
+        "enrollment_and_protected_hashes_preserved": true,
+        "managed_ready": true,
+        "installed_contents_verified": true,
+        "deployment_units_inactive": true,
+        "deployment_and_trial_rescue_start_counters_zero": true,
+        "owned_trial_scopes_removed": true
+      }
+    }
+  },
+  "backward_compatibility": {
+    "reader_source_commit": "ffdb45f",
+    "reader_source_sha256": "ba7058d40e420cc3af9efd577364cf8171a0cbd11845e98d836356658c800971",
+    "current_journal_and_archives_read_by_old_policy": true,
+    "replay_protected_request_ids": 106,
+    "older_writer_completion_read_by_current_policy": true
+  },
+  "findings": [
+    "The new measurements distinguish elapsed file-sync and directory-sync calls inside each service publication. Both types can contribute materially to the observed delays; one publication type cannot be assumed to explain every tail.",
+    "Call counts identify aggregation. Automatic archive work is included in journal_begin; a count of one distinguishes a single measured barrier from repeated archive syncs.",
+    "The storage representation, file/rename/directory order, synchronous durability barriers, failure poisoning, replay checks and completion semantics are unchanged. Older policy readers can still read the same JSON journal and archives."
+  ],
+  "limits": [
+    "Sync elapsed time brackets the runtime fs.fsyncSync call and includes binding overhead and descheduling, not just kernel execution or storage device service time. This does not establish a flash, writeback, CPU-pressure or kernel-lock cause.",
+    "Nested sync intervals are contained by journal_begin/journal_finish. Adding both levels would double-count time. Failed sync attempts are counted but do not imply a durable publication.",
+    "Four fixed public admissions and forgets per implementation/device are bounded mixed root/app samples, not stable tail distributions. Earlier direct-worker and public-path observations remain separate evidence; performance no-regression is not yet proved.",
+    "The independent observer still costs CPU/memory and uses periodic resource samples with sparse mapping detail. The capture is not exact process-tree peak or 24-hour endurance evidence.",
+    "All 19 payload members, including their manifests and the managed bridge/worker fallback, are unchanged from 0.7.47. Independent .NET SDK rescue remains available. No reboot/standby, global policy, persistent file capability or SMACK change occurred.",
+    "Native-only entry remains unqualified. Source review of the existing vendor-entry evidence did not establish a new usable entry route; no new loader/daemon was executed in that investigation."
+  ]
+}

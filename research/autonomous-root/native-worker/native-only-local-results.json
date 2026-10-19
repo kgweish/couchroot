@@ -1,0 +1,251 @@
+{
+  "schema": 1,
+  "date": "2026-10-16",
+  "scope": "Offline native component bundle and journaled native SDK-rescue caller",
+  "hardware_qualification_paused": true,
+  "device_contact": false,
+  "package_or_selection_changed": false,
+  "deployed_managed_fallback_preserved": true,
+  "source_sha256": {
+    "tvsetup/native_components.py": "6b8d6030f734495a791813fdd30bbe60d7b99012acdbc2c20432e6811ebd7568",
+    "tvsetup/native_rescue.py": "05d4f47b294b51e6ab53c8af328031ac9b2b073ac685c58f6be32c4819941de4"
+  },
+  "builds": {
+    "qn90a": {
+      "artifacts": {
+        "sdk-recovery/sdk-host-recovery": {
+          "abi": "armv7-eabi5-softfp",
+          "glibc_max": "2.4.0",
+          "interpreter": "/lib/ld-linux.so.3",
+          "needed": [
+            "ld-linux.so.3",
+            "libc.so.6",
+            "libdl.so.2",
+            "librt.so.1"
+          ],
+          "sha256": "09089ed952ca68f963eaea21342d3eb5c577a68e2549dff751d02b6b21d3562d",
+          "size": 12908
+        },
+        "service-acquisition/libacquire.so": {
+          "abi": "armv7-eabi5-softfp",
+          "glibc_max": "2.17.0",
+          "needed": [
+            "ld-linux.so.3",
+            "libc.so.6"
+          ],
+          "sha256": "bdc66898796ee0e86235bbccf87e2761783d6b66b3da758569e3022c3a8f2a09",
+          "size": 17328
+        },
+        "setup-acquisition/libacquire.so": {
+          "abi": "armv7-eabi5-softfp",
+          "glibc_max": "2.17.0",
+          "needed": [
+            "ld-linux.so.3",
+            "libc.so.6"
+          ],
+          "sha256": "8f4084ec5d3d33b035a6bdc16314b9db578fe0fe1706cac3c09048f4cf034dd9",
+          "size": 16968
+        },
+        "worker/native-app-launcher": {
+          "abi": "armv7-eabi5-softfp",
+          "glibc_max": "2.4.0",
+          "interpreter": "/lib/ld-linux.so.3",
+          "needed": [
+            "ld-linux.so.3",
+            "libc.so.6"
+          ],
+          "sha256": "4ba756c8b725ba2e375ca02608c9ca7579f6d6275c4ed96348ba93bf5b8a6d55",
+          "size": 13296
+        },
+        "worker/native-process-observer": {
+          "abi": "armv7-eabi5-softfp",
+          "glibc_max": "2.17.0",
+          "interpreter": "/lib/ld-linux.so.3",
+          "needed": [
+            "ld-linux.so.3",
+            "libc.so.6"
+          ],
+          "sha256": "4677bef3f0137b792d6de2dd22fa91d32476db5b48c26213db8699b596e4e574",
+          "size": 23016
+        },
+        "worker/native-worker": {
+          "abi": "armv7-eabi5-softfp",
+          "glibc_max": "2.28.0",
+          "interpreter": "/lib/ld-linux.so.3",
+          "needed": [
+            "ld-linux.so.3",
+            "libc.so.6",
+            "libdl.so.2",
+            "libpthread.so.0"
+          ],
+          "sha256": "1dfa73afb9a983c9361943b87bf0dc30dc1e491e7000d7566b1bd846fcbab93a",
+          "size": 116724
+        }
+      },
+      "component_reproducible_builds": {
+        "sdk-recovery": 2,
+        "service-acquisition": 2,
+        "setup-acquisition": 2,
+        "worker": 2
+      },
+      "toolchain": {
+        "compiler": "10.2.1",
+        "image": "sha256:8d04ca4a4d08ce5a17ffb904b6c5a7742f51e885506f2e3215b8e2db7659a3c4"
+      },
+      "managed_compiler_invoked": false,
+      "deployable_agent": false
+    },
+    "s90d": {
+      "artifacts": {
+        "sdk-recovery/sdk-host-recovery": {
+          "abi": "armv7-eabi5-softfp",
+          "glibc_max": "2.4.0",
+          "interpreter": "/lib/ld-linux.so.3",
+          "needed": [
+            "ld-linux.so.3",
+            "libc.so.6",
+            "libdl.so.2",
+            "librt.so.1"
+          ],
+          "sha256": "09089ed952ca68f963eaea21342d3eb5c577a68e2549dff751d02b6b21d3562d",
+          "size": 12908
+        },
+        "service-acquisition/libacquire.so": {
+          "abi": "armv7-eabi5-softfp",
+          "glibc_max": "2.17.0",
+          "needed": [
+            "ld-linux.so.3",
+            "libc.so.6"
+          ],
+          "sha256": "bdc66898796ee0e86235bbccf87e2761783d6b66b3da758569e3022c3a8f2a09",
+          "size": 17328
+        },
+        "setup-acquisition/libacquire.so": {
+          "abi": "armv7-eabi5-softfp",
+          "glibc_max": "2.17.0",
+          "needed": [
+            "ld-linux.so.3",
+            "libc.so.6"
+          ],
+          "sha256": "8fd127f2039b8901f92de542625eb1ff9fefcd90f8c0c2758a158a60acea7b91",
+          "size": 16968
+        },
+        "worker/native-app-launcher": {
+          "abi": "armv7-eabi5-softfp",
+          "glibc_max": "2.4.0",
+          "interpreter": "/lib/ld-linux.so.3",
+          "needed": [
+            "ld-linux.so.3",
+            "libc.so.6"
+          ],
+          "sha256": "4ba756c8b725ba2e375ca02608c9ca7579f6d6275c4ed96348ba93bf5b8a6d55",
+          "size": 13296
+        },
+        "worker/native-process-observer": {
+          "abi": "armv7-eabi5-softfp",
+          "glibc_max": "2.17.0",
+          "interpreter": "/lib/ld-linux.so.3",
+          "needed": [
+            "ld-linux.so.3",
+            "libc.so.6"
+          ],
+          "sha256": "4677bef3f0137b792d6de2dd22fa91d32476db5b48c26213db8699b596e4e574",
+          "size": 23016
+        },
+        "worker/native-worker": {
+          "abi": "armv7-eabi5-softfp",
+          "glibc_max": "2.28.0",
+          "interpreter": "/lib/ld-linux.so.3",
+          "needed": [
+            "ld-linux.so.3",
+            "libc.so.6",
+            "libdl.so.2",
+            "libpthread.so.0"
+          ],
+          "sha256": "1dfa73afb9a983c9361943b87bf0dc30dc1e491e7000d7566b1bd846fcbab93a",
+          "size": 116724
+        }
+      },
+      "component_reproducible_builds": {
+        "sdk-recovery": 2,
+        "service-acquisition": 2,
+        "setup-acquisition": 2,
+        "worker": 2
+      },
+      "toolchain": {
+        "compiler": "10.2.1",
+        "image": "sha256:8d04ca4a4d08ce5a17ffb904b6c5a7742f51e885506f2e3215b8e2db7659a3c4"
+      },
+      "managed_compiler_invoked": false,
+      "deployable_agent": false
+    }
+  },
+  "rescue_caller": {
+    "local_only": true,
+    "physical_admission_and_device_lock_required_from_caller": true,
+    "root_executor_required": true,
+    "exact_boot_firmware_architecture_and_code_guards": true,
+    "private_readonly_code_bind": true,
+    "clean_native_environment": true,
+    "delay_seconds": 300,
+    "retained_service_exit_evidence": true,
+    "queued_start_and_disarm_race_refused": true,
+    "uncertain_results_preserved_without_replay": true,
+    "automatic_managed_fallback": false,
+    "boot_surviving": false,
+    "existing_private_callers_unchanged": true
+  },
+  "validation": {
+    "new_local_tests": {
+      "component_builder": 4,
+      "rescue_journal": 6,
+      "generated_shell": 8
+    },
+    "python_macos": {
+      "tests": 555,
+      "passed": 334,
+      "skipped": 221,
+      "failed": 0
+    },
+    "native_linux_broad_run": {
+      "tests": 303,
+      "passed": 195,
+      "skipped": 108,
+      "failed": 0,
+      "note": "Before the additional queued-start test; final generated-shell suite rerun separately."
+    },
+    "final_generated_shell": {
+      "passed": 8,
+      "skipped": 0,
+      "failed": 0
+    },
+    "node": {
+      "tests": 610,
+      "passed": 432,
+      "skipped": 178,
+      "failed": 0
+    },
+    "fresh_native_and_managed_scratch_fixtures": true,
+    "rehearsal_integration": {
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0
+    },
+    "restart_integration": {
+      "passed": 37,
+      "failed": 0,
+      "skipped": 0,
+      "single_full_run": true,
+      "container_init_enabled": true,
+      "fault_enabled_fixture": true
+    }
+  },
+  "limitations": [
+    "Native capability entry remains unresolved; no new native entry execution or device evidence was obtained.",
+    "This component bundle cannot replace a deployable agent package and is refused by the existing acquisition adapter.",
+    "The native recovery utility reproduces its previously qualified bytes; the new caller still needs separate hardware acceptance.",
+    "Normal signed-package preparation and managed test fixtures still require the .NET SDK.",
+    "Existing private deployment kits and managed rescue callers remain unchanged while hardware qualification is paused.",
+    "Native-only fresh install, upgrade, service acquisition, lifecycle recovery, full endurance/resource acceptance and default observation remain retirement gates."
+  ]
+}

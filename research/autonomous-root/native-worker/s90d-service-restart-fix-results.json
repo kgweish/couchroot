@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "date": "2026-10-19",
+  "scope": "Owner-authorized S90D same-boot maintenance restart investigation and correction",
+  "package_version": "0.7.52",
+  "package_reinstalled_or_modified": false,
+  "finding": {
+    "quick_restart_reproduced_before_helper_cleanup": true,
+    "old_wrt_listener_reused_after_quick_stop_start": true,
+    "replacement_worker_did_not_prove_new_service_host": true,
+    "registered_wrapper_stopped_before_wrt_host_exited": true,
+    "thirty_second_exit_wait_refused_without_launch": true,
+    "vendor_internal_teardown_mechanism_not_instrumented": true
+  },
+  "correction": {
+    "script": "research/autonomous-root/restart-service.sh",
+    "transport": "Existing physically admitted SDK maintenance transport",
+    "binding": "Current boot and HTTPS listener WRT PID/start ticks",
+    "exit_wait_limit_seconds": 120,
+    "stop_wait_and_launch_elapsed_seconds": 115,
+    "forced_process_kill": false,
+    "automatic_restart_retry": false,
+    "new_daemon_or_runtime_dependency": false,
+    "permissions_relaxed": false
+  },
+  "hardware_validation": {
+    "same_boot": true,
+    "old_wrt_host_absent_before_launch": true,
+    "new_wrt_host_verified": true,
+    "new_native_worker_ready": true,
+    "selected_implementation": "native-prototype",
+    "root_acquisition": "native-managed-entry",
+    "pre_cleanup_stability_seconds": 60,
+    "post_cleanup_stability_seconds": 30,
+    "native_exec_output_and_exit_code_verified": true,
+    "selection_enrollment_retained_jobs_and_protected_hashes_preserved": true,
+    "original_activation_and_production_receipts_preserved": true,
+    "signed_package_entry_bridge_and_managed_fallback_hashes_unchanged": true,
+    "managed_agent_processes": 0,
+    "owned_diagnostic_scopes_removed": true,
+    "owned_temporary_units_inactive": true,
+    "final_rescue_retired_unfired": true,
+    "sdk_loopback_restored": true,
+    "pending_setup_runs": 0
+  },
+  "recovery": {
+    "independent_sdk_rescue_restored_access_during_investigation": true,
+    "recovered_native_selection_on_same_boot": true,
+    "pre_stop_permission_refusals_left_worker_unchanged": true,
+    "original_failed_and_uncertain_requests_preserved_without_replay": true,
+    "signed_rollback_packages_and_managed_recovery_retained": true
+  },
+  "local_validation": {
+    "python_suite": {"tests": 568, "passed": 343, "skipped": 225, "failed": 0},
+    "linux_real_process_restart_tests": {"passed": 4, "skipped": 0, "failed": 0},
+    "shellcheck": "passed"
+  },
+  "limits": [
+    "One corrected maintenance restart passed; this is not unattended restart or endurance qualification.",
+    "The original quick restart remains failed; recovery does not retroactively accept it.",
+    "No reboot, standby, power interruption, QN90A update or NAS change was performed.",
+    "The bridge, managed fallback, independent rescue and original journals remain required.",
+    "No changes were pushed to main."
+  ]
+}

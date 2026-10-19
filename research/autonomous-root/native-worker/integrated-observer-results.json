@@ -1,0 +1,588 @@
+{
+  "schema": 1,
+  "date": "2026-10-16",
+  "scope": "One installed managed HTTPS -> native acquisition -> committed native HTTPS -> normal managed return round per TV; periodic resources and continuous kernel observation across the full round",
+  "package_version": "0.7.46",
+  "ordinary_worker_source_commit": "bbf8645",
+  "ordinary_worker_sha256": "613c21fa9231097d51540f06873775a3f4d6f9173f48ec896c84e99432dd1f8e",
+  "observer_sha256": "d74c3c17323a0a09210522fa2364c54541c7ec09c798c0eae71f6585db422c22",
+  "toolchain_image": "sha256:8d04ca4a4d08ce5a17ffb904b6c5a7742f51e885506f2e3215b8e2db7659a3c4",
+  "reproducible_builds": 2,
+  "source_sha256": {
+    "research/autonomous-root/native-worker/observe.c": "46136b4d5ce768146f10b0e1e05d9618aada659f6d37e913823bbec9f44ccbb6",
+    "research/autonomous-root/native-worker/build.sh": "4ffb4d70a0f512389e97ddf3cf01d30f521f59ccae430d257636f85e08c6f587",
+    "research/autonomous-root/native-worker/observe-process.h": "8fcd6c61b9de8fbe9ff2dff6ff29769a28f03998915bb7da11869f2f2ed00b4b",
+    "research/autonomous-root/native-worker/bench-kernel.h": "3d1065b9a42a6518e2749e0e103852e2f247aeb642fc54f3f0a91185909d012d",
+    "tests/native_observer_test.py": "040ff63374c2a7bfb3d5d2287dec218e15f8374bc3f1f229be8f235e52ad1c83"
+  },
+  "local_tests": {
+    "observer": 9,
+    "kernel_capture": 9,
+    "candidate_packaging": 5,
+    "npm_passed": 414,
+    "npm_skipped": 157
+  },
+  "devices": {
+    "qn90a": {
+      "acquisition_ms": {
+        "disable_enable_ready_ms": 2517.479,
+        "enable_ready_ms": 2367.464,
+        "poll_interval_ms": 200
+      },
+      "migration_ms": 4040.36,
+      "return_to_managed_ms": 13311.208,
+      "phases": {
+        "managed-public": {
+          "command_rpc_ms": {
+            "count": 2,
+            "min": 102.629,
+            "median": 118.682,
+            "max": 134.734
+          },
+          "job_start_rpc_ms": {
+            "count": 4,
+            "min": 120.703,
+            "median": 126.325,
+            "max": 134.259
+          },
+          "jobs": [
+            {
+              "admission_ms": 128.630875,
+              "observed_completion_ms": 180.157333,
+              "profile": "root",
+              "through_forget_ms": 395.378125
+            },
+            {
+              "admission_ms": 123.257583,
+              "observed_completion_ms": 191.893416,
+              "profile": "app",
+              "through_forget_ms": 358.608041
+            },
+            {
+              "admission_ms": 137.152541,
+              "observed_completion_ms": 204.373583,
+              "profile": "root",
+              "through_forget_ms": 382.400416
+            },
+            {
+              "admission_ms": 128.084,
+              "observed_completion_ms": 187.3,
+              "profile": "app",
+              "through_forget_ms": 364.293167
+            }
+          ],
+          "transfer": {
+            "bytes": 8677890,
+            "download_ms": 3080.71125,
+            "upload_ms": 4095.585208
+          },
+          "measurement_scope": "Host end-to-end including durable client intent/result writes, fresh TLS for job RPCs, 200 ms completion polling, and local transfer checksum/fsync; transfer chunks use keep-alive"
+        },
+        "native-public": {
+          "command_rpc_ms": {
+            "count": 2,
+            "min": 111.562,
+            "median": 120.462,
+            "max": 129.361
+          },
+          "job_start_rpc_ms": {
+            "count": 4,
+            "min": 122.685,
+            "median": 126.131,
+            "max": 154.675
+          },
+          "jobs": [
+            {
+              "admission_ms": 130.823292,
+              "observed_completion_ms": 181.376625,
+              "profile": "root",
+              "through_forget_ms": 348.356625
+            },
+            {
+              "admission_ms": 127.287875,
+              "observed_completion_ms": 175.044834,
+              "profile": "app",
+              "through_forget_ms": 330.79275
+            },
+            {
+              "admission_ms": 125.737875,
+              "observed_completion_ms": 173.626041,
+              "profile": "root",
+              "through_forget_ms": 338.299916
+            },
+            {
+              "admission_ms": 157.400333,
+              "observed_completion_ms": 207.575875,
+              "profile": "app",
+              "through_forget_ms": 361.968208
+            }
+          ],
+          "transfer": {
+            "bytes": 8677890,
+            "download_ms": 2569.455375,
+            "upload_ms": 3727.394041
+          },
+          "measurement_scope": "Host end-to-end including durable client intent/result writes, fresh TLS for job RPCs, 200 ms completion polling, and local transfer checksum/fsync; transfer chunks use keep-alive"
+        }
+      },
+      "resources": {
+        "managed_before": {
+          "samples": 10,
+          "observed_interval_ms": 8991.623,
+          "cpu_delta_ms": 352.0,
+          "pss_kib": {
+            "count": 10,
+            "min": 4034,
+            "median": 6638.5,
+            "max": 8782
+          },
+          "rss_kib": {
+            "count": 10,
+            "min": 17828,
+            "median": 20426.0,
+            "max": 22576
+          },
+          "swap_kib": {
+            "count": 10,
+            "min": 2268,
+            "median": 2370.0,
+            "max": 6164
+          },
+          "max_descriptors": 74,
+          "max_threads": 15,
+          "max_mounts": 33
+        },
+        "native_guardian": {
+          "samples": 12,
+          "observed_interval_ms": 11000.975,
+          "cpu_delta_ms": 24.0,
+          "pss_kib": {
+            "count": 12,
+            "min": 177,
+            "median": 179.0,
+            "max": 219
+          },
+          "rss_kib": {
+            "count": 12,
+            "min": 1128,
+            "median": 1128.0,
+            "max": 1188
+          },
+          "swap_kib": {
+            "count": 12,
+            "min": 0,
+            "median": 48.0,
+            "max": 48
+          },
+          "max_descriptors": 11,
+          "max_threads": 1,
+          "max_mounts": 34
+        },
+        "native_worker": {
+          "samples": 12,
+          "observed_interval_ms": 11000.975,
+          "cpu_delta_ms": 312.0,
+          "pss_kib": {
+            "count": 12,
+            "min": 235,
+            "median": 303.0,
+            "max": 383
+          },
+          "rss_kib": {
+            "count": 12,
+            "min": 840,
+            "median": 944.0,
+            "max": 1036
+          },
+          "swap_kib": {
+            "count": 12,
+            "min": 0,
+            "median": 38.0,
+            "max": 140
+          },
+          "max_descriptors": 14,
+          "max_threads": 3,
+          "max_mounts": 34
+        },
+        "coordinator": {
+          "samples": 41,
+          "observed_interval_ms": 39992.537,
+          "cpu_delta_ms": 11248.0,
+          "pss_kib": {
+            "count": 41,
+            "min": 13717,
+            "median": 18959,
+            "max": 30174
+          },
+          "rss_kib": {
+            "count": 41,
+            "min": 39768,
+            "median": 45032,
+            "max": 56256
+          },
+          "swap_kib": {
+            "count": 41,
+            "min": 8900,
+            "median": 10308,
+            "max": 11888
+          },
+          "max_descriptors": 63,
+          "max_threads": 9,
+          "max_mounts": 33
+        },
+        "observer": {
+          "samples": 41,
+          "pss_kib": {
+            "count": 41,
+            "min": 142,
+            "median": 283,
+            "max": 10526
+          },
+          "swap_kib": {
+            "count": 41,
+            "min": 0,
+            "median": 10304,
+            "max": 10380
+          },
+          "cpu_delta_ms": 3476.0
+        }
+      },
+      "sampling": {
+        "samples": 41,
+        "interval_ms": 1000,
+        "skipped_intervals": 0,
+        "sampling_failed": false,
+        "interval_complete": true,
+        "max_sample_duration_ms": 113.883,
+        "max_sample_gap_ms": 1000.942,
+        "duration_ms": 40126.211
+      },
+      "kernel": {
+        "complete": true,
+        "records": 332,
+        "bytes": 29378,
+        "overruns": 0,
+        "known_sequence_gaps": 0,
+        "malformed_records": 0,
+        "reordered_records": 0,
+        "read_error": 0,
+        "capacity_exceeded": false,
+        "suspend_detected": false
+      },
+      "kernel_signature_counts": {
+        "oom": 0,
+        "panic_oops_warning": 0,
+        "io_error": 0,
+        "hung_task": 0
+      },
+      "managed_entry_candidate_samples": 0,
+      "preservation": {
+        "same_boot": true,
+        "same_hosting_coordinator_process": true,
+        "expected_two_committed_history_transitions": true,
+        "retained_jobs_preserved": true,
+        "fixture_jobs_publicly_forgotten": true,
+        "native_processes_and_owned_scopes_absent": true,
+        "observer_scope_removed": true,
+        "observer_private_mount_absent": true,
+        "owned_units_inactive": true,
+        "sdk_loopback": true,
+        "rescue_inactive": true,
+        "rescue_fired": false,
+        "enrollment_and_protected_hashes_preserved": true
+      }
+    },
+    "s90d": {
+      "acquisition_ms": {
+        "disable_enable_ready_ms": 2702.617,
+        "enable_ready_ms": 2582.892,
+        "poll_interval_ms": 200
+      },
+      "migration_ms": 7889.016,
+      "return_to_managed_ms": 20435.403,
+      "phases": {
+        "managed-public": {
+          "command_rpc_ms": {
+            "count": 2,
+            "min": 121.58,
+            "median": 123.852,
+            "max": 126.125
+          },
+          "job_start_rpc_ms": {
+            "count": 4,
+            "min": 159.16,
+            "median": 172.255,
+            "max": 190.467
+          },
+          "jobs": [
+            {
+              "admission_ms": 193.297333,
+              "observed_completion_ms": 283.587208,
+              "profile": "root",
+              "through_forget_ms": 528.589666
+            },
+            {
+              "admission_ms": 162.787875,
+              "observed_completion_ms": 268.867917,
+              "profile": "app",
+              "through_forget_ms": 470.10325
+            },
+            {
+              "admission_ms": 171.837209,
+              "observed_completion_ms": 280.745875,
+              "profile": "root",
+              "through_forget_ms": 555.055667
+            },
+            {
+              "admission_ms": 177.87,
+              "observed_completion_ms": 261.100875,
+              "profile": "app",
+              "through_forget_ms": 1917.448166
+            }
+          ],
+          "transfer": {
+            "bytes": 8677890,
+            "download_ms": 2283.303666,
+            "upload_ms": 2059.282709
+          },
+          "measurement_scope": "Host end-to-end including durable client intent/result writes, fresh TLS for job RPCs, 200 ms completion polling, and local transfer checksum/fsync; transfer chunks use keep-alive"
+        },
+        "native-public": {
+          "command_rpc_ms": {
+            "count": 2,
+            "min": 130.173,
+            "median": 189.472,
+            "max": 248.771
+          },
+          "job_start_rpc_ms": {
+            "count": 4,
+            "min": 171.461,
+            "median": 201.002,
+            "max": 1138.673
+          },
+          "jobs": [
+            {
+              "admission_ms": 186.200833,
+              "observed_completion_ms": 230.399625,
+              "profile": "root",
+              "through_forget_ms": 394.927708
+            },
+            {
+              "admission_ms": 173.332708,
+              "observed_completion_ms": 233.496791,
+              "profile": "app",
+              "through_forget_ms": 463.724083
+            },
+            {
+              "admission_ms": 1141.376291,
+              "observed_completion_ms": 1334.111208,
+              "profile": "root",
+              "through_forget_ms": 1739.865125
+            },
+            {
+              "admission_ms": 219.603541,
+              "observed_completion_ms": 281.478125,
+              "profile": "app",
+              "through_forget_ms": 489.931583
+            }
+          ],
+          "transfer": {
+            "bytes": 8677890,
+            "download_ms": 1270.972417,
+            "upload_ms": 1918.329375
+          },
+          "measurement_scope": "Host end-to-end including durable client intent/result writes, fresh TLS for job RPCs, 200 ms completion polling, and local transfer checksum/fsync; transfer chunks use keep-alive"
+        }
+      },
+      "resources": {
+        "managed_before": {
+          "samples": 10,
+          "observed_interval_ms": 8972.287,
+          "cpu_delta_ms": 1336.0,
+          "pss_kib": {
+            "count": 10,
+            "min": 10603,
+            "median": 12270.0,
+            "max": 20326
+          },
+          "rss_kib": {
+            "count": 10,
+            "min": 21808,
+            "median": 23486.0,
+            "max": 31544
+          },
+          "swap_kib": {
+            "count": 10,
+            "min": 3296,
+            "median": 3906.0,
+            "max": 5048
+          },
+          "max_descriptors": 75,
+          "max_threads": 18,
+          "max_mounts": 37
+        },
+        "native_guardian": {
+          "samples": 14,
+          "observed_interval_ms": 12999.925,
+          "cpu_delta_ms": 48.0,
+          "pss_kib": {
+            "count": 14,
+            "min": 211,
+            "median": 247.0,
+            "max": 251
+          },
+          "rss_kib": {
+            "count": 14,
+            "min": 1192,
+            "median": 1192.0,
+            "max": 1192
+          },
+          "swap_kib": {
+            "count": 14,
+            "min": 0,
+            "median": 0.0,
+            "max": 0
+          },
+          "max_descriptors": 11,
+          "max_threads": 1,
+          "max_mounts": 38
+        },
+        "native_worker": {
+          "samples": 14,
+          "observed_interval_ms": 12999.925,
+          "cpu_delta_ms": 292.0,
+          "pss_kib": {
+            "count": 14,
+            "min": 272,
+            "median": 359.0,
+            "max": 1385
+          },
+          "rss_kib": {
+            "count": 14,
+            "min": 928,
+            "median": 1028.0,
+            "max": 2036
+          },
+          "swap_kib": {
+            "count": 14,
+            "min": 0,
+            "median": 0.0,
+            "max": 0
+          },
+          "max_descriptors": 16,
+          "max_threads": 3,
+          "max_mounts": 38
+        },
+        "coordinator": {
+          "samples": 50,
+          "observed_interval_ms": 48972.896,
+          "cpu_delta_ms": 11748.0,
+          "pss_kib": {
+            "count": 50,
+            "min": 34929,
+            "median": 39559.5,
+            "max": 45186
+          },
+          "rss_kib": {
+            "count": 50,
+            "min": 48784,
+            "median": 53398.0,
+            "max": 59008
+          },
+          "swap_kib": {
+            "count": 50,
+            "min": 6276,
+            "median": 6280.0,
+            "max": 6280
+          },
+          "max_descriptors": 90,
+          "max_threads": 23,
+          "max_mounts": 37
+        },
+        "observer": {
+          "samples": 50,
+          "pss_kib": {
+            "count": 50,
+            "min": 6012,
+            "median": 6095.0,
+            "max": 10595
+          },
+          "swap_kib": {
+            "count": 50,
+            "min": 0,
+            "median": 4498.0,
+            "max": 4572
+          },
+          "cpu_delta_ms": 6220.0
+        }
+      },
+      "sampling": {
+        "samples": 50,
+        "interval_ms": 1000,
+        "skipped_intervals": 0,
+        "sampling_failed": false,
+        "interval_complete": true,
+        "max_sample_duration_ms": 199.743,
+        "max_sample_gap_ms": 1302.362,
+        "duration_ms": 49802.048
+      },
+      "kernel": {
+        "complete": true,
+        "records": 388,
+        "bytes": 37575,
+        "overruns": 0,
+        "known_sequence_gaps": 0,
+        "malformed_records": 0,
+        "reordered_records": 0,
+        "read_error": 0,
+        "capacity_exceeded": false,
+        "suspend_detected": false
+      },
+      "kernel_signature_counts": {
+        "oom": 0,
+        "panic_oops_warning": 0,
+        "io_error": 0,
+        "hung_task": 0
+      },
+      "managed_entry_candidate_samples": 1,
+      "preservation": {
+        "same_boot": true,
+        "same_hosting_coordinator_process": true,
+        "expected_two_committed_history_transitions": true,
+        "retained_jobs_preserved": true,
+        "fixture_jobs_publicly_forgotten": true,
+        "native_processes_and_owned_scopes_absent": true,
+        "observer_scope_removed": true,
+        "observer_private_mount_absent": true,
+        "owned_units_inactive": true,
+        "sdk_loopback": true,
+        "rescue_inactive": true,
+        "rescue_fired": false,
+        "enrollment_and_protected_hashes_preserved": true
+      }
+    }
+  },
+  "kernel_signature_patterns": {
+    "oom": "\\bout of memory\\b|\\boom-kill\\b|\\bkilled process\\b",
+    "panic_oops_warning": "\\bkernel panic\\b|\\bOops:|\\bBUG:|\\bWARNING:",
+    "io_error": "\\bI/O error\\b|\\bwriteback error\\b|\\bEXT[234]-fs error\\b",
+    "hung_task": "\\bblocked for more than\\b|\\bsoft lockup\\b|\\bhard LOCKUP\\b"
+  },
+  "prior_attempts": [
+    "The first QN90A round completed acquisition/public operations and cleanup but the observer missed native processes because proc exposed their private bind as /worker. Its timings and logs remain private; it did not qualify native resource coverage.",
+    "The initial S90D migration request was explicitly rejected before launch: a completed native task already occupied that coordinator. Its original managed fixture and observer were reconciled and cleaned, with rescue unfired. The guard was retained; a service relaunch reset the task before a fresh trial.",
+    "A QN90A visibility investigation tried an unsupported read-only public status operation, which was rejected. The committed native transaction was resumed only for remaining measurements/normal return/cleanup; migration was not replayed. Read-only mapped-executable evidence established /worker and the exact signed digest.",
+    "S90D probe cleanup encountered a disappearing proc mountinfo entry and stopped before deletion. It completed only after reconciling ownership and proving failing proc entries absent or terminal.",
+    "Service relaunch preparation preserved enrollment, retained jobs and selection on each boot. QN90A changed hosting PID; S90D reset the native task and worker while reusing its WRT hosting PID. Spent launch timers and independent rescues were retired and unfired."
+  ],
+  "limits": [
+    "One integrated round and two command/job samples per profile are not a performance or tail distribution. Native-default, no-regression and endurance gates remain open.",
+    "Native service acquisition still uses the managed capability/mount entry bridge. Enable-to-ready is observed through 200 ms status polling and includes scheduling; it is not .NET-free startup or a controlled power cycle.",
+    "Host job/transfer timings include durable private journaling, new TLS connections for job requests, status polling, and client checksum/fsync work. Individual RPC times exclude the surrounding journal writes; transfers use pinned keep-alive sessions.",
+    "The observer has roughly 10 MiB of buffers and nonzero sampling/CPU cost. Its resources are reported separately but can affect worker scheduling and pressure.",
+    "One-second sampling captured exact selected native worker/guardian identities repeatedly, but is not exact process-tree peaks, wakeups or complete acquisition-process coverage. QN90A had no entry-process sample; S90D had one candidate sample. Short-lived descendants can be missed and exited-child CPU is excluded.",
+    "Per-role resource summaries span the captured lifetime of that identity, not only a single public operation. Managed-before and native lifetimes differ; do not compare CPU deltas as equal-work benchmarks.",
+    "S90D native root admission again exceeded one second; managed app through-forget also exceeded one second. Continuous kernel/resource evidence is retained but does not identify the cause. Literal error scans are not a comprehensive error detector.",
+    "No package deployment, reboot, standby, global policy, persistent capability or SMACK change was issued. Raw device paths, identities, kernel records and request receipts remain private."
+  ]
+}

@@ -5,6 +5,12 @@ set -eu
 case "$OUTPUT_DIR" in /*) ;; *) exit 2;; esac
 mkdir -p "$OUTPUT_DIR"
 collector_source=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+case "${1:-}" in
+    '') targets='host arm' ;;
+    --host-only) targets=host ;;
+    *) echo 'Usage: build.sh [--host-only]' >&2; exit 2 ;;
+esac
+if test "$targets" != host; then
 : "${TV_LIB_DIR:?Set the directory containing verified firmware libcurl/libssl/libcrypto}"
 python3 - "$collector_source/tv-libraries.json" "$TV_LIB_DIR" <<'PY'
 import hashlib, json, pathlib, sys
@@ -14,7 +20,8 @@ for name, expected in manifest['libraries'].items():
     if hashlib.sha256(path.read_bytes()).hexdigest() != expected['sha256']:
         raise SystemExit('Firmware library hash mismatch: ' + name)
 PY
-for target in host arm; do
+fi
+for target in $targets; do
     if test "$target" = arm; then
         compiler=arm-linux-gnueabi-gcc
         target_flags='-march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=softfp'
@@ -37,6 +44,7 @@ for target in host arm; do
         $link_flags "$target_lib/libjson-c.a" -lcurl -lssl -lcrypto -lm \
         -pie -Wl,-z,relro,-z,now -o "$OUTPUT_DIR/collector-$target"
 done
+if test "$targets" = host; then exit 0; fi
 arm-linux-gnueabi-readelf -d -V "$OUTPUT_DIR/collector-arm" > "$OUTPUT_DIR/elf-dependencies.txt"
 dpkg-query -W gcc-arm-linux-gnueabi libjson-c-dev libcurl4-openssl-dev libssl-dev > "$OUTPUT_DIR/build-packages.txt"
 cp /arm/build-packages.sha256 "$OUTPUT_DIR/arm-packages.sha256"

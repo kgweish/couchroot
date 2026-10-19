@@ -12,10 +12,19 @@ It shares the managed collector's `flock` lease. `enabled` controls its lifetime
 preferences control sampling. Invalid preferences disable transmission. SIGTERM
 stops the loop and cancels an outstanding request.
 
-**This is a tested collector candidate, not the default deployment.** Permanent
-privileged bootstrap and the short-lived Hub control adapter remain separate work.
-The managed service remains the production/rollback path. See
+**This is a locally integrated candidate, not the default deployment.** QN90A
+bootstrap, journaled installation/recovery and the retained managed settings
+adapter are implemented and locally tested. Hardware acceptance and deployment
+of that integration remain outstanding. The managed service remains the deployed
+and rollback path. Earlier bounded trials are recorded in the
 [hardware findings](../../../docs/research/native-service-research.md).
+
+The [QN90A local integration candidate](../../../docs/guides/native-telemetry.md)
+documents preparation, installation, marker handoff and recovery. Its `--native-handoff` mode
+shares pairing/preferences and the lease but requires `native-enabled` with no
+managed `enabled` marker. Device operations require separate authorization;
+historical bounded trials retain their existing mode. `build.sh --host-only` runs the Linux test build
+without private firmware library inputs.
 
 ## Build and test
 
@@ -50,7 +59,10 @@ deployed. Tests exercise real TLS pin acceptance/rejection, authentication heade
 connection reuse, receiver parsing, request deadlines, redirect refusal, backoff,
 settings changes, singleton locking, signals, malformed configuration and symlinks.
 
-## Bounded device trial
+## Historical bounded-trial workflow
+
+These commands retain the earlier short-trial and recovery path. They are not
+local checks or acceptance of the journaled installation candidate.
 
 ```sh
 python3 -m tvsetup.native_trial --device qn90a --binary "$PRIVATE_BUILD/collector-arm"
@@ -84,6 +96,16 @@ inspection of the exact staged artifacts before cleanup; do not rerun over it.
 Trials share the setup device lock and pending-run guard. Successful cleanup is
 recorded as `rolled-back`, with native samples and restored receiver evidence.
 
-`collector.service.in` is a future installation template, not an enabled boot unit.
+`collector.service.in` supplies the unit properties used by the local QN90A
+installation candidate; the template itself is not an enabled boot unit.
 Creating a service still requires privileged setup. Application launch acknowledgement,
 a short trial, and unit restart tests do not establish cold boot or standby behavior.
+
+## Home-use scope
+
+The active target is QN90A basic counters with the existing signed settings
+adapter and shared-engine recovery. Continuous QN90A inspector snapshots are
+intentionally retired; they are not a native parity requirement. S90D migration
+and helper/root-worker rewrites are deferred. See the
+[accepted scope](../../../docs/project/dotnet-deprecation-plan.md) and
+[installation and recovery boundary](../../../docs/guides/native-telemetry.md).

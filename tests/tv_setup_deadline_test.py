@@ -1,12 +1,15 @@
 """Global observation budgets, lost reboot replies and actual host process cleanup."""
 import copy
+import errno
+import signal
+import subprocess
 import json
 from pathlib import Path
 import sys
 import tempfile
 import time
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 from tvsetup.cli import reboot_verify, verification
 from tvsetup.common import DeadlineExpired, Refused, read_json, run
 from tvsetup.config import profile
@@ -92,3 +95,53 @@ class ProcessSupervisorTests(unittest.TestCase):
     def test_exhausted_budget_never_starts_a_process(self):
         with patch('tvsetup.common.subprocess.Popen',side_effect=AssertionError('spawned')):
             with self.assertRaises(DeadlineExpired):run(['unused'],timeout=0,supervise=True)
+
+    def test_darwin_zombie_group_eperm_preserves_deadline(self):
+        child = Mock(pid=123, returncode=None)
+        def reap(**kwargs):
+            child.returncode = -9
+            return b'', None
+        # Reap on the second communicate, as the real Popen does.
+        def communicate(**kwargs):
+            if child.returncode is None and not child.signalled:
+                raise subprocess.TimeoutExpired('helper', 1)
+            return reap(**kwargs)
+        child.signalled = False
+        child.communicate.side_effect = communicate
+        def gone(*args):
+            child.signalled = True
+            raise PermissionError(errno.EPERM, 'zombie group')
+        with patch('tvsetup.common.subprocess.Popen') as popen, patch('tvsetup.common.sys.platform', 'darwin'), patch('tvsetup.common.os.killpg', side_effect=gone) as killpg, patch.dict('os.environ', TV_SETUP_SUPERVISED_PGID=''):
+            popen.return_value.__enter__.return_value = child
+            with self.assertRaises(DeadlineExpired):run(['helper'], timeout=1, supervise=True)
+        self.assertEqual(killpg.call_count,2)
+        killpg.assert_called_with(child.pid,signal.SIGKILL)
+
+    def test_reaped_leader_group_is_killed_after_success_and_failure(self):
+        for code in (0, 1):
+            child = Mock(pid=123, returncode=None)
+            def reap(**kwargs):
+                child.returncode = code
+                return b'output', None
+            child.communicate.side_effect = reap
+            with self.subTest(code=code), patch('tvsetup.common.subprocess.Popen') as popen, patch('tvsetup.common.os.killpg') as killpg, patch.dict('os.environ', TV_SETUP_SUPERVISED_PGID=''):
+                popen.return_value.__enter__.return_value = child
+                if code:
+                    with self.assertRaises(Refused):run(['helper'], supervise=True)
+                else:self.assertEqual(run(['helper'], supervise=True), 'output')
+                killpg.assert_called_once_with(child.pid,signal.SIGKILL)
+
+    def test_failed_reaped_leader_does_not_leave_background_helper(self):
+        with tempfile.TemporaryDirectory() as tmp, patch.dict('os.environ', TV_SETUP_SUPERVISED_PGID=''):
+            marker=Path(tmp)/'orphan-marker'
+            with self.assertRaises(Refused):
+                run(['sh','-c','(sleep 2; touch "$1") >/dev/null 2>&1 & exit 1','sh',marker],timeout=10,supervise=True)
+            time.sleep(3)
+            self.assertFalse(marker.exists(),'Background helper survived supervised cleanup')
+
+    def test_linux_permission_errors_are_not_suppressed(self):
+        child = Mock(pid=123, returncode=None)
+        child.communicate.side_effect = subprocess.TimeoutExpired('helper', 1)
+        with patch('tvsetup.common.subprocess.Popen') as popen, patch('tvsetup.common.sys.platform', 'linux'), patch('tvsetup.common.os.killpg', side_effect=PermissionError(errno.EPERM, 'denied')), patch.dict('os.environ', TV_SETUP_SUPERVISED_PGID=''):
+            popen.return_value.__enter__.return_value = child
+            with self.assertRaises(PermissionError):run(['helper'], timeout=1, supervise=True)

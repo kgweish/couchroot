@@ -1,6 +1,12 @@
 # S90D boot-splash acknowledgement investigation
 
 Investigated and implemented 2026-09-20, firmware T-PTMDAKUC-0090-2130.0.
+**Historical record:** the splash-only helper below was superseded by telemetry
+composites later that day. The current live helper has not been read back for this
+assessment. See the [2026-10-12 assessment](native-boot-assessment.md) and
+[current recovery procedure](../../guides/s90d-boot-recovery.md). Do not use the
+old splash-only installer to replace a composite helper.
+
 The initial read-only investigation was followed by owner-authorized deployment
 and reboot validation. The path correction and final implementation below
 supersede the original resource-copy proposal.
@@ -136,7 +142,9 @@ used.
 `research/s90d-splash/build-helper.py` creates a separate variant of the existing
 AT-HUB/screensaver helper. The normal helper source remains unchanged. It calls
 `Splash.Start` before existing diagnostic/renderer work and `Splash.Finish` before
-exit. AT-HUB remains Type=simple and its cached unit is unchanged. Consequently,
+exit. At this stage AT-HUB remained Type=simple and this splash addition did not
+change the already-patched cached unit (the screensaver setup had replaced its
+stock ExecStart). Later telemetry composites keep AT-HUB resident. Consequently,
 the earliest handoff is limited by this existing helper's managed startup time;
 this implementation does not promise the dashboard's 8–10-second render time as
 physical boot time.
@@ -145,20 +153,17 @@ The feature is opt-in via root-owned `/opt/minimal-splash/enabled`. It checks ex
 firmware, custom Home selection, native executable and resource hashes. It skips
 if resume is already requested/acknowledged or another native splash is running.
 The child has a ten-second wait at helper completion; failures are logged and
-fall back to Samsung's existing resume behavior. No new resident service or
-security-policy exception is introduced. Existing diagnostic execution and
-screensaver overlay behavior are retained.
+fall back to Samsung's existing resume behavior. This initial splash-only revision
+introduced no new resident service or security-policy exception; later telemetry
+composites made the helper resident. Existing diagnostic execution and screensaver
+overlay behavior are retained.
 
-The controller `tools/s90d/splash.py` supports `apply`, `status`, and `rollback` and
-verifies the root collector's per-operation result, not only its process exit.
-It backs up the exact original helper at `/opt/minimal-splash/Boot.before.dll`,
-stages the reviewed replacement atomically, and removes its upload. Rollback
-checks both hashes before restoring the original and disabling the feature.
-It preserves private evidence. The installer refuses unrelated helper versions;
-screensaver updates and the optional boot recorder must be integrated explicitly,
-not silently overwrite one another.
-
-Build and control commands are in [owner operations](../../guides/owner-operations.md).
+The historical splash-only installer backed up the original helper and refused
+unrelated versions. Its replacement allowlist is intentionally not broadened to
+composites: doing so could discard telemetry and screensaver integration.
+`tools/s90d/splash.py` now routes to the shared-journal recovery checkpoint tool;
+see [boot recovery](../../guides/s90d-boot-recovery.md). It captures the actual
+reviewed baseline before a future trial and never installs the old splash build.
 
 ## Deployment evidence
 
@@ -176,7 +181,7 @@ Build and control commands are in [owner operations](../../guides/owner-operatio
 - Initial helper install and rollback exercised exact helper restoration before
   deploying the version with Samsung's display environment.
 
-## Verified result and final state
+## Verified result and state at the splash-only deployment
 
 Full restart boot ID `00000000-0000-4000-8000-000000000017`, collected in
 `dumps/20260920T174130Z`:
@@ -212,16 +217,16 @@ visual assessment of the screensaver.
 The boot-tested helper hash was
 `e10a33fc26a03eea25f2ce0fe63da6d29ed49633068e9cd470ebc59d710b39f7`.
 A final change contains diagnostic write/dispose errors so a log I/O failure
-cannot interrupt normal boot work; native launch logic is unchanged. Final
-installed helper hash:
+cannot interrupt normal boot work; native launch logic is unchanged. The
+then-installed splash-only helper hash:
 `4a6fdb3d979ab13ed8d38b2bc6e1b9b94e5a04294312d0f9b50cc7f1f0a6c987`, deployment
 `dumps/20260920T174317Z`. A warm invocation in PID 1's mount namespace verified
-that the final helper **skips** the splash after resume, leaves the dashboard
+that this splash-only helper **skips** the splash after resume, leaves the dashboard
 foreground and retains the active screensaver overlay. Evidence:
-`dumps/20260920T174348Z`. This final logging-only revision was not separately
+`dumps/20260920T174348Z`. This logging-only revision was not separately
 cold-boot timed.
 
-The same final check verifies the exact original helper backup, unchanged
+The same historical check verifies the exact original helper backup, unchanged
 systemd cache/table, and absence of the ineffective resource/staging directories.
 All completed deployment/verification operations passed transport hashes and
 original account/key/temporary-root cleanup checks. One reboot interrupted its
@@ -232,3 +237,14 @@ and the on-TV rollback round trip restored the exact original helper before the
 successful compatibility deployment. The optional boot recorder is disabled.
 No firmware files or signed native executables were patched. The feature remains
 enabled persistently through the existing boot helper and its opt-in marker.
+
+## Subsequent state correction — 2026-10-12
+
+The later recorded composite `879e602d…` retained splash/saver work and left
+AT-HUB resident. The setup profile expects `93dec0d4…`, but the assessment has no
+post-install live readback confirming that revision. Neither this page nor the
+profile establishes today's installed bytes. Recovery must checkpoint a fresh,
+reviewed baseline before a separately authorized trial. The private assessment
+also confirms a static starter.target scheduling exemption for AT-HUB; its actual
+runtime policy remains unmeasured. See the assessment summary for evidence and
+measurement limits.

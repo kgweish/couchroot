@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "date": "2026-10-16",
+  "scope": "Owner-authorized corrected-observer probe on S90D; separate service restart remains incomplete",
+  "installed_version": "0.7.49",
+  "observer_sha256": "aaf22cfbf18a8ca2761eb7939003682ac00432c40c281bacda420c48425787a0",
+  "probe": {
+    "seconds": 5,
+    "samples": 5,
+    "skipped_intervals": 0,
+    "first_sample_delay_ms": 0.438558,
+    "interval_complete": true,
+    "kernel_complete": true,
+    "kernel_records": 82,
+    "unit_exit_code": 0,
+    "active_zero_status_observed": true,
+    "capture_complete": true,
+    "exit_wait_seconds": 6.596276042051613,
+    "observations": 12,
+    "owned_scope_cleaned": true,
+    "rescue_retired_without_firing": true,
+    "retained_exit_success_observed": true,
+    "same_boot": true,
+    "same_managed_worker": true
+  },
+  "qualification_limits": [
+    "This short managed-worker probe does not qualify S90D endurance.",
+    "The probe completed and retired its rescue before the separate service-restart attempt.",
+    "No reboot was performed during either this probe or the subsequent service-restart attempt.",
+    "The .NET entry, managed fallback and independent recovery utility remain installed."
+  ]
+}

@@ -10,6 +10,7 @@ import uuid
 import os
 import time
 import sys
+import re
 
 
 class OperationError(RuntimeError):
@@ -80,7 +81,7 @@ class Session:
             raw = response.read(4 * 1024 * 1024 + 1)
             if len(raw) > 4 * 1024 * 1024:
                 raise RuntimeError('Oversized response')
-            if response.status != 200:
+            if response.status != 200 and not (response.status == 202 and method == 'POST' and route in ('/v1/native/rehearse','/v1/native/resume-managed','/v1/native/cleanup-restart','/v1/native/migrate','/v1/native/resume-native','/v1/native/return-managed')):
                 raise OperationError(json.loads(raw))
             if raw_response:
                 if len(raw) > 1024 * 1024 or hashlib.sha256(raw).hexdigest() != response.getheader('X-SHA256'):
@@ -108,10 +109,22 @@ def request(config, method, route, body=None, *, binary=None, raw_response=False
         return transport.request(method, route, body, binary=binary, raw_response=raw_response, timeout=timeout)
 
 
+# Fixed budgets mirrored in service/operation-deadlines.js; the parity contract
+# checks both implementations. These do not extend command or job run deadlines.
+OPERATION_TIMEOUT_MS = {
+    'file.open': 120000, 'file.commit': 120000, 'helper.prepare': 120000,
+    'file.read': 60000, 'file.write': 60000,
+}
+
+
+def operation_timeout(op):
+    return (OPERATION_TIMEOUT_MS.get(op, 30000) + 10000) / 1000
+
+
 def operation(config, value, *, binary=None, session=None):
     envelope=dict(id=str(uuid.uuid4()), operation=value)
     route='/v1/files/write' if binary is not None else '/v1/files/read' if value['op']=='file.read' else '/v1/op'
-    return request(config,'POST',route,envelope,binary=binary,raw_response=value['op']=='file.read',session=session)
+    return request(config,'POST',route,envelope,binary=binary,raw_response=value['op']=='file.read',session=session,timeout=operation_timeout(value['op']))
 
 
 def file_digest(stream):
@@ -185,10 +198,67 @@ def wait_ready(config, previous_boot_id=None, timeout=180):
     raise TimeoutError('No ready root worker on the requested boot before the deadline')
 
 
+def probe_observer(config, manifest_sha256, request_id, session=None):
+    if not isinstance(manifest_sha256,str) or not re.fullmatch('[a-f0-9]{64}',manifest_sha256):
+        raise ValueError('Candidate manifest digest required')
+    if not isinstance(request_id,str) or not re.fullmatch('[-a-zA-Z0-9]{16,64}',request_id):
+        raise ValueError('Persistent request ID required')
+    return request(config,'POST','/v1/observer/probe',dict(id=request_id,manifest_sha256=manifest_sha256),timeout=130,session=session)
+
+
+
+def rehearse_native(config, manifest_sha256, runtime_sha256, request_id, session=None):
+    if not all(isinstance(v,str) and re.fullmatch('[a-f0-9]{64}',v) for v in (manifest_sha256,runtime_sha256)):
+        raise ValueError('Candidate and managed runtime digests required')
+    if not isinstance(request_id,str) or not re.fullmatch('[-a-zA-Z0-9]{16,64}',request_id):
+        raise ValueError('Persistent request ID required')
+    return request(config,'POST','/v1/native/rehearse',dict(id=request_id,manifest_sha256=manifest_sha256,runtime_sha256=runtime_sha256),session=session)
+
+
+def resume_managed_activation(config, rehearsal_id, request_id, session=None):
+    if not all(isinstance(v,str) and re.fullmatch('[-a-zA-Z0-9]{16,64}',v) for v in (rehearsal_id,request_id)) or rehearsal_id == request_id:
+        raise ValueError('Distinct rehearsal and recovery request IDs required')
+    return request(config,'POST','/v1/native/resume-managed',dict(id=request_id,rehearsal_id=rehearsal_id),session=session)
+
+
+def migrate_native(config, manifest_sha256, runtime_sha256, request_id, session=None):
+    if not all(isinstance(v,str) and re.fullmatch('[a-f0-9]{64}',v) for v in (manifest_sha256,runtime_sha256)):
+        raise ValueError('Candidate and managed runtime digests required')
+    if not isinstance(request_id,str) or not re.fullmatch('[-a-zA-Z0-9]{16,64}',request_id):
+        raise ValueError('Persistent request ID required')
+    return request(config,'POST','/v1/native/migrate',dict(id=request_id,manifest_sha256=manifest_sha256,runtime_sha256=runtime_sha256),session=session)
+
+
+def resume_native_activation(config, migration_id, request_id, session=None):
+    if not all(isinstance(v,str) and re.fullmatch('[-a-zA-Z0-9]{16,64}',v) for v in (migration_id,request_id)) or migration_id == request_id:
+        raise ValueError('Distinct migration and recovery request IDs required')
+    return request(config,'POST','/v1/native/resume-native',dict(id=request_id,migration_id=migration_id),session=session)
+
+
+def return_managed(config, runtime_sha256, request_id, session=None):
+    if not isinstance(runtime_sha256,str) or not re.fullmatch('[a-f0-9]{64}',runtime_sha256):
+        raise ValueError('Managed runtime digest required')
+    if not isinstance(request_id,str) or not re.fullmatch('[-a-zA-Z0-9]{16,64}',request_id):
+        raise ValueError('Persistent request ID required')
+    return request(config,'POST','/v1/native/return-managed',dict(id=request_id,runtime_sha256=runtime_sha256),session=session)
+
+
+def cleanup_restart(config, transaction_id, request_id, session=None, *, cleanup_id=None):
+    if not isinstance(transaction_id,str) or not re.fullmatch('[a-f0-9]{32}',transaction_id) or not isinstance(request_id,str) or not re.fullmatch('[-a-zA-Z0-9]{16,64}',request_id):
+        raise ValueError('Rolled-back transaction and persistent request ID required')
+    value=dict(id=request_id,transaction_id=transaction_id)
+    if cleanup_id is not None:
+        if not isinstance(cleanup_id,str) or not re.fullmatch(r'[-a-zA-Z0-9]{16,64}',cleanup_id) or cleanup_id==request_id: raise ValueError('Distinct original cleanup ID required')
+        value['cleanup_id']=cleanup_id
+    return request(config,'POST','/v1/native/cleanup-restart',value,session=session)
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--config',required=True,type=Path)
-    parser.add_argument('operation',choices=['status','requests','enable','disable','exec','archive-journal','upload','download','op','wait-ready','app-exec','job-start','job-status','job-tail','job-cancel','job-forget','helper-prepare','helper-release'])
+    parser.add_argument('--cleanup-id',help='Original unknown cleanup request to reconcile (same live coordinator)')
+    parser.add_argument('operation',choices=['status','requests','enable','disable','exec','archive-journal','upload','download','op','wait-ready','app-exec','job-start','job-status','job-tail','job-cancel','job-forget','helper-prepare','helper-release','observer-probe','native-rehearse','native-status','native-resume-managed','native-cleanup-restart','native-migrate','native-resume-native','native-return-managed'])
+    parser.add_argument('--manifest-sha256');parser.add_argument('--runtime-sha256');parser.add_argument('--rehearsal-id');parser.add_argument('--migration-id');parser.add_argument('--transaction-id')
     parser.add_argument('--command-file',type=Path)
     parser.add_argument('--timeout-ms',type=int,default=20000)
     parser.add_argument('--request-id',default=None)
@@ -226,6 +296,36 @@ def main():
     elif args.operation=='op':
         if not args.operation_file:parser.error('--operation-file required')
         result=operation(config,json.loads(args.operation_file.read_text()))
+    elif args.operation=='native-status':result=request(config,'GET','/v1/native/status')
+    elif args.operation=='native-rehearse':
+        if not args.manifest_sha256 or not args.runtime_sha256 or not args.request_id:parser.error('--manifest-sha256, --runtime-sha256 and --request-id required')
+        print('Request ID: '+args.request_id,file=sys.stderr)
+        result=rehearse_native(config,args.manifest_sha256,args.runtime_sha256,args.request_id)
+    elif args.operation=='native-resume-managed':
+        if not args.rehearsal_id or not args.request_id:parser.error('--rehearsal-id and --request-id required')
+        print('Request ID: '+args.request_id,file=sys.stderr)
+        result=resume_managed_activation(config,args.rehearsal_id,args.request_id)
+    elif args.operation=='native-migrate':
+        if not args.manifest_sha256 or not args.runtime_sha256 or not args.request_id:parser.error('--manifest-sha256, --runtime-sha256 and --request-id required')
+        print('Request ID: '+args.request_id,file=sys.stderr)
+        result=migrate_native(config,args.manifest_sha256,args.runtime_sha256,args.request_id)
+    elif args.operation=='native-resume-native':
+        if not args.migration_id or not args.request_id:parser.error('--migration-id and --request-id required')
+        print('Request ID: '+args.request_id,file=sys.stderr)
+        result=resume_native_activation(config,args.migration_id,args.request_id)
+    elif args.operation=='native-return-managed':
+        if not args.runtime_sha256 or not args.request_id:parser.error('--runtime-sha256 and --request-id required')
+        print('Request ID: '+args.request_id,file=sys.stderr)
+        result=return_managed(config,args.runtime_sha256,args.request_id)
+    elif args.operation=='native-cleanup-restart':
+        if not args.transaction_id or not args.request_id:parser.error('--transaction-id and --request-id required')
+        print('Request ID: '+args.request_id,file=sys.stderr)
+        result=cleanup_restart(config,args.transaction_id,args.request_id,cleanup_id=args.cleanup_id)
+    elif args.operation=='observer-probe':
+        if not args.manifest_sha256:parser.error('--manifest-sha256 required')
+        identity=args.request_id or str(uuid.uuid4())
+        print('Request ID: '+identity,file=sys.stderr)
+        result=probe_observer(config,args.manifest_sha256,identity)
     elif args.operation=='wait-ready':result=wait_ready(config,args.previous_boot_id,args.wait_seconds)
     elif args.operation=='exec':
         if not args.command_file:parser.error('exec requires --command-file')

@@ -1,0 +1,112 @@
+{
+  "schema": 1,
+  "date": "2026-10-15",
+  "version": "0.7.41",
+  "source_base_commit": "c218c05",
+  "runtime_unchanged": true,
+  "scope": "Bounded launch pressure and retained intent on existing ordinary production worker",
+  "local": {
+    "launch_pressure_cases": 4,
+    "controller_mode_validation_cases": 2,
+    "node_passed": 404,
+    "node_skipped": 143
+  },
+  "devices": {
+    "qn90a": {
+      "ordinary_worker_sha256": "4b6f19a3badd74734fe254258b5c80f0af43e1766338f69f69f922e38b108f4a",
+      "checks": [
+        {
+          "check": "address_space_refusal_preserves_live_and_saved_jobs_then_recovers_without_replay",
+          "passed": true
+        },
+        {
+          "check": "launch_pressure_shutdown_and_cleanup",
+          "passed": true
+        }
+      ],
+      "production_mode": true,
+      "controller_exit_code": 0,
+      "managed_selected_ready": true,
+      "pending_setup": false,
+      "settled": true,
+      "history_entries": 28,
+      "committed_entries": 22,
+      "rolled_back_entries": 6,
+      "address_space_limit": "Current virtual pages from the live authenticated worker multiplied by the TV page size; original soft/hard limits restored after response",
+      "saved_exit_code": 7,
+      "live_exit_code": 9,
+      "recovered_app_exit_code": 11,
+      "refused_job_state_before_restart": "unknown",
+      "refused_job_state_after_restart": "interrupted",
+      "refused_job_executed": false,
+      "controller_sha256": "bdffcd7814baa5f502ff4ff4cad53baa3ce716a9fa10acfdac8a36b2981cc285",
+      "scope_removed": true,
+      "helpers_released": true,
+      "retained_jobs_preserved": true,
+      "managed_worker_unchanged": true,
+      "history_unchanged": true,
+      "same_boot": true,
+      "sdk_loopback": true,
+      "rescue_inactive": true,
+      "enrollment_and_protected_hashes_preserved": true
+    },
+    "s90d": {
+      "ordinary_worker_sha256": "4b6f19a3badd74734fe254258b5c80f0af43e1766338f69f69f922e38b108f4a",
+      "checks": [
+        {
+          "check": "address_space_refusal_preserves_live_and_saved_jobs_then_recovers_without_replay",
+          "passed": true
+        },
+        {
+          "check": "launch_pressure_shutdown_and_cleanup",
+          "passed": true
+        }
+      ],
+      "production_mode": true,
+      "controller_exit_code": 0,
+      "managed_selected_ready": true,
+      "pending_setup": false,
+      "settled": true,
+      "history_entries": 29,
+      "committed_entries": 22,
+      "rolled_back_entries": 7,
+      "address_space_limit": "Current virtual pages from the live authenticated worker multiplied by the TV page size; original soft/hard limits restored after response",
+      "saved_exit_code": 7,
+      "live_exit_code": 9,
+      "recovered_app_exit_code": 11,
+      "refused_job_state_before_restart": "unknown",
+      "refused_job_state_after_restart": "interrupted",
+      "refused_job_executed": false,
+      "controller_sha256": "bdffcd7814baa5f502ff4ff4cad53baa3ce716a9fa10acfdac8a36b2981cc285",
+      "scope_removed": true,
+      "helpers_released": true,
+      "retained_jobs_preserved": true,
+      "managed_worker_unchanged": true,
+      "history_unchanged": true,
+      "same_boot": true,
+      "sdk_loopback": true,
+      "rescue_inactive": true,
+      "enrollment_and_protected_hashes_preserved": true
+    }
+  },
+  "source_sha256": {
+    "research/autonomous-root/native-worker/accept.c": "ff18325c5b3727a04b466cf448c2a73de03f8d461b6244b90fc041049b288b3f",
+    "research/autonomous-root/native-worker/launch-pressure-accept.h": "e630924bb704dbf04e18c42225451f3ff1b33332799cc38e05309c51e1e0ebd3",
+    "tests/native_launch_pressure_test.py": "6567ddc4bd09349d9e91aa9beb2fff1132cc1acaac528ff3ff11bc90f830c879",
+    "tests/native_production_resources_test.py": "bea8a31f875cb510297f00fa7fc18fd0854608a89d8cd3433edaa70d3ec1e207",
+    "tests/native-io/launch-failure.c": "78c0e2625ead2308929b8e31e0e8935a196fe7af59beb1459bb4786fd17be5a3"
+  },
+  "qualification": [
+    "The controller lowers RLIMIT_AS only for its live authenticated separate worker to that process's existing virtual mapping size. Guardian, installed managed worker and existing command child limits remain unchanged. No RAM is filled to create pressure.",
+    "The bounded worker refuses a new launch with its memory-allocation error after publishing its exclusive intent, and no command witness appears. After restoration, duplicate submission still fails. Existing saved exit 7 remains byte-identical, the FIFO-gated job remains running after refusal, then completes exit 9 with a single witness only after the controller releases it, and a fresh app job exits 11.",
+    "Normal shutdown and a fresh launch reconcile the refused job from unknown to interrupted with unknown exit status. The saved result stays byte-identical and the refused command never runs. Normal job APIs retire owned records before the controller removes its own empty scope.",
+    "Local tests additionally inject ENOMEM at each of the two one-MiB output-buffer allocations, and EAGAIN at fork, only in the explicitly named protocol process. Each rejects the launch, retains intent, preserves the descriptor set, refuses duplicate execution and admits fresh work after the fault is removed. Restart never replays the command.",
+    "No runtime source, packaged worker bytes, service selection or managed fallback was changed for this milestone. New code is confined to acceptance tooling and test-only fixtures. Fresh controller builds and six focused cases passed; npm test passed 404 cases with 143 skips. Runtime and integration results from c218c05 remain the preceding qualification, not newly rerun tests."
+  ],
+  "limits": [
+    "The on-TV case qualifies bounded per-process virtual-address admission with one concurrent live job. It does not establish TV-wide OOM behavior, memory-controller pressure, allocator fragmentation, aggregate multi-job resource guarantees or sustained pressure.",
+    "Allocation-site and fork failure injection is local only. No test interposer or production failure API was used on either TV. Broader process pressure remains unqualified on hardware.",
+    "Native-only capability entry, wider lifecycle interruption, storage stalls, endurance and native-default observation remain open. The historical 0.7.40 QN90A timeout is not attributed by this result.",
+    "The .NET entry bridge, fallback worker and independent 300-second rescue remain available. No reboot, standby, global policy, persistent file-capability or SMACK-rule change occurred."
+  ]
+}

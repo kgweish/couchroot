@@ -17,10 +17,13 @@
 
 var net = require('net');
 var crypto = require('crypto');
+var operationDeadline = require('../operation-deadlines').operationDeadline;
 
 var PROTOCOL_VERSION = 'SAMSUNG-TV-ROOT/1';
 var MAX_FRAME_BYTES = 8 * 1024 * 1024;
 var MAX_PENDING = 32;
+var MAX_PREAUTH = 16;
+var MAX_AUTH_BYTES = 512;
 
 function RootAgentServer(opts) {
     opts = opts || {};
@@ -31,6 +34,7 @@ function RootAgentServer(opts) {
     this.onClose = opts.onClose;        // () -> void
     this._server = null;
     this._conn = null;
+    this._preauth = new Set();
     this._listeningPort = 0;
     this.log = [];   // why each connection was rejected; shown in /status
 }
@@ -59,10 +63,13 @@ RootAgentServer.prototype._handle = function (socket) {
     var self = this;
     if (this._conn) { this.note('second connection while one agent is active'); socket.destroy(); return; }
 
+    if (this._preauth.size >= MAX_PREAUTH) { this.note('too many unauthenticated peers'); socket.destroy(); return; }
+    this._preauth.add(socket);
+
     var nonce = crypto.randomBytes(32);
     socket.write(PROTOCOL_VERSION + '\t' + nonce.toString('hex') + '\n');
 
-    var lineBuffer = Buffer.alloc(4096), lineBytes = 0, binary = null, binaryBuffer = null, binaryBytes = 0;
+    var lineBuffer = Buffer.alloc(MAX_AUTH_BYTES), lineBytes = 0, binary = null, binaryBuffer = null, binaryBytes = 0;
     var authed = false;
 
     // the agent must AUTH within 10s; a silent peer is dropped (the host tool
@@ -103,6 +110,7 @@ RootAgentServer.prototype._handle = function (socket) {
                 return;
             }
             authed = true;
+            self._preauth.delete(socket);
             clearTimeout(authTimer);
             self._conn = new RootAgentConnection(socket, self.secret, nonce, ident);
             if (self.onConnect) self.onConnect(self._conn);
@@ -131,9 +139,10 @@ RootAgentServer.prototype._handle = function (socket) {
                 var newline = chunk.indexOf(10, offset);
                 var end = newline < 0 ? chunk.length : newline;
                 var nextBytes = lineBytes + end - offset;
-                if (nextBytes > MAX_FRAME_BYTES) throw Error('frame too large');
+                var limit = authed ? MAX_FRAME_BYTES : MAX_AUTH_BYTES;
+                if (nextBytes > limit) throw Error('frame too large');
                 if (nextBytes > lineBuffer.length) {
-                    var grown = Buffer.alloc(Math.min(MAX_FRAME_BYTES, Math.max(nextBytes, lineBuffer.length * 2)));
+                    var grown = Buffer.alloc(Math.min(limit, Math.max(nextBytes, lineBuffer.length * 2)));
                     lineBuffer.copy(grown, 0, 0, lineBytes); lineBuffer = grown;
                 }
                 chunk.copy(lineBuffer, lineBytes, offset, end); lineBytes = nextBytes;
@@ -155,9 +164,10 @@ RootAgentServer.prototype._handle = function (socket) {
 
     socket.on('error', function (e) { self.note('socket error: ' + (e.message || e)); });
     socket.on('close', function () {
+        self._preauth.delete(socket);
         clearTimeout(authTimer);
         if (self._conn && self._conn._socket === socket) {
-            self._conn._failPending(new Error('root agent disconnected'));
+            self._conn._failPending(new Error('root agent disconnected'), true);
             self._conn = null;
             if (self.onClose) self.onClose();
         } else if (!authed) {
@@ -186,12 +196,19 @@ RootAgentServer.prototype.execute = function (command, timeoutMs) {
 };
 
 RootAgentServer.prototype.close = function () {
+    this._preauth.forEach(function (socket) { socket.destroy(); });
+    this._preauth.clear();
     if (this._conn) {
         this._conn._failPending(new Error('root agent server closed'));
         try { this._conn._socket.destroy(); } catch (e) {}
         this._conn = null;
     }
     if (this._server) { try { this._server.close(); } catch (e) {} this._server = null; }
+};
+
+RootAgentServer.prototype.shutdown = function () {
+    if (!this._conn) return Promise.reject(Object.assign(Error('No root worker connected'), {outcome:'rejected'}));
+    return this._conn.shutdown();
 };
 
 // --- connection (server side, one agent) ----------------------------------
@@ -212,6 +229,18 @@ RootAgentConnection.prototype._send = function (payload) {
 
 RootAgentConnection.prototype._onFrame = function (payload) {
     var f = payload.split('\t');
+    if (this._shutdown) {
+        var stopping = this._shutdown;
+        if (f.length !== 2 || f[0] !== 'BYE' || f[1] !== String(stopping.sequence) || stopping.acknowledged) {
+            stopping.invalid = true;
+            this._socket.destroy();
+            return;
+        }
+        stopping.acknowledged = true;
+        // BYE precedes worker cleanup. Wait for disconnect, then the controller
+        // must independently verify process exit and retained resources.
+        return;
+    }
     if (f[0] === 'OPDATA') {
         var self = this, pending = this._pending[f[1]], read = pending && pending.read;
         if (f.length !== 5 || !read || !/^(0|[1-9][0-9]*)$/.test(f[2])
@@ -263,7 +292,15 @@ RootAgentConnection.prototype._onFrame = function (payload) {
     }
 };
 
-RootAgentConnection.prototype._failPending = function (error) {
+RootAgentConnection.prototype._failPending = function (error, disconnected) {
+    if (this._shutdown) {
+        var stopping = this._shutdown;
+        this._shutdown = null;
+        clearTimeout(stopping.timer);
+        if (stopping.acknowledged && !stopping.invalid && disconnected)
+            stopping.resolve({acknowledged:true, disconnected:true});
+        else stopping.reject(Object.assign(Error('Worker shutdown outcome unknown'), {outcome:'unknown'}));
+    }
     var pending = this._pending;
     this._pending = {};
     Object.keys(pending).forEach(function (seq) {
@@ -274,6 +311,7 @@ RootAgentConnection.prototype._failPending = function (error) {
 
 RootAgentConnection.prototype.execute = function (command, timeoutMs) {
     var self = this;
+    if (self._closing) return Promise.reject(Object.assign(Error('Worker shutdown in progress'), {outcome:'rejected'}));
     timeoutMs = timeoutMs == null ? 30000 : timeoutMs;
     if (typeof command !== 'string' || !command.trim() || Buffer.byteLength(command) > 65536) {
         return Promise.reject(new Error('invalid or oversized command'));
@@ -306,6 +344,25 @@ RootAgentConnection.prototype.execute = function (command, timeoutMs) {
     });
 };
 
+RootAgentConnection.prototype.shutdown = function () {
+    var self = this;
+    if (self._closing || self._socket.destroyed || Object.keys(self._pending).length)
+        return Promise.reject(Object.assign(Error('Worker must be connected and drained before shutdown'), {outcome:'rejected'}));
+    self._closing = true;
+    return new Promise(function (resolve, reject) {
+        var sequence = ++self._sequence;
+        var stopping = {sequence:sequence, resolve:resolve, reject:reject, acknowledged:false, invalid:false};
+        self._shutdown = stopping;
+        stopping.timer = setTimeout(function () {
+            stopping.invalid = true;
+            self._failPending(Error('Worker shutdown deadline expired'));
+            self._socket.destroy();
+        }, 10000);
+        try { self._send('SHUTDOWN\t' + sequence); }
+        catch (e) { stopping.invalid = true; self._failPending(e); self._socket.destroy(); }
+    });
+};
+
 module.exports = { RootAgentServer };
 // OPWRITE and OPDATA authenticate bounded metadata before raw upload/download bytes.
 RootAgentServer.prototype.operation = function (value, data) {
@@ -314,6 +371,7 @@ RootAgentServer.prototype.operation = function (value, data) {
 };
 RootAgentConnection.prototype.operation = function (value, data) {
     var self=this, binary=data!==undefined;
+    if (self._closing) return Promise.reject(Object.assign(Error('Worker shutdown in progress'), {outcome:'rejected'}));
     if (binary && (!Buffer.isBuffer(data) || value.op!=='file.write' || typeof value.transfer_id!=='string' || value.transfer_id.length!==32 || !/^[a-f0-9]{32}$/.test(value.transfer_id)
         || !Number.isSafeInteger(value.offset) || value.offset<0 || value.offset>2147483648-data.length
         || data.length<1 || data.length>1048576 || typeof value.sha256!=='string' || value.sha256.length!==64 || !/^[a-f0-9]{64}$/.test(value.sha256)))
@@ -323,7 +381,7 @@ RootAgentConnection.prototype.operation = function (value, data) {
         return Promise.reject(Object.assign(Error('Operation unavailable or oversized'), {outcome:'rejected'}));
     return new Promise(function(resolve,reject) {
         var seq=++self._sequence;
-        var timer=setTimeout(function(){delete self._pending[seq];reject(Error('Operation outcome unknown'));self._socket.destroy();},30000);
+        var timer=setTimeout(function(){delete self._pending[seq];reject(Object.assign(Error('Operation outcome unknown'),{outcome:'unknown'}));self._socket.destroy();},operationDeadline(value.op));
         self._pending[seq]={resolve:resolve,reject:reject,timer:timer,read:value.op==='file.read'?{offset:value.offset,length:value.length}:null};
         try {
             if (binary) {

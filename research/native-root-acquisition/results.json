@@ -1,0 +1,205 @@
+{
+  "schema": 1,
+  "date": "2026-10-15",
+  "kind": "native-acquisition-managed-entry-pilot",
+  "hardware": [
+    {
+      "model": "QN90A",
+      "package_version": "0.7.28",
+      "build": {
+        "artifacts": {
+          "NativeEntry.deps.json": {
+            "sha256": "b16f93050f0640f082ad7219fb972d2b16039f7428f739cfcac88a191d5add4a",
+            "size": 403
+          },
+          "NativeEntry.dll": {
+            "sha256": "b01a1d70d3a9a50743f570b9d46dff11fa6b0329f9041f33a54b1a4502551318",
+            "size": 6144
+          },
+          "NativeEntry.runtimeconfig.json": {
+            "sha256": "4efe04a54651f7451ce2242c8cf9ed3d4c7bcdcdc01678b5a8df7cd80382cfd5",
+            "size": 279
+          },
+          "libacquire.so": {
+            "abi": "armv7-eabi5-softfp",
+            "glibc_max": "2.17.0",
+            "needed": [
+              "ld-linux.so.3",
+              "libc.so.6"
+            ],
+            "sha256": "8f4084ec5d3d33b035a6bdc16314b9db578fe0fe1706cac3c09048f4cf034dd9",
+            "size": 16968
+          }
+        },
+        "framework": "netcoreapp3.1",
+        "kind": "native-acquisition-managed-entry",
+        "model": "qn90a",
+        "reproducible_builds": 2,
+        "runtime": "3.1.3",
+        "schema": 1,
+        "source": {
+          "NativeEntry.cs": "c238706cdbed47bf092222a2bc0231b1f82da5c97da6e61be5e259d9d0122b6b",
+          "acquire.c": "5396a6d963300a435cde371827be77200da43784494ceeacc81e37e38bdf2356",
+          "build.sh": "e3916a0dd1530e85074335302b2225260177195a523d1f1154c0ea86c2be52b9"
+        },
+        "toolchain": {
+          "compiler": "10.2.1",
+          "image": "sha256:8d04ca4a4d08ce5a17ffb904b6c5a7742f51e885506f2e3215b8e2db7659a3c4"
+        }
+      },
+      "checks": {
+        "accepted": true,
+        "enrollment_unchanged": true,
+        "managed_entry_still_required": true,
+        "managed_ready": true,
+        "net_backup_timer_unused": true,
+        "originals_and_selection_jobs_unchanged": true,
+        "same_boot": true,
+        "sdk_loopback": true,
+        "timers_disarmed": true,
+        "worker_disabled_during_acquisition": true
+      },
+      "final_verification": {
+        "all_owned_trial_units_inactive": true,
+        "history_entries": 16,
+        "managed_ready": true,
+        "managed_recovery_digest_unchanged": true,
+        "native_staging_absent": true,
+        "owned_unit_groups_checked": 15,
+        "pending_setup": false,
+        "probe_children_absent": true,
+        "same_boot": true,
+        "sdk_loopback": true
+      },
+      "managed_fallback_separately_exercised": true,
+      "original_sdk_staging_restored": true,
+      "private_namespace_distinct_from_pid1": true,
+      "outcomes": {
+        "success": "verified root command",
+        "nonzero": "refused with cleanup",
+        "timeout": "refused with cleanup"
+      },
+      "operation_elapsed_seconds": {
+        "native-success": 2.6,
+        "native-nonzero": 2.6,
+        "native-timeout": 27.7,
+        "managed-fallback": 3.6
+      },
+      "round_elapsed_seconds": 189.9
+    },
+    {
+      "model": "S90D",
+      "package_version": "0.7.28",
+      "build": {
+        "artifacts": {
+          "NativeEntry.deps.json": {
+            "sha256": "af9013c42a3fa4317c376e5e5216ea9bec338833c75e652f96449a58c89284be",
+            "size": 403
+          },
+          "NativeEntry.dll": {
+            "sha256": "64105b47a216c3f473e5ff0495dd2e306fefa235f871d27ecbf7d4cd57065395",
+            "size": 6144
+          },
+          "NativeEntry.runtimeconfig.json": {
+            "sha256": "537ff2667f51d2fe990dd3e83987f2474d0c27dbc0210ff2a1142c7568f69e22",
+            "size": 272
+          },
+          "libacquire.so": {
+            "abi": "armv7-eabi5-softfp",
+            "glibc_max": "2.17.0",
+            "needed": [
+              "ld-linux.so.3",
+              "libc.so.6"
+            ],
+            "sha256": "8fd127f2039b8901f92de542625eb1ff9fefcd90f8c0c2758a158a60acea7b91",
+            "size": 16968
+          }
+        },
+        "framework": "net6.0",
+        "kind": "native-acquisition-managed-entry",
+        "model": "s90d",
+        "reproducible_builds": 2,
+        "runtime": "6.0.9",
+        "schema": 1,
+        "source": {
+          "NativeEntry.cs": "c238706cdbed47bf092222a2bc0231b1f82da5c97da6e61be5e259d9d0122b6b",
+          "acquire.c": "5396a6d963300a435cde371827be77200da43784494ceeacc81e37e38bdf2356",
+          "build.sh": "e3916a0dd1530e85074335302b2225260177195a523d1f1154c0ea86c2be52b9"
+        },
+        "toolchain": {
+          "compiler": "10.2.1",
+          "image": "sha256:8d04ca4a4d08ce5a17ffb904b6c5a7742f51e885506f2e3215b8e2db7659a3c4"
+        }
+      },
+      "checks": {
+        "accepted": true,
+        "disarm_reconciled_after_stop_timeout": true,
+        "enrollment_unchanged": true,
+        "managed_entry_still_required": true,
+        "managed_ready": true,
+        "net_backup_timer_unused": true,
+        "originals_and_selection_jobs_unchanged": true,
+        "same_boot": true,
+        "sdk_loopback": true,
+        "timers_disarmed": true,
+        "worker_disabled_during_acquisition": true
+      },
+      "final_verification": {
+        "all_owned_trial_units_inactive": true,
+        "history_entries": 18,
+        "managed_ready": true,
+        "managed_recovery_digest_unchanged": true,
+        "native_staging_absent": true,
+        "owned_unit_groups_checked": 3,
+        "pending_setup": false,
+        "probe_children_absent": true,
+        "same_boot": true,
+        "sdk_loopback": true
+      },
+      "managed_fallback_separately_exercised": true,
+      "original_sdk_staging_restored": true,
+      "private_namespace_distinct_from_pid1": true,
+      "outcomes": {
+        "success": "verified root command",
+        "nonzero": "refused with cleanup",
+        "timeout": "refused with cleanup"
+      },
+      "operation_elapsed_seconds": {
+        "native-success": 6.1,
+        "native-nonzero": 6.2,
+        "native-timeout": 31.5,
+        "managed-fallback": 7.7
+      },
+      "round_elapsed_seconds": 286.0
+    }
+  ],
+  "local_tests": {
+    "focused_linux": {
+      "passed": 15,
+      "skipped": 0
+    },
+    "node": {
+      "passed": 360,
+      "skipped": 125
+    },
+    "python_macos": {
+      "passed": 258,
+      "skipped": 127
+    }
+  },
+  "observations": [
+    "QN90A first refused occupied on-demand staging. Known service archives were subsequently preserved by a journaled directory rename and restored byte-for-byte.",
+    "QN90A refused to map the library from writable staging. The trusted managed loader now establishes a private read-only code bind before loading C; no platform policy or file capabilities change.",
+    "An initial owner GID assumption was refused. Both supported TVs were observed to use owner UID 5001 and GID 100; the native contract and fixtures now pin those fields.",
+    "An initial staged script argument was refused by Samsung shell policy. Native execution now reads verified bounded bytes and uses the same sh -c contract as the managed runner.",
+    "Earlier incomplete QN90A rounds are retained as separate failure evidence; their cleanup and baseline restoration were verified. No failed operation was silently retried or converted into managed execution.",
+    "S90D synchronous timer stopping timed out after the .NET fallback timer had already been disarmed. Read-only inspection proved both native services completed and SDK remained on loopback; remaining owned timers were stopped without blocking, and final state was verified without replaying acquisition."
+  ],
+  "limitations": [
+    "Managed NativeEntry and Samsung trusted dotnet/runtime remain required for capability entry and the read-only code mount. This is not .NET-free acquisition.",
+    "Explicit opt-in root.execute(native_bundle=...) only; default setup, allowlisted app cleanup, service acquisition and held managed bootstrap remain unchanged.",
+    "No firmware expansion, PID-1 namespace cache mutations, optional-app cleanup, reboot, standby, native-default selection, or persistent capability changes.",
+    "Commands must remain within bounded supervision; deliberately detached work requires separately journaled service mechanisms.",
+    "Private source/build manifests, device identities, raw commands and receipts remain outside Git."
+  ]
+}

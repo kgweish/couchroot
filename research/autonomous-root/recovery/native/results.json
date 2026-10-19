@@ -1,0 +1,124 @@
+{
+  "schema": 1,
+  "date": "2026-10-15",
+  "scope": "Owner-authorized standalone native SDK-host recovery qualification; no WGT update",
+  "artifact": {
+    "abi": "armv7-eabi5-softfp",
+    "bytes": 12908,
+    "glibc_max": "2.4.0",
+    "interpreter": "/lib/ld-linux.so.3",
+    "needed": [
+      "ld-linux.so.3",
+      "libc.so.6",
+      "libdl.so.2",
+      "librt.so.1"
+    ],
+    "sha256": "09089ed952ca68f963eaea21342d3eb5c577a68e2549dff751d02b6b21d3562d"
+  },
+  "build": {
+    "compiler": "arm-linux-gnueabi-gcc 10.2.1",
+    "toolchain_image": "sha256:8d04ca4a4d08ce5a17ffb904b6c5a7742f51e885506f2e3215b8e2db7659a3c4",
+    "byte_identical_builds": 2,
+    "source_sha256": {
+      "recovery.c": "86ed941f71c02763eff793a5f58e43358fb66cb3cae5b08fdb70d0bc8cc16990",
+      "build.sh": "cb4c9fed0a6cb8c67504fdaa4792e7b7639b403fdce2d3386195acba238857ea"
+    }
+  },
+  "local_tests": {
+    "linux_native_groups": {
+      "passed": 10,
+      "skipped": 0,
+      "real_delay_seconds": 30
+    },
+    "node": {
+      "passed": 360,
+      "skipped": 125
+    },
+    "python_macos": {
+      "passed": 252,
+      "skipped": 118
+    }
+  },
+  "hardware": [
+    {
+      "model": "QN90A",
+      "package_version": "0.7.28",
+      "checks": {
+        "independent_sdk_rescue": true,
+        "coordinator_suspended": true,
+        "worker_disabled": true,
+        "native_loopback_restored": true,
+        "net_fallback_unchanged": true,
+        "timers_disarmed": true,
+        "selection_and_jobs_unchanged": true,
+        "enrollment_unchanged": true,
+        "same_boot": true
+      },
+      "native_preflight": [
+        "already-restored no-op",
+        "wrong-expected drift refusal",
+        "invalid canonical IPv4 refusal"
+      ],
+      "dotnet_backup_delay_seconds": 300,
+      "dotnet_backup_fired_in_accepted_round": false,
+      "sdk_service_relaunch_required": false,
+      "completion_seconds": 128.8,
+      "final_verification": {
+        "all_trial_units_inactive": true,
+        "history_entries": 16,
+        "managed_ready": true,
+        "native_and_managed_digests_verified": true,
+        "owned_unit_groups_checked": 10,
+        "pending_setup": false,
+        "same_boot": true,
+        "sdk_loopback": true
+      }
+    },
+    {
+      "model": "S90D",
+      "package_version": "0.7.28",
+      "checks": {
+        "independent_sdk_rescue": true,
+        "coordinator_suspended": true,
+        "worker_disabled": true,
+        "native_loopback_restored": true,
+        "net_fallback_unchanged": true,
+        "timers_disarmed": true,
+        "selection_and_jobs_unchanged": true,
+        "enrollment_unchanged": true,
+        "same_boot": true
+      },
+      "native_preflight": [
+        "already-restored no-op",
+        "wrong-expected drift refusal",
+        "invalid canonical IPv4 refusal"
+      ],
+      "dotnet_backup_delay_seconds": 300,
+      "dotnet_backup_fired_in_accepted_round": false,
+      "sdk_service_relaunch_required": true,
+      "completion_seconds": 130.6,
+      "final_verification": {
+        "all_trial_units_inactive": true,
+        "history_entries": 18,
+        "managed_ready": true,
+        "native_and_managed_digests_verified": true,
+        "owned_unit_groups_checked": 21,
+        "pending_setup": false,
+        "same_boot": true,
+        "sdk_loopback": true
+      }
+    }
+  ],
+  "observations": [
+    "QN90A refused direct execution from writable staging before any vconf call; both TVs used root/System transient units with a private read-only code bind.",
+    "S90D system vconf imports shm_open without declaring librt. The final executable retains librt.so.1; both TVs qualified the same final bytes.",
+    "Earlier S90D harness rounds restored SDK through native recovery but lost the coordinator listener after suspension; the preserved .NET backup was used to recover those rounds. A trial relaunch unit also failed. These are separate from final successful acceptance.",
+    "The final harness leaves the native-restored SDK window open for an observed-needed SDK service relaunch before its native reverse switch; the cause of listener loss is not established."
+  ],
+  "limitations": [
+    "No reboot, standby, crash-recovery, endurance or native-default qualification.",
+    "Native utility requires an existing root execution context; managed acquisition/bootstrap and the original .NET recovery fallback remain deployed.",
+    "Existing private deployment-kit rescue callers are not globally migrated.",
+    "Raw device identities, request journals, commands and receipts remain private."
+  ]
+}

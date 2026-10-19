@@ -10,7 +10,7 @@ import json
 from pathlib import Path
 import uuid
 from .common import REPO, Refused, atomic_json, sha
-from .transport import Transport, guard, Q
+from .transport import Transport, managed_guard, Q
 
 class AgentTransport(Transport):
     def __init__(self, profile, evidence, credentials):
@@ -24,7 +24,7 @@ class AgentTransport(Transport):
         status = self.api.request(self.credentials, 'GET', '/v1/status')
         if status.get('device') != profile['id'] or not status.get('connected') or status.get('worker_ready') is False or status.get('identity', {}).get('uid') != 0:
             raise Refused('Enrolled root worker is not ready')
-        self._execute(guard(profile), 20)
+        self._execute(managed_guard(profile), 20)
 
     def execute_result(self, script, timeout=20):
         """Return a completed command result, including nonzero exits."""
@@ -62,7 +62,7 @@ class AgentTransport(Transport):
     def root(self, script, namespace=False, cleanup_index=None):
         if namespace or cleanup_index is not None:
             raise Refused('Namespace and cleanup operations are not supported by this trial transport')
-        return self.sdk(guard(self.profile)+script, 25)
+        return self.sdk(managed_guard(self.profile)+script, 25)
 
     def _upload(self, data, target):
         digest=sha(data)

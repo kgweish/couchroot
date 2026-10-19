@@ -4,6 +4,8 @@ import json
 from urllib.parse import urlsplit
 from .common import REPO, Refused, read_json
 
+LAUNCHER_COMPONENTS = ('hub', 'home', 'airplay', 'startup')
+
 COMPONENTS = ('hub', 'screensaver', 'splash', 'home', 'airplay', 'startup', 'telemetry', 'dashboard', 'cleanup')
 DEFAULTS = dict(components=list(COMPONENTS), exclude=[], keep=[], remove=[],
                 telemetry_enabled=None, endpoint=None, artifacts={})

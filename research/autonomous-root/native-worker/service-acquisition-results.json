@@ -1,0 +1,128 @@
+{
+  "schema": 1,
+  "date": "2026-10-15",
+  "version": "0.7.30",
+  "scope": "Opt-in native service acquisition through a managed capability bridge; same-boot native held-bootstrap lifecycle",
+  "local": {
+    "node_passed": 369,
+    "node_skipped": 129,
+    "python_passed": 258,
+    "python_skipped": 131,
+    "linux_acquisition_groups": 19,
+    "held_bootstrap_process_cases": 4,
+    "rehearsal_process_cases": 6,
+    "restart_process_cases": 11
+  },
+  "devices": {
+    "qn90a": {
+      "bootstrap_scopes_and_processes_absent": true,
+      "enrollment_preserved": true,
+      "history_entries": 18,
+      "managed_ready": true,
+      "managed_recovery_digest_unchanged": true,
+      "native_bootstrap_instances": 3,
+      "native_service_acquisition": true,
+      "owned_units_inactive": 15,
+      "package_version": "0.7.30",
+      "pending_setup": false,
+      "same_boot": true,
+      "sdk_loopback": true,
+      "settled": true,
+      "native_disable_enable": true,
+      "native_transport_loss": true,
+      "native_service_restart": true,
+      "history_unchanged_on_reacquisition": true,
+      "retained_jobs_preserved": true,
+      "native_created_jobs_survived_return": true,
+      "native_and_provider_scopes_removed": true,
+      "installed_service_matches_source": true,
+      "interrupted_return_observed": true,
+      "return_completed_normally": false,
+      "acquisition_reproducible_builds": 2,
+      "acquisition_artifacts": {
+        "NativeEntry.deps.json": {
+          "sha256": "b16f93050f0640f082ad7219fb972d2b16039f7428f739cfcac88a191d5add4a",
+          "size": 403
+        },
+        "NativeEntry.dll": {
+          "sha256": "9769125442c02c54fd74fa3232856afd189fbbb7c1663ec02ec2fc9f63ef92dd",
+          "size": 7168
+        },
+        "NativeEntry.runtimeconfig.json": {
+          "sha256": "4efe04a54651f7451ce2242c8cf9ed3d4c7bcdcdc01678b5a8df7cd80382cfd5",
+          "size": 279
+        },
+        "libacquire.so": {
+          "abi": "armv7-eabi5-softfp",
+          "glibc_max": "2.17.0",
+          "needed": [
+            "ld-linux.so.3",
+            "libc.so.6"
+          ],
+          "sha256": "bdc66898796ee0e86235bbccf87e2761783d6b66b3da758569e3022c3a8f2a09",
+          "size": 17328
+        }
+      }
+    },
+    "s90d": {
+      "bootstrap_scopes_and_processes_absent": true,
+      "enrollment_preserved": true,
+      "history_entries": 20,
+      "managed_ready": true,
+      "managed_recovery_digest_unchanged": true,
+      "native_bootstrap_instances": 3,
+      "native_service_acquisition": true,
+      "owned_units_inactive": 27,
+      "package_version": "0.7.30",
+      "pending_setup": false,
+      "same_boot": true,
+      "sdk_loopback": true,
+      "settled": true,
+      "native_disable_enable": true,
+      "native_transport_loss": true,
+      "native_service_restart": true,
+      "history_unchanged_on_reacquisition": true,
+      "retained_jobs_preserved": true,
+      "native_created_jobs_survived_return": true,
+      "native_and_provider_scopes_removed": true,
+      "installed_service_matches_source": true,
+      "interrupted_return_observed": false,
+      "return_completed_normally": true,
+      "acquisition_reproducible_builds": 2,
+      "acquisition_artifacts": {
+        "NativeEntry.deps.json": {
+          "sha256": "af9013c42a3fa4317c376e5e5216ea9bec338833c75e652f96449a58c89284be",
+          "size": 403
+        },
+        "NativeEntry.dll": {
+          "sha256": "813b01642537a92ea319efafb9cc2434e27e5eb10c4c91d87daf3c239bd882ff",
+          "size": 7168
+        },
+        "NativeEntry.runtimeconfig.json": {
+          "sha256": "537ff2667f51d2fe990dd3e83987f2474d0c27dbc0210ff2a1142c7568f69e22",
+          "size": 272
+        },
+        "libacquire.so": {
+          "abi": "armv7-eabi5-softfp",
+          "glibc_max": "2.17.0",
+          "needed": [
+            "ld-linux.so.3",
+            "libc.so.6"
+          ],
+          "sha256": "bdc66898796ee0e86235bbccf87e2761783d6b66b3da758569e3022c3a8f2a09",
+          "size": 17328
+        }
+      }
+    }
+  },
+  "limitations": [
+    "The trusted NativeEntry managed capability bridge still requires the system .NET runtime. Both managed payloads and independent .NET SDK rescue are retained.",
+    "Coordinator interruption during native bootstrap leaves a durable blocking marker; automatic reconciliation is not yet implemented.",
+    "Managed selection and pending return/rollback recovery retain a managed executor. Retained completed recovery context can conservatively keep that executor until service restart.",
+    "QN90A 0.7.29 failed before native entry because of canonical assembly location; .NET rescue restored SDK and the failed attempt was reconciled before forward installation.",
+    "S90D needed boot/PID/start-time-bound replacement of an old coordinator listener after update before the new service code was active.",
+    "S90D returned normally before the restart stimulus interrupted it. Current interrupted-return hardware acceptance applies to QN90A; S90D has earlier 0.7.28 evidence.",
+    "Transport loss terminated the identity-bound worker; no physical network fault was injected.",
+    "No reboot, standby, native-default rollout, endurance or fully native capability-entry qualification."
+  ]
+}

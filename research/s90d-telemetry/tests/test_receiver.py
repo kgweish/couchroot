@@ -70,6 +70,26 @@ class ReceiverTests(unittest.TestCase):
   configure(self.server,dict(allowed_ip='127.0.0.1',token='test-secret'),self.temp.name)
   self.assertEqual(self.post(sample()),204)
   self.assertIs(self.server.routes['/v1/s90d'],self.server.routes['/v1/devices/s90d'])
+ def test_qn90a_accepts_old_sender_without_retaining_or_carrying_inventory(self):
+  from test_inspector import inventory
+  session='00000000-0000-4000-8000-000000000046'
+  qn=self.server.routes['/v1/devices/qn90a']
+  # Simulate stored data from before retirement, in the same collector session.
+  old=dict(sample(90),device='qn90a',session=session,inspector=inventory(90))
+  qn['destination'].write_text(json.dumps(old))
+  configure(self.server,self.secret,self.temp.name)
+  qn=self.server.routes['/v1/devices/qn90a']
+  for seq,extra in enumerate(({}, {'inspector':inventory(110)}, {'inspector':{'retired':'malformed'}}),2):
+   qn['last_request']=0
+   # Older senders may omit device; authenticated route still sets QN90A policy.
+   value=dict(sample(90+seq*10,seq),session=session,**extra)
+   self.assertEqual(self.post(value,'Bearer other-secret','/v1/devices/qn90a'),204)
+   stored=json.loads(qn['destination'].read_text())
+   self.assertNotIn('inspector',stored)
+   self.assertEqual(stored['device'],'qn90a')
+   self.assertEqual(stored['stat'],value['stat'])
+   self.assertIn('memory',stored['metrics'])
+
  def test_inventory_survives_metrics_only_samples_but_not_collector_restart(self):
   from test_inspector import inventory
   session='00000000-0000-4000-8000-000000000044'

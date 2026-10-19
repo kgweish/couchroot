@@ -61,6 +61,13 @@ internal static partial class SamsungTvRootAgent
     {
         string stat=File.ReadAllText("/proc/"+pid+"/stat"); return stat.Substring(stat.LastIndexOf(')')+2).Split(' ')[19];
     }
+    private static string StartedProcessIdentity(Process process)
+    {
+        try { return ProcessIdentity(process.Id); }
+        // A short command may be reaped before procfs is read (ENOENT or ESRCH).
+        // Only the tracked process exit proves that missing identity is benign.
+        catch(IOException) when (process.HasExited) { return null; }
+    }
     private static async Task Drain(Stream stream, LogRing log)
     {
         byte[] buffer=new byte[8192]; int count;
@@ -87,7 +94,7 @@ internal static partial class SamsungTvRootAgent
             try
             {
                 job.Process=Process.Start(start);
-                try{job.ProcessStart=ProcessIdentity(job.Process.Id);}catch(FileNotFoundException){job.ProcessStart=null;}
+                job.ProcessStart=StartedProcessIdentity(job.Process);
                 job.State="running";job.Save();Jobs.Add(id,job);
             }
             catch
@@ -131,7 +138,9 @@ internal static partial class SamsungTvRootAgent
                     if(kill(-pid,SignalKill)!=0)throw new IOException("Cannot cancel process group");
                     return new {id,state="cancel_requested"};
                 }
-                if(op=="job.forget" && (rebooted || state=="completed" || state=="timed_out" || state=="cancelled")){File.Delete(file);return new {forgotten=true};}
+                // Reconciled native interruptions are terminal even on this boot.
+                // Forget only their saved metadata; uncertain/live records stay refused.
+                if(op=="job.forget" && (rebooted || state=="completed" || state=="timed_out" || state=="cancelled" || state=="interrupted")){File.Delete(file);return new {forgotten=true};}
             }
         }
         throw new ArgumentException("Operation unavailable; inspect job status");

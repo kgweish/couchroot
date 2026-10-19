@@ -73,6 +73,9 @@ def validate(value, uptime):
 
 def carry(current, previous):
     """Preserve minute snapshots only within the same device, boot and collector."""
+    if current.get('device') == 'qn90a':
+        current.pop('inspector', None)  # Drop legacy senders and never carry old inventory.
+        return
     if 'inspector' in current or not previous:
         return
     if all(current.get(k) == previous.get(k) for k in ('device', 'boot', 'session')) and current.get('session'):

@@ -9,10 +9,10 @@ the TV, and how much of the feature set they carry.
 | --- | --- | --- |
 | Runs as | A signed Tizen web app (`MiniHub001.Hub`) | An unregistered EFL (Ecore/Evas) window, owner UID, read-only bind |
 | Supported TVs | S90D (Tizen 9) and QN90A (Tizen 6) | **QN90A only** (firmware T-NKM2AKUC-2301.1) |
-| Install path | Samsung developer signing + `./tv-setup` / `./deploy-ui` | Experimental boot-hook chain; requires the autonomous root agent |
+| Install path | Samsung developer signing + `./tv-setup` / `./deploy-ui` | Enrolled boot hook via `./couchroot-install`; requires the autonomous root agent (offline-tested backend) |
 | Becomes Home by | Samsung's own Home/startup assignment (S90D) or the ISP source role (QN90A) | Boot hook dispatch + an overridable Home key grab |
 | Software time to Hub after a QN90A reboot | ~37–47 s (best web path) | **~9–10 s** (first rendered frame) |
-| Time to Hub on S90D | Started by Samsung; no hook needed (visible time not measured) | Not available |
+| Time to Hub on S90D | Samsung prelaunches Hub; AT-HUB helper supplies the splash handoff (visible/input-ready time unmeasured) | Not available |
 | Features | Full: favourites, edit/move/undo, settings, sound, hold-OK, fade, telemetry, screensaver, monitoring | Core: favourites, edit/move/undo, settings, app discovery, Home routing; advanced web-only features stay in the web Hub |
 | Failure fallback | Samsung Home | Web Hub (installed alongside) and Samsung Home |
 | Maturity | Supported source release | Experimental research launcher |
@@ -63,12 +63,21 @@ S90D and other firmware have not been verified.
 - You want the supported, signed install that survives firmware-update review and
   uses only Samsung's normal app APIs.
 - Your TV already starts its Home app itself. The S90D does: in one recorded restart
-  a process named `MiniHub001.Hub` existed 2.64 seconds after kernel boot. When it
-  became visible, and at what scheduling priority it ran, were not measured. That
-  path does not depend on the QN90A boot hook described below.
+  `MiniHub001.Hub` produced its first logged event at 2.639 seconds after kernel
+  boot: an upper bound on process creation, not a measured start or visibility
+  time. A separate 2.26-second process-start sample belongs to a standby-wake
+  session. S90D uses its own AT-HUB splash helper, not the QN90A boot hook.
 - You need the web-only features (sound, hold-OK, fade, telemetry relay, saver).
 
+The [2026-10-12 S90D assessment](../devices/s90d/native-boot-assessment.md)
+recommends keeping web startup and measuring panel visibility and remote readiness
+before changing the splash path. It does not establish a native boot-speed gain.
+
 ## Pick the native Hub when
+
+The [native installer guide](native-installation.md) covers baseline enrollment,
+installation and journaled recovery. The new backend has offline tests only;
+historical native measurements below do not certify its hardware behavior.
 
 - You have a QN90A on firmware 2301.1, and boot-to-Hub time matters. The web
   path on this model cannot start earlier than the firmware's app readiness, which

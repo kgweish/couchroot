@@ -48,19 +48,18 @@ fi
 done
 rm -rf "$WEBVIEW_OUTPUT_DIR/diagnostic" "$WEBVIEW_OUTPUT_DIR/hub"
 cp -R "$source_dir/diagnostic" "$WEBVIEW_OUTPUT_DIR/"
-# Native bundle: the WGT's own file list (package.py) minus its manifest, plus
+# Native bundle: the shared unconfigured Hub sources minus the manifest, plus
 # the native adapter loaded directly after bridge.js. web/ is not modified.
 python3 - "$repo_dir" "$source_dir" "$WEBVIEW_OUTPUT_DIR/hub" <<'PY'
-import ast, shutil, sys
+import shutil, sys
 from pathlib import Path
 repo, source, out = map(Path, sys.argv[1:])
-tree = ast.parse((repo / 'scripts/package.py').read_text())
-files = next(ast.literal_eval(node.value) for node in ast.walk(tree)
-             if isinstance(node, ast.Assign) and any(getattr(t, 'id', '') == 'files' for t in node.targets))
+sys.path.insert(0, str(repo))
+from tvsetup.planner import hub_sources
 out.mkdir(parents=True)
-for name in files:
+for name, data in hub_sources(None).items():
     if name != 'config.xml':
-        shutil.copyfile(repo / 'web' / name, out / name)
+        (out / name).write_bytes(data)
 shutil.copyfile(source / 'native-shim.js', out / 'native-shim.js')
 # native-shim.css must block the first paint: it keeps the static default tiles
 # transparent until the shim reveals the rendered Home. Appending it to the

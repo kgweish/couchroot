@@ -5,6 +5,21 @@ Dashboard: **http://192.0.2.20:20491/**. Netdata remains the existing NAS node a
 `s90d-telemetry` name; renaming it would add migration risk without changing its
 function. Source remains in `research/s90d-telemetry/` so existing references work.
 
+## Current QN90A scope — 2026-10-17
+
+The local candidate now targets **basic QN90A telemetry with the existing settings
+adapter and journaled recovery**. Continuous app/process inspector snapshots are
+retired for QN90A in both the native candidate and current managed collector
+source. The receiver accepts older senders' basic metrics but drops their inventory;
+the dashboard also hides previously stored inventory and says “Retired on QN90A.”
+Basic counters, history, pairing and settings remain. S90D behavior and manual
+recovery tools are retained; the other rewrites are deferred.
+
+These changes have local tests only. No TV or NAS deployment was performed.
+The deployment records below describe earlier versions. See the
+[accepted scope](../project/dotnet-deprecation-plan.md) and
+[QN90A installation/recovery candidate](native-telemetry.md).
+
 ## Device profiles and runtime verification
 
 `tvsetup/profiles/` contains the firmware/runtime profiles; private `site.json` supplies live identities and addresses. IDs identify
@@ -29,8 +44,9 @@ no rate instead of zero. No thermal/GPU/video counters are inferred.
 For the investigated alternative to the managed service, see
 [native collector supervision](../research/native-service-research.md). It records
 successful C collector ingestion trials on both TVs at roughly 3–4 MiB RSS, preserved
-pairing and tested rollback. The managed service remains deployed while native
-first-launch and reboot integration are completed.
+pairing and tested rollback. The managed service remains deployed. QN90A native
+startup and recovery integration are implemented locally; hardware acceptance is
+still outstanding. See the [current integration guide](native-telemetry.md).
 
 ## Startup, controls and pairing
 
@@ -289,6 +305,10 @@ QN90A only; the S90D installed package was not changed in this pass.
 
 
 ## Read-only app/process/startup inspector — 2026-10-11
+
+This section records the original shared feature and remains applicable to S90D.
+The current QN90A source retires it as described above; the original deployment
+and recovery evidence is retained.
 
 The NAS dashboard includes Apps, Processes and Startup views for the selected TV,
 with search, paging, process memory/CPU sorting, and explicit age/partial/unavailable

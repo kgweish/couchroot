@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "date": "2026-10-15",
+  "source_commit": "00c328a",
+  "scope": "Installed service managed/native/managed rehearsal",
+  "devices": {
+    "qn90a": {
+      "package_version": "0.7.22",
+      "signed_installation_verified": true,
+      "native_readiness_and_adoption": true,
+      "managed_return_and_activation": true,
+      "retained_completed_jobs": 1,
+      "retained_exit_code": 7,
+      "retained_bytes_unchanged": true,
+      "current_trial_native_and_provider_scopes_removed": true,
+      "transition_markers_removed": true,
+      "recovery_timer_disarmed": true,
+      "sdk_loopback_restored": true,
+      "boot_unchanged": true,
+      "final_selection": "managed",
+      "final_worker_ready": true,
+      "pending_setup": false,
+      "prior_committed_history_preserved": true,
+      "committed_history_entries": 4,
+      "interrupted_exit_recovery_hardware_exercised": false
+    },
+    "s90d": {
+      "package_version": "0.7.22",
+      "signed_installation_verified": true,
+      "native_readiness_and_adoption": true,
+      "managed_return_and_activation": true,
+      "retained_completed_jobs": 1,
+      "retained_exit_code": 7,
+      "retained_bytes_unchanged": true,
+      "current_trial_native_and_provider_scopes_removed": true,
+      "transition_markers_removed": true,
+      "recovery_timer_disarmed": true,
+      "sdk_loopback_restored": true,
+      "boot_unchanged": true,
+      "final_selection": "managed",
+      "final_worker_ready": true,
+      "pending_setup": false,
+      "prior_committed_history_preserved": true,
+      "committed_history_entries": 4,
+      "interrupted_exit_recovery_hardware_exercised": false
+    }
+  },
+  "limitations": [
+    "Native public admission remained held during the round trip; this is not complete public API parity.",
+    "Native-created job migration, injected hardware failures, restart recovery and endurance were not exercised by this rehearsal.",
+    "No reboot or standby/resume qualification was performed.",
+    "Previously failed transition journals and staging remain preserved separately.",
+    "Managed acquisition and fallback dependencies remain deployed."
+  ]
+}
