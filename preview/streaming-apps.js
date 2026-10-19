@@ -9,7 +9,7 @@
     { id: 'LBUAQX1exg.Hulu', name: 'Hulu', logo: 'hulu.svg' },
     { id: 'DemoStream.hbomax', name: 'HBO Max', aliases: ['Max'], logo: 'hbomax.jpg', color: '#11141b', icon: true },
     { id: 'DemoStream.paramount', name: 'Paramount+', logo: 'paramount.jpg', color: '#0065ff', icon: true },
-    { id: 'gzcc4LRFBF.Peacock', name: 'Peacock', logo: 'peacock.png' },
+    { id: 'gzcc4LRFBF.Peacock', name: 'Peacock', aliases: ['Peacock TV'], logo: 'peacock.png' },
     { id: 'DemoStream.appletv', name: 'Apple TV', aliases: ['Apple TV+'], logo: 'appletv.jpg', color: '#313131', icon: true },
     { id: '3KA0pm7a7V.TubiTV', name: 'Tubi', logo: 'tubi.png' },
     { id: 'DemoStream.roku', name: 'The Roku Channel', aliases: ['Roku Channel'], logo: 'roku.png', color: '#fefefe', icon: true },

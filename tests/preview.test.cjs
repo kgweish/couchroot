@@ -390,3 +390,28 @@ test('offline landscapes leave the gradient, greeting and app navigation usable'
   assert.equal(await page.locator(':focus').getAttribute('data-id'), 'LBUAQX1exg.Hulu');
   await page.close();
 });
+
+test('S89C Peacock TV name uses the bundled logo on Home and in the editor', async () => {
+  const page = await conceptPage({ viewport: { width: 1920, height: 1080 } });
+  await page.route('**/preview/fixtures.js', route => route.fulfill({
+    contentType: 'application/javascript',
+    body: require('node:fs').readFileSync(path.resolve(__dirname, '../preview/fixtures.js'), 'utf8')
+      .replace("['gzcc4LRFBF.Peacock', 'Peacock']", "['gzcc4LRFBF.Peacock', 'Peacock TV']")
+  }));
+  await page.goto(url + '/hub?scenario=tvos-concept&reset=1&static=1');
+  const tile = page.getByRole('button', { name: 'Open Peacock TV', exact: true });
+  await tile.waitFor();
+  assert.equal(await tile.locator('.design-brand-logo').count(), 1);
+  await page.waitForFunction(() => {
+    const logo = document.querySelector('[data-id="gzcc4LRFBF.Peacock"] .design-brand-logo');
+    return logo && logo.complete && logo.naturalWidth > 0;
+  }, null, { timeout: 2000 });
+  assert.equal(await tile.locator('.brand-wordmark').evaluate(el => getComputedStyle(el).visibility), 'hidden');
+  await page.locator('#edit-apps').click();
+  const row = page.locator('#editor-list .app-row').filter({ has: page.locator('.row-name', { hasText: /^Peacock TV$/ }) });
+  await row.focus();
+  assert.equal(await row.locator('.design-row-logo').count(), 1);
+  await page.locator('#preview-art .design-brand-logo').waitFor();
+  assert.match(await page.locator('#preview-art .design-brand-logo').getAttribute('src'), /peacock\.png$/);
+  await page.close();
+});

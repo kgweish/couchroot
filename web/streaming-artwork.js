@@ -9,7 +9,7 @@
     { name: 'Hulu', logo: 'hulu.svg' },
     { name: 'HBO Max', aliases: ['Max'], logo: 'hbomax.jpg', color: '#11141b', icon: true },
     { name: 'Paramount+', logo: 'paramount.jpg', color: '#0065ff', icon: true },
-    { name: 'Peacock', logo: 'peacock.png' },
+    { name: 'Peacock', aliases: ['Peacock TV'], logo: 'peacock.png' },
     { name: 'Apple TV', aliases: ['Apple TV+'], logo: 'appletv.jpg', color: '#313131', icon: true },
     { name: 'Tubi', logo: 'tubi.png' },
     { name: 'The Roku Channel', aliases: ['Roku Channel'], logo: 'roku.png', color: '#fefefe', icon: true },
