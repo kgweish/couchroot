@@ -4,7 +4,7 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const root = path.resolve(__dirname, '..');
 const types = { '.html': 'text/html', '.js': 'application/javascript', '.css': 'text/css', '.png': 'image/png', '.svg': 'image/svg+xml', '.xml': 'application/xml', '.woff2': 'font/woff2' };
-const previewFiles = new Set(['fixtures.js', 'scenarios.js', 'runtime.js', 'workbench.js', 'workbench.css']);
+const previewFiles = new Set(['fixtures.js', 'scenarios.js', 'runtime.js', 'workbench.js', 'workbench.css', 'tvos-concept.js', 'tvos-concept.css']);
 function revision() {
   const hash = crypto.createHash('sha256');
   for (const folder of ['web', 'preview']) {
@@ -32,6 +32,9 @@ function createServer() {
         body = fs.readFileSync(file, 'utf8').replace('<head>', '<head>\n  <base href="/web/">\n  <script src="/preview/fixtures.js"></script>\n  <script src="/preview/scenarios.js"></script>\n  <script src="/preview/runtime.js"></script>');
         // Allow loopback reload polling and the asset base only in the injected preview.
         body = body.replace("connect-src 'none'", "connect-src 'self'").replace("base-uri 'none'", "base-uri 'self'");
+        if (new URL(req.url, 'http://localhost').searchParams.get('scenario') === 'tvos-concept') {
+          body = body.replace('</head>', '  <link rel="stylesheet" href="/preview/tvos-concept.css">\n  <script src="/preview/tvos-concept.js" defer></script>\n</head>');
+        }
       } else if (pathname.startsWith('/preview/') && previewFiles.has(pathname.slice(9))) {
         file = path.join(__dirname, pathname.slice(9));
       } else if (pathname.startsWith('/web/')) {

@@ -4,6 +4,7 @@
     home: { label: 'Home · two favorites' },
     many: { label: 'Home · full catalog', favorites: 'all' },
     compact: { label: 'Home · compact layout with clock', favorites: 'all', prefs: { 'minimal-hub.layout.v1': 'compact', 'minimal-hub.clock.v1': '12h' } },
+    'tvos-concept': { label: 'Design · tvOS apps & inputs', design: true, favorites: 'all', prefs: { 'minimal-hub.layout.v1': 'compact', 'minimal-hub.clock.v1': '12h', 'minimal-hub.fade.v1': 'off' } },
     empty: { label: 'Home · no favorites', favorites: 'none' },
     unavailable: { label: 'Home · unavailable app', unavailable: true },
     edit: { label: 'Edit apps', favorites: 'all', screen: 'edit' },

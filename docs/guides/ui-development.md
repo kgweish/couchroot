@@ -37,6 +37,13 @@ filesystem access. UI tests use the same mock installer with a numbered catalog
 for stable assertions. Sound starts off in the workbench; enabling it can play
 the app's normal local Web Audio tones.
 
+**Design · tvOS apps & inputs** (`/?scenario=tvos-concept`) is a review mockup
+over the shipped Home screen. It shows six columns with a clock, brighter app
+artwork and labels below each tile. Its Live TV, HDMI 1 and HDMI 3 entries are
+sample fixtures; they do not report connected devices or switch real inputs.
+The concept's CSS and navigation stay under `preview/` and are excluded from TV
+packages. The existing Compact scenario remains available for comparison.
+
 - Edits to favorites/settings survive reloads within a scenario.
 - Switching scenarios or selecting **Reset scenario** reseeds preview preferences.
 - The scenarios share one preview origin; use separate browser contexts for

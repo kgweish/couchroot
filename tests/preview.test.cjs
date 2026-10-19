@@ -111,3 +111,71 @@ test('startup preference preview keeps the scroll cue when the last setting is c
     await page.close();
   }
 });
+
+test('tvOS design navigation follows the visible rows and stays scoped to its scenario', async () => {
+  for (const viewport of [{ width: 1920, height: 1080 }, { width: 960, height: 540 }]) {
+    const page = await browser.newPage({ viewport });
+    await page.goto(url + '/hub?scenario=tvos-concept&reset=1&static=1');
+    await page.locator('body.design-tvos').waitFor({ timeout: 2000 });
+    assert.equal(await page.locator('#favorites > button').count(), 15);
+    assert.equal(await page.locator('#home-clock').isVisible(), true);
+    await page.locator('#favorites > button').first().focus();
+    await page.keyboard.press('ArrowDown');
+    assert.equal(await page.locator(':focus').getAttribute('data-id'), 'rJeHak5zRg.Spotify');
+    await page.keyboard.press('ArrowDown');
+    assert.equal(await page.locator(':focus').getAttribute('data-id'), 'DemoInput1.tv');
+    await page.keyboard.press('ArrowRight');
+    assert.equal(await page.locator(':focus').getAttribute('data-id'), 'DemoInput1.hdmi1');
+    const visible = await page.locator(':focus').evaluate(el => {
+      const tile = el.getBoundingClientRect(), label = el.querySelector('.design-caption').getBoundingClientRect();
+      return tile.top >= 0 && label.bottom <= innerHeight;
+    });
+    assert.equal(visible, true);
+    await page.goto(url + '/hub?scenario=compact&reset=1&static=1');
+    await page.locator('#favorites > button').nth(11).waitFor();
+    assert.equal(await page.locator('body.design-tvos').count(), 0);
+    assert.equal(await page.locator('#favorites > button').count(), 12);
+    await page.locator('#favorites > button').first().focus();
+    await page.keyboard.press('ArrowDown');
+    assert.equal(await page.locator(':focus').getAttribute('data-id'), 'MCmYXNxgcu.DisneyPlus');
+    await page.close();
+  }
+});
+
+test('design respects the existing layout setting and Move grid geometry', async () => {
+  const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
+  await page.goto(url + '/hub?scenario=tvos-concept&reset=1&static=1');
+  await page.locator('.design-caption').nth(14).waitFor();
+  await page.locator('#settings').click();
+  await page.locator('#setting-layout').click();
+  await page.keyboard.press('Escape');
+  await page.locator('#favorites > button').first().focus();
+  await page.keyboard.press('ArrowDown');
+  assert.equal(await page.locator(':focus').getAttribute('data-id'), 'org.tizen.primevideo');
+  await page.locator('#settings').click();
+  await page.locator('#setting-layout').click();
+  await page.keyboard.press('Escape');
+  await page.locator('#edit-apps').click();
+  await page.locator('#editor-list button').first().click();
+  await page.locator('#editor-list button').first().click();
+  const tile = page.locator('#favorites > button[data-id="kIciSQlYEM.plex"]');
+  const before = await tile.boundingBox();
+  await page.keyboard.press('ArrowDown');
+  assert.ok((await tile.boundingBox()).y > before.y);
+  assert.equal(await page.locator('#design-title').isVisible(), false);
+  await page.close();
+});
+
+test('design footer arrows reach Undo remove after editing', async () => {
+  const page = await browser.newPage();
+  await page.goto(url + '/hub?scenario=tvos-concept&reset=1&static=1');
+  await page.locator('.design-caption').nth(14).waitFor();
+  await page.locator('#edit-apps').click();
+  await page.locator('#editor-list button').first().click();
+  await page.locator('#editor-list button').nth(1).click();
+  await page.keyboard.press('Escape');
+  await page.locator('#settings').focus();
+  await page.keyboard.press('ArrowRight');
+  assert.equal(await page.locator(':focus').getAttribute('id'), 'undo-remove');
+  await page.close();
+});

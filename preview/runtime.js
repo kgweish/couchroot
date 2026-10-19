@@ -5,6 +5,14 @@
   var name = url.searchParams.get('scenario') || 'home';
   if (!Object.prototype.hasOwnProperty.call(HubScenarios, name)) name = 'home';
   var scenario = HubScenarios[name], apps = HubFixtures.catalog();
+  if (scenario.design) {
+    // Sample connectors for visual review; these do not describe the owner's TV.
+    apps = apps.concat([
+      { id: 'DemoInput1.tv', name: 'Live TV', show: true },
+      { id: 'DemoInput1.hdmi1', name: 'HDMI 1', show: true },
+      { id: 'DemoInput1.hdmi3', name: 'HDMI 3', show: true }
+    ]);
+  }
   if (scenario.missingArtwork) apps[apps.length - 1].iconPath = '/missing-preview-icon.png';
   var marker = 'hub-preview.scenario';
   if (localStorage.getItem(marker) !== name || url.searchParams.has('reset')) {
