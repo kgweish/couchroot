@@ -121,8 +121,11 @@ test('tvOS design navigation follows the visible rows and stays scoped to its sc
     assert.equal(await page.locator('#home-clock').isVisible(), true);
     await page.locator('#favorites > button').first().focus();
     await page.keyboard.press('ArrowDown');
-    assert.equal(await page.locator(':focus').getAttribute('data-id'), 'rJeHak5zRg.Spotify');
+    assert.equal(await page.locator(':focus').getAttribute('data-id'), 'LBUAQX1exg.Hulu');
     await page.keyboard.press('ArrowDown');
+    assert.equal(await page.locator(':focus').getAttribute('data-id'), '3KA0pm7a7V.TubiTV');
+    await page.keyboard.press('ArrowRight');
+    await page.keyboard.press('ArrowRight');
     assert.equal(await page.locator(':focus').getAttribute('data-id'), 'DemoInput1.tv');
     await page.keyboard.press('ArrowRight');
     assert.equal(await page.locator(':focus').getAttribute('data-id'), 'DemoInput1.hdmi1');
@@ -178,4 +181,50 @@ test('design footer arrows reach Undo remove after editing', async () => {
   await page.keyboard.press('ArrowRight');
   assert.equal(await page.locator(':focus').getAttribute('id'), 'undo-remove');
   await page.close();
+});
+
+test('concept service logos load locally and stay centered in their cards', async () => {
+  const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
+  const external = [];
+  page.on('request', request => { if (!request.url().startsWith(url + '/')) external.push(request.url()); });
+  await page.goto(url + '/hub?scenario=tvos-concept&reset=1&static=1');
+  await page.waitForFunction(() => {
+    const logos = [...document.querySelectorAll('.design-brand-logo')];
+    return logos.length === 11 && logos.every(image => image.complete && image.naturalWidth > 0);
+  }, null, { timeout: 2000 });
+  assert.equal(await page.locator('.design-brand-logo').evaluateAll(images => images.every(image => {
+    const logo = image.getBoundingClientRect(), card = image.parentElement.getBoundingClientRect();
+    return Math.abs(logo.left + logo.width / 2 - card.left - card.width / 2) < 2 &&
+      Math.abs(logo.top + logo.height / 2 - card.top - card.height / 2) < 2;
+  })), true);
+  assert.deepEqual(external, []);
+  await page.close();
+});
+
+test('a missing concept logo keeps the app name and fallback wordmark available', async () => {
+  for (const [file, name] of [['netflix.png', 'Netflix'], ['peacock.png', 'Peacock']]) {
+    const page = await browser.newPage();
+    await page.route('**/preview/logos/' + file, route => route.abort());
+    await page.goto(url + '/hub?scenario=tvos-concept&reset=1&static=1');
+    await page.locator('.design-brand-logo').first().waitFor({ timeout: 2000 });
+    const tile = page.getByRole('button', { name: 'Open ' + name, exact: true });
+    await tile.locator('.design-brand-logo').waitFor({ state: 'detached' });
+    assert.equal(await tile.locator('.brand-wordmark').isVisible(), true);
+    assert.equal(await tile.locator('.design-caption').textContent(), name);
+    if (name === 'Peacock') {
+      const contrast = await tile.evaluate(card => {
+        function luminance(color) {
+          const rgb = color.match(/[\d.]+/g).slice(0, 3).map(value => {
+            const c = Number(value) / 255; return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+          });
+          return rgb[0] * 0.2126 + rgb[1] * 0.7152 + rgb[2] * 0.0722;
+        }
+        const text = luminance(getComputedStyle(card.querySelector('.brand-wordmark')).color);
+        const background = luminance(getComputedStyle(card).backgroundColor);
+        return (Math.max(text, background) + 0.05) / (Math.min(text, background) + 0.05);
+      });
+      assert.ok(contrast >= 4.5, 'Peacock fallback contrast: ' + contrast);
+    }
+    await page.close();
+  }
 });

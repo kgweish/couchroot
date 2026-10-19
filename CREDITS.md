@@ -43,6 +43,9 @@ behaves identically. Firmware bodies and private device captures are excluded.
 
 ## Development tools
 
+The workbench's service artwork is credited in [the logo source notes](preview/logos/README.md).
+These marks retain their owners' rights.
+
 The local workflow uses Node.js, Python/lxml, Playwright/Chromium, .NET and
 Emscripten. Dependency versions are recorded in `package-lock.json`,
 `tvsetup/requirements.txt`, `global.json` and the build workflow. These projects

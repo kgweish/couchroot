@@ -7,6 +7,10 @@
     document.querySelector('main').insertBefore(title, document.getElementById('home-clock'));
     document.getElementById('preview').textContent = 'DESIGN MOCKUP · SAMPLE APPS & INPUTS';
     var grid = document.getElementById('favorites');
+    var logos = { plex: 'plex.svg', youtube: 'youtube.svg', 'brand-netflix': 'netflix.png',
+      'brand-prime': 'prime.png', 'brand-disney': 'disney.jpg', 'brand-hulu': 'hulu.svg',
+      'brand-spotify': 'spotify.svg', 'brand-peacock': 'peacock.png',
+      'brand-crunchyroll': 'crunchyroll.jpg', 'brand-espn': 'espn.png', 'brand-tubi': 'tubi.png' };
     function decorate() {
       document.body.classList.toggle('design-moving', grid.classList.contains('reordering'));
       Array.prototype.forEach.call(grid.children, function (tile) {
@@ -14,6 +18,13 @@
         var label = document.createElement('span'); label.className = 'design-caption';
         label.textContent = tile.getAttribute('aria-label').replace(/^Open /, '');
         label.setAttribute('aria-hidden', 'true'); tile.appendChild(label);
+        Object.keys(logos).some(function (theme) {
+          if (!tile.classList.contains(theme)) return false;
+          var image = document.createElement('img'); image.className = 'design-brand-logo'; image.alt = '';
+          image.onload = function () { tile.classList.add('design-has-logo'); };
+          image.onerror = function () { image.remove(); };
+          image.src = '/preview/logos/' + logos[theme]; tile.appendChild(image); return true;
+        });
         if (tile.dataset.id.indexOf('DemoInput1.') === 0) {
           tile.classList.add('design-input');
           var live = tile.dataset.id === 'DemoInput1.tv';
@@ -30,7 +41,7 @@
     document.addEventListener('keydown', function (event) {
       if (!/^Arrow/.test(event.key) || grid.hidden || grid.classList.contains('reordering')) return;
       var tiles = Array.prototype.slice.call(grid.children), rows = [];
-      var columns = grid.classList.contains('compact') ? 6 : grid.classList.contains('many') ? 3 : 2;
+      var columns = grid.classList.contains('compact') ? 5 : grid.classList.contains('many') ? 3 : 2;
       for (var i = 0; i < tiles.length; i += columns) rows.push(tiles.slice(i, i + columns));
       rows.push(Array.prototype.slice.call(document.querySelectorAll('.bottom-menu footer > button')).filter(function (button) { return !button.hidden; }));
       var row = -1, column;
