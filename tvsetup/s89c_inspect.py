@@ -3,9 +3,14 @@ import argparse
 import http.client
 import ipaddress
 import json
+import socket
 import sys
+import threading
+import time
 
 from .common import Refused
+
+REQUEST_TIMEOUT = 5
 
 
 def inspect(host):
@@ -16,18 +21,39 @@ def inspect(host):
     if not address.is_private or address.is_loopback or address.is_unspecified:
         raise Refused('Enter the TV\'s private IPv4 address.')
 
-    connection = http.client.HTTPConnection(str(address), 8001, timeout=5)
+    deadline = time.monotonic() + REQUEST_TIMEOUT
+    connection = http.client.HTTPConnection(str(address), 8001, timeout=REQUEST_TIMEOUT)
+    timer = None
     try:
+        connection.connect()
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            raise TimeoutError()
+        sock = connection.sock
+        def expire():
+            # Closing a buffered HTTP reader alone does not interrupt its recv.
+            try:
+                sock.shutdown(socket.SHUT_RDWR)
+            except OSError:
+                pass
+        timer = threading.Timer(remaining, expire)
+        timer.daemon = True
+        timer.start()
         connection.request('GET', '/api/v2/')
         response = connection.getresponse()
         if response.status != 200:
             raise Refused('TV identity request returned HTTP ' + str(response.status))
         body = response.read(65537)
+        if time.monotonic() >= deadline:
+            raise TimeoutError()
         if len(body) > 65536:
             raise Refused('TV identity response exceeds 64 KiB.')
     except (OSError, http.client.HTTPException) as error:
         raise Refused('TV request failed; check its address, power and network connection.') from error
     finally:
+        if timer is not None:
+            timer.cancel()
+            timer.join()
         connection.close()
 
     try:
