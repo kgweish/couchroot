@@ -4,7 +4,8 @@ The measurements below motivated replacing the per-command managed launcher whil
 retaining .NET for the persistent worker. The shared package builder now embeds the
 source-built launcher in the signed worker DLL; both `app.exec` and app-profile
 jobs use it. See [capability documentation](../CAPABILITIES.md) for lifecycle and
-build requirements. No full native-worker implementation or comparison exists.
+build requirements. A later [native worker experiment](../native-worker/README.md) compares startup,
+memory, CPU and partial capability parity; the deployed worker remains .NET.
 
 `app-launcher.c` is a small root-only executable that applies the existing app
 profile and then replaces itself with `/bin/sh -c COMMAND`. It clears supplementary

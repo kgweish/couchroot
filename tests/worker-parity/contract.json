@@ -1,0 +1,224 @@
+{
+  "schema": 1,
+  "baseline": "managed-agent-0.7.0",
+  "scope": "Public operation behavior; HTTPS enrollment and routing remain owned by the unchanged service.",
+  "limits": {
+    "transfer_count": 8,
+    "file_bytes": 2147483648,
+    "chunk_bytes": 1048576,
+    "jobs_memory": 16,
+    "job_records": 64,
+    "job_min_ms": 100,
+    "job_max_ms": 86400000,
+    "app_max_ms": 25000,
+    "stream_ring_bytes": 1048576,
+    "tail_bytes": 65536,
+    "public_command_bytes": 16384,
+    "public_exec_min_ms": 100,
+    "public_exec_max_ms": 25000,
+    "wire_exec_max_ms": 300000,
+    "wire_exec_command_bytes": 65536,
+    "foreground_stream_bytes": 1048576
+  },
+  "generated_fields": [
+    "worker_id",
+    "transfer_id",
+    "pid",
+    "process_start",
+    "started_at"
+  ],
+  "operations": {
+    "status": [
+      "boot_id",
+      "uptime_seconds",
+      "worker_id",
+      "app_launcher",
+      "capabilities",
+      "resources",
+      "processes"
+    ],
+    "exec": [
+      "exit_code",
+      "timed_out",
+      "stdout",
+      "stderr"
+    ],
+    "app.exec": [
+      "exit_code",
+      "timed_out",
+      "stdout",
+      "stderr"
+    ],
+    "file.open": [
+      "transfer_id",
+      "size",
+      "sha256",
+      "chunk_bytes",
+      "offset"
+    ],
+    "file.begin": [
+      "transfer_id",
+      "size",
+      "sha256",
+      "chunk_bytes",
+      "offset"
+    ],
+    "file.status": [
+      "offset",
+      "size",
+      "upload",
+      "path",
+      "sha256",
+      "expected_sha256",
+      "chunk_bytes",
+      "transfer_id"
+    ],
+    "file.read": [
+      "data",
+      "offset",
+      "sha256"
+    ],
+    "file.write": [
+      "offset"
+    ],
+    "file.commit": [
+      "committed",
+      "sha256",
+      "size"
+    ],
+    "file.close": [
+      "closed"
+    ],
+    "job.start": [
+      "id",
+      "boot_id",
+      "state",
+      "started_at",
+      "pid",
+      "process_start",
+      "exit_code",
+      "timed_out"
+    ],
+    "job.status": [
+      "id",
+      "boot_id",
+      "state"
+    ],
+    "job.output": [
+      "stdout",
+      "stderr",
+      "state"
+    ],
+    "job.cancel": [
+      "id",
+      "state"
+    ],
+    "job.forget": [
+      "forgotten"
+    ],
+    "helper.prepare": [
+      "helper_id",
+      "path",
+      "sha256"
+    ],
+    "helper.release": [
+      "released"
+    ]
+  },
+  "outcomes": {
+    "rejected": "Not admitted by service",
+    "failed": "Worker reported failure; intermediate changes may exist",
+    "unknown": "No confirmed result after submission; never automatically replay"
+  },
+  "intentional_differences": {
+    "saved_job_cancel": "Native refuses saved-process signalling; inspect/reconcile instead. No PID-only cancellation is introduced.",
+    "command_faults": "Native strict interception remains explicit in status; full signal-handler compatibility is a later gate.",
+    "owned_metadata_paths": "Native file operations cannot address their own .jobs or .views directories.",
+    "directory_replacement": "Native refuses commit when the parent is moved/replaced; independent writers must be quiesced.",
+    "legacy_unknown_records": "Imported same-boot uncertain jobs stay unknown. Import is not evidence that descendants were reaped.",
+    "extra_fields": "Native diagnostics are additive; only documented generated fields and per-operation additions may be normalized.",
+    "special_upload_destination": "Native rejects existing non-regular upload destinations at begin rather than allowing a staging file first.",
+    "hash_size_change": "Native hashes only the initial regular-file size and refuses a changed size instead of following a growing file to EOF. Same-size external writes still require writer quiescence."
+  },
+  "remaining_integration_gates": [
+    "full signal-handler compatibility policy",
+    "production-binary performance and endurance",
+    "native-only acquisition and independent recovery",
+    "wider interruption boundaries",
+    "authorized cross-boot and standby/resume qualification",
+    "native-default rollout and managed fallback retirement"
+  ],
+  "legacy_frames": {
+    "READFILE": "not in public replacement contract",
+    "WRITEFILE": "not in public replacement contract"
+  },
+  "response_deadlines": {
+    "default_ms": 30000,
+    "operation_ms": {
+      "file.open": 120000,
+      "file.commit": 120000,
+      "helper.prepare": 120000,
+      "file.read": 60000,
+      "file.write": 60000
+    },
+    "http_margin_ms": 5000,
+    "client_margin_ms": 10000,
+    "on_expiry": "unknown; close connection; do not replay; retain submitted journal entry"
+  },
+  "resource_inventory": {
+    "capability": "resource-inventory-v1",
+    "schema": 1,
+    "scope": "worker-owned",
+    "transfers": {
+      "limit": 8,
+      "fields": [
+        "id",
+        "direction"
+      ],
+      "directions": [
+        "upload",
+        "download"
+      ]
+    },
+    "jobs": {
+      "limit": 16,
+      "fields": [
+        "id",
+        "state",
+        "monitor_finished"
+      ]
+    },
+    "helpers": {
+      "limit": 8,
+      "values": "helper IDs"
+    },
+    "ordering": "unspecified",
+    "monitor_finished": "Monitor loop finished for this in-memory job; not a claim that detached descendants, output drains, or durable state are fully reconciled.",
+    "exclusions": [
+      "disk-only retained job records",
+      "old helper directories",
+      "detached descendants",
+      "service admission state"
+    ],
+    "handoff": "Read fresh status after stopping service admissions and waiting for in-flight requests. Empty inventory alone is not evidence of quiescence; verify retained state and worker shutdown separately."
+  },
+  "process_identity": {
+    "capability": "worker-process-identity-v1",
+    "worker": [
+      "pid",
+      "start_ticks"
+    ],
+    "guardian": "null for managed; native guardian pid and start_ticks",
+    "guardian_confirmation": "guardian-parent-identity-v1 means this status request freshly checked the kernel parent PID against the direct guardian parent established at startup. Cached start ticks remain bound to that original parent; this does not promise future liveness or observe both pidfd exits.",
+    "identity": "Bind to boot_id, worker_id and authenticated worker PID. Preserve decimal start_ticks as a string.",
+    "exit": "BYE and disconnect precede cleanup. Observe original worker and guardian identities absent or replaced before treating process exit as verified. Mounts, detached descendants and retained state require separate reconciliation."
+  },
+  "observer_probe": {
+    "route": "POST /v1/observer/probe",
+    "fields": ["id", "manifest_sha256"],
+    "admission": "Enrolled client; serialized and journaled before staging; no caller-supplied PID, path or command.",
+    "effect": "Enable execution of the exact installed observer package member; verify service-context launch; bind/cancel on S90D or use proc-stat on QN90A; confirm the managed worker remains and release admission on success.",
+    "unknown": "Never replay; preserve submitted request and unresolved admission hold.",
+    "not_proven": ["target process exit", "native selection", "resource cleanup parity", "TV qualification from host tests"]
+  }
+}

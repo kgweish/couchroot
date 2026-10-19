@@ -1,0 +1,105 @@
+{
+  "date": "2026-10-14",
+  "source_commit": "5b60f713da25b27dc39731e4f9eac6e71700cd16",
+  "scope": "Opt-in production file policy and synthetic retained-record compatibility using ordinary native sidecars; no live managed-job migration or production implementation selection.",
+  "deployed_implementation": ".NET unchanged",
+  "tv_reboots": 0,
+  "managed_records_read_or_changed": false,
+  "host_validation": {
+    "existing_native_asan_ubsan_tests_passed": 49,
+    "production_file_and_record_tests_passed": 6,
+    "differential_groups_passed": 6,
+    "offline_migration_tests_passed": 10,
+    "repository_tests_passed": 236,
+    "repository_native_and_differential_tests_skipped": 61,
+    "existing_loopback_protocol_tests_passed": true,
+    "new_test_container_recipe_built_and_exercised": true,
+    "differential_oracle": "Actual managed operation/execute methods on host test runtime versus authenticated native worker protocol; not full HTTPS integration."
+  },
+  "devices": {
+    "qn90a": {
+      "exit_code": 0,
+      "ordinary_worker_build": true,
+      "passed_checks": [
+        "production_nested_paths_external_download_and_refusals",
+        "helper_digest_readonly_and_namespace",
+        "production_nested_helper_app_identity_and_release",
+        "legacy_unknown_record_preserved_without_replay_or_saved_pid_signals",
+        "json_upload_chunk_limit_and_binary_interoperability",
+        "production_parity_owned_storage_cleanup"
+      ],
+      "worker_fault_in_controller_log": false,
+      "kernel_observations": {
+        "collector_wait_lines": 0,
+        "lines": 2192,
+        "worker_executable_dump_lines": 0,
+        "coverage": "retained filtered window only; no continuous capture",
+        "file_open_checker_events": 0
+      },
+      "cleanup_and_preservation": {
+        "boot_unchanged": true,
+        "deployed_pid_unchanged": true,
+        "deployed_worker_unchanged": true,
+        "files_removed": true,
+        "helpers_released": true,
+        "launcher_hash_unchanged": true,
+        "native_helper_storage_removed": true,
+        "original_cgroup_membership_unchanged": true,
+        "original_execution_mounts_unchanged": true,
+        "protected_files_unchanged": true,
+        "prototype_freezer_groups_removed": true
+      }
+    },
+    "s90d": {
+      "exit_code": 0,
+      "ordinary_worker_build": true,
+      "passed_checks": [
+        "production_nested_paths_external_download_and_refusals",
+        "helper_digest_readonly_and_namespace",
+        "production_nested_helper_app_identity_and_release",
+        "legacy_unknown_record_preserved_without_replay_or_saved_pid_signals",
+        "json_upload_chunk_limit_and_binary_interoperability",
+        "production_parity_owned_storage_cleanup"
+      ],
+      "worker_fault_in_controller_log": false,
+      "kernel_observations": {
+        "coverage": "unavailable",
+        "reason": "The inherited uptime-based filter did not account for prior suspend; it returned zero lines. No absence-of-kernel-errors claim is made."
+      },
+      "cleanup_and_preservation": {
+        "boot_unchanged": true,
+        "deployed_pid_unchanged": true,
+        "deployed_worker_unchanged": true,
+        "files_removed": true,
+        "helpers_released": true,
+        "launcher_hash_unchanged": true,
+        "native_helper_storage_removed": true,
+        "original_cgroup_membership_unchanged": true,
+        "original_execution_mounts_unchanged": true,
+        "protected_files_unchanged": true,
+        "prototype_freezer_groups_removed": true
+      }
+    }
+  },
+  "build_artifacts": {
+    "worker": {
+      "bytes": 103052,
+      "sha256": "53407e7f6d3e30993c1eb4de215a3d17d75b761b231a16024cc4930f81b5a9ed"
+    },
+    "accept": {
+      "bytes": 83096,
+      "sha256": "5df3e75d1cb09c2b7712099699526776c40f48958711f5b27506987992327d40"
+    },
+    "app-launcher": {
+      "bytes": 13296,
+      "sha256": "4ba756c8b725ba2e375ca02608c9ca7579f6d6275c4ed96348ba93bf5b8a6d55"
+    }
+  },
+  "remaining_gates": [
+    "Live snapshot installation and rollback through the shared setup transaction.",
+    "Production service selection, capability advertisement and lifetime.",
+    "Native acquisition and maintenance recovery.",
+    "Signal-policy compatibility decision and separately authorized cross-boot qualification.",
+    "Continuous kernel observation with correct suspend-aware clock handling."
+  ]
+}

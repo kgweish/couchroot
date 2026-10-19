@@ -414,22 +414,26 @@ internal static partial class SamsungTvRootAgent
             Task<CapturedOutput> error = CaptureOutput(
                 process.StandardError.BaseStream);
             bool exited = process.WaitForExit(timeout);
+            // The shell can exit while a background child still owns its pipes.
+            // EXEC is bounded work; persistent work belongs in the job API.
+            int signalResult = kill(-process.Id, SignalKill);
             if (!exited)
             {
-                int signalResult = kill(-process.Id, SignalKill);
                 if (signalResult < 0)
                 {
-                    try
-                    {
-                        process.Kill();
-                    }
-                    catch
-                    {
-                    }
+                    try { process.Kill(); } catch (InvalidOperationException) { }
                 }
-                process.WaitForExit();
+                if (!process.WaitForExit(1000))
+                    throw new IOException("Command did not exit after termination");
             }
-            Task.WaitAll(output, error);
+            if (!Task.WaitAll(new Task[] { output, error }, 1000))
+            {
+                // A child may have escaped the group with setsid. Do not wait
+                // forever or report a successful result with incomplete output.
+                process.StandardOutput.Close();
+                process.StandardError.Close();
+                throw new IOException("Command output drain timed out");
+            }
             byte[] standardError = error.Result.Data;
             if (output.Result.Truncated || error.Result.Truncated)
             {

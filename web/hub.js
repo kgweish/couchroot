@@ -459,7 +459,7 @@
   }
   function updateMovePosition() { document.getElementById('move-position').textContent = 'Position ' + (moveIndex + 1) + ' of ' + moving.length; }
   function returnFromOptions() {
-    moving = null;
+    homeSignature = ''; moving = null;
     if (optionsOrigin === 'home') { renderHome(chosen); } else { renderEdit(chosen); }
   }
   function finishMove() { if (moving && commit(moving)) { returnFromOptions(); message('New order saved.'); } }

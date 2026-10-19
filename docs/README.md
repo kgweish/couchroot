@@ -17,6 +17,7 @@ Set up, deploy, operate and develop.
 - [Minimal TV Hub](guides/owner-operations.md)
 - [SDB connection reuse](guides/sdb-connection-reliability.md)
 - [Shared Samsung TV monitoring](guides/telemetry.md)
+- [QN90A native telemetry: local integration candidate](guides/native-telemetry.md)
 - [TV setup and reapplication (unreleased)](guides/tv-setup.md)
 - [Deploy the Hub UI](guides/ui-deployment.md)
 - [UI development](guides/ui-development.md)
@@ -70,5 +71,7 @@ Platform investigations, including failed approaches.
 
 Release and publication records.
 
+- [QN90A home-use scope and remaining acceptance](project/dotnet-deprecation-plan.md)
+- [QN90A cleanup tracker — 2026-10-19](project/qn90a-cleanup-plan.md)
 - [Source publication review — 2026-10-11](project/publication-review.md)
 - [Current publication scope — 2026-10-11](project/release-readiness.md)

@@ -1,0 +1,71 @@
+{
+ "schema": 1,
+ "date": "2026-10-15",
+ "source_commit": "e277c44",
+ "scope": "Restart rollback of uncommitted forward trials and explicit restart cleanup",
+ "local": {
+  "unit_tests": 13,
+  "real_process_restart_modes": [
+   "abandon-prepared",
+   "provider-ready",
+   "state-ready",
+   "trial-ready"
+  ],
+  "real_process_restart_modes_passed": 4,
+  "existing_real_process_rehearsal_modes_passed": 5,
+  "container_node_suites": {
+   "passed": 389,
+   "failed": 0,
+   "skipped": 26
+  },
+  "executor_received_only_read_only_commands_before_commit": true,
+  "normal_round_trip_after_cleanup": true
+ },
+ "devices": {
+  "qn90a": {
+   "package_version": "0.7.25",
+   "signed_installation_verified": true,
+   "boot_unchanged": true,
+   "normal_round_trip": true,
+   "retained_exit_code": 7,
+   "retained_bytes_unchanged": true,
+   "current_trial_native_and_provider_scopes_removed": true,
+   "transition_markers_removed": true,
+   "durable_inventory": "settled",
+   "committed_history_entries": 10,
+   "sdk_rescue_fired_before_acceptance": true,
+   "sdk_loopback_restored": true,
+   "final_selection": "managed",
+   "final_worker_ready": true,
+   "pending_setup": false,
+   "service_restart_hardware_exercised": false
+  },
+  "s90d": {
+   "package_version": "0.7.25",
+   "signed_installation_verified": true,
+   "installed_members_verified": 68,
+   "boot_unchanged": true,
+   "normal_round_trip": true,
+   "retained_exit_code": 7,
+   "retained_bytes_unchanged": true,
+   "current_trial_native_and_provider_scopes_removed": true,
+   "transition_markers_removed": true,
+   "durable_inventory": "settled",
+   "committed_history_entries": 10,
+   "sdk_rescue_fired_before_acceptance": false,
+   "recovery_timer_disarmed": true,
+   "sdk_loopback_restored": true,
+   "final_selection": "managed",
+   "final_worker_ready": true,
+   "pending_setup": false,
+   "service_restart_hardware_exercised": false
+  }
+ },
+ "limitations": [
+  "No real service restart was performed on either TV; restart rollback and cleanup are qualified locally only.",
+  "The QN90A acceptance ran after the 300 s SDK rescue timer fired; the timer switched SDK to the operator host as designed and loopback was restored with the pinned recovery utility before acceptance. S90D was accepted within the window.",
+  "Restart after native commit or during the return to managed, S90D observer remnants and cross-boot records remain unsupported.",
+  "Native public admission remained held during the round trip; no reboot or standby/resume qualification was performed.",
+  "Managed acquisition and fallback dependencies remain deployed."
+ ]
+}

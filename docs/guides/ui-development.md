@@ -2,7 +2,7 @@
 
 Minimal Hub has one UI source: `web/`. The browser workbench serves those files
 with simulated Tizen APIs. The unsigned TV package includes only the explicit
-file list in `scripts/package.py`; it contains no preview tooling.
+model-aware manifest in `tvsetup/planner.py::hub_sources`; it contains no preview tooling.
 
 ## Start
 
@@ -138,7 +138,7 @@ concept's gradient fallback consistently. Inspect the images; these are not gold
 tests. The older-browser checks exercise selected fallbacks in modern Chromium,
 not a Tizen emulator.
 
-Packaging writes `dist/MinimalHub-unsigned.wgt` and `dist/manifest.json`.
+Packaging writes `dist/MinimalHub-<device>-unsigned.wgt` and `dist/manifest-<device>.json`.
 For an authorized update to an already configured TV, follow
 [UI deployment](ui-deployment.md). It signs current source through the setup
 engine; the unsigned WGT is a local build check, not its deployment input.
@@ -252,3 +252,15 @@ and unsigned package contain no collector integration. The existing S90D and
 QN90A builders retain their background adapters from
 `research/s90d-telemetry/legacy-hub/` for previously configured collectors.
 Those integrations are separate from the S89C preview.
+
+The model-aware package manifest is `tvsetup.planner.hub_sources`. `python3
+scripts/package.py --device s90d` (the default), `--device qn90a` or `--device s89c`
+builds the same unsigned runtime inputs used by the setup builder; QN90A adds
+its idle script. The S89C package includes Gallery, bundled logos and the
+landscape image permission. General S89C installation remains gated. The native
+WebView bundle uses the unconfigured variant with the core launcher.
+
+Standalone `scripts/sign.py` uses `SAMSUNG_TV_TOOLKIT` and the enrolled signing
+trust from `--site` / `TV_SETUP_SITE`. It verifies both package signatures before
+reporting success. `--boot-trace` increments the patch version read from the
+widget manifest. Signing is local; it does not install or contact a TV.

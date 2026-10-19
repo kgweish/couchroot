@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "date": "2026-10-16",
+  "scope": "S90D same-boot host-assisted recovery after incomplete service restart",
+  "package_version": "0.7.49",
+  "host_assistance": {
+    "developer_mode_host_applied_by_owner": true,
+    "restart_required": false,
+    "same_boot_verified": true,
+    "sdk_access_restored": true
+  },
+  "inspection": {
+    "original_launcher_reported_success": true,
+    "original_final_request_durable_state": "submitted",
+    "request_replayed": false,
+    "original_restart_and_rescue_units_absent": true,
+    "original_rescue_firing_or_retirement_proven": false,
+    "service_confirmed_stopped": true,
+    "retained_crash_log_available": false,
+    "exit_cause": "unknown"
+  },
+  "recovery": {
+    "fresh_single_use_launch_intent": true,
+    "independent_300_second_rescue_armed": true,
+    "delayed_sdk_loopback_restore_completed": true,
+    "managed_worker_ready": true,
+    "original_selection_preserved": true,
+    "retained_jobs_preserved": true,
+    "enrollment_and_protected_hashes_preserved": true,
+    "isolated_sdk_mounts_unmounted": true,
+    "owned_sdk_staging_and_launcher_scopes_removed": true,
+    "owned_recovery_units_inactive": true,
+    "new_rescue_retired_unfired": true,
+    "sdk_loopback": true
+  },
+  "qualification_limits": [
+    "This recovery does not retroactively accept the interrupted service-restart trial or resolve its submitted request.",
+    "No request or restart with an uncertain outcome was replayed.",
+    "QN90A endurance continued without device changes.",
+    ".NET entry, managed fallback and SDK rescue remain deployed."
+  ]
+}

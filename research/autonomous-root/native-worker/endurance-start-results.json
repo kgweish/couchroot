@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "observed_at_utc": "2026-10-16T07:01:15+00:00",
+  "scope": "Initial endurance observation, not completion or acceptance",
+  "package_version": "0.7.48",
+  "source_sha256": {
+    "research/autonomous-root/native-worker/observer-series-controller.py": "0ae58894683422b723048cbd6a0f099c841a53b2fb373d8905e21a9be28a26a4",
+    "tests/native_observer_controller_test.py": "b42180312a3381a36801871f73d8342dc81d81ba42922feb4e232fe7332cfca7"
+  },
+  "observer_sha256": "a298920bf9530e1b413df958e3b83614708a55f8e8f3b5f4fde60853965c3c5d",
+  "ordinary_worker_sha256": "613c21fa9231097d51540f06873775a3f4d6f9173f48ec896c84e99432dd1f8e",
+  "plan": {
+    "required_coverage_seconds": 86460,
+    "windows": 540,
+    "window_seconds": 220,
+    "stride_seconds": 160,
+    "independent_rescue_seconds": 300,
+    "renew_seconds": 120,
+    "quiet_job_timeout_seconds": 86400,
+    "mixed_job_interval_seconds": 300,
+    "checksum_transfer_interval_seconds": 3600,
+    "checksum_transfer_bytes": 1048576,
+    "host_space_floor_bytes": 2147483648,
+    "tv_space_floor_bytes": 268435456
+  },
+  "local_tests": {
+    "controller_passed": 12,
+    "series_passed": 17,
+    "linux_observer_skipped": 13,
+    "npm_passed": 423,
+    "npm_skipped": 157
+  },
+  "devices": {
+    "qn90a": {
+      "state": "running-at-observation",
+      "native_ready": true,
+      "quiet_job_running": true,
+      "completed_windows_at_observation": 9,
+      "initial_checksum_transfer_complete": true,
+      "host_supervisor_live": true,
+      "tv_storage_monitor_live": true,
+      "tv_available_mib_at_observation": 760,
+      "original_boot_preserved_at_observation": true
+    },
+    "s90d": {
+      "state": "not-started-service-recovery-pending",
+      "endurance_job_submitted": false,
+      "tv_api_reachable": true,
+      "couchroot_service_unavailable": true,
+      "usable_sdk_access_unavailable": true,
+      "owned_administration_ui_launched_and_closed": true,
+      "service_http_launch_status": 404,
+      "power_transition_performed": false,
+      "user_restart_direction_pending": true,
+      "graceful_restart_unit_and_scope_require_reconciliation": true
+    }
+  },
+  "limits": [
+    "Initial observations are not a 24-hour pass or a resource-growth conclusion.",
+    "The host supervisor keeps the Mac awake for its bound child, has a 27-hour supervision deadline, and never restarts failed work. Adapter callbacks have 45-second deadlines. Final verification and managed return require a fresh rescue.",
+    "Host admission budgets maximum capture sizes, private receipts and a shared free-space floor. The separate TV-space monitor can stop only its identity-bound host controller, leaving recovery armed. Administrative-busy rejections delay read-only probes; they are recorded, not treated as successful capacity checks.",
+    "S90D force-kill/start reported success without resetting the worker. That attempt was reconciled and cleaned. Graceful termination then closed the service before the launch request returned. It was not replayed. The scheduled rescue did not restore usable SDK access; its actual unit outcome remains unobservable.",
+    "The owned administration UI was briefly launched and closed through the model/device-bound TV API. The service-only app was rejected by that endpoint. No power command, package update, global policy or persistent capability change was performed.",
+    "Managed acquisition, worker fallback and independent recovery bytes remain unchanged. S90D recovery now needs user direction under the original prohibition on reboot/standby. QN90A continues independently."
+  ]
+}

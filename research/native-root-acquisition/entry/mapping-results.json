@@ -1,0 +1,191 @@
+{
+  "schema": 1,
+  "date": "2026-10-15",
+  "scope": "Managed diagnostic of the native-entry code-mapping prerequisite; not SDK entry qualification",
+  "package_version": "0.7.36",
+  "devices": [
+    {
+      "model": "QN90A",
+      "code_sha256": "92961a03dc7a68439616073662c1b4903318fab89eaeb9ea3080a2280f7f1c89",
+      "helpers": [
+        {
+          "path": "/usr/bin/mount",
+          "uid": 0,
+          "gid": 0,
+          "mode": "0755",
+          "file_capabilities": [],
+          "sha256": "baa459255c0ca01d007e009f40c0b00304fa4e201245ebfbb991142edc7750ba"
+        },
+        {
+          "path": "/usr/bin/unshare",
+          "uid": 0,
+          "gid": 0,
+          "mode": "0755",
+          "file_capabilities": [],
+          "sha256": "d83d799c8ece7067dbcc4cd952f93fd26a8bcf0962c417630c4d9ceae3242d81"
+        },
+        {
+          "path": "/usr/bin/nsenter",
+          "uid": 0,
+          "gid": 0,
+          "mode": "0755",
+          "file_capabilities": [],
+          "sha256": "77d3fcb86e4d40478b89f16e57984c24782af918f529265b8ad32cd3a87e8635"
+        }
+      ],
+      "writable_vdfs": {
+        "dlopen_flags": "0x1002",
+        "exit_code": 3,
+        "error": "failed to map segment from shared object"
+      },
+      "writable_tmpfs": {
+        "identical_code_copy": true,
+        "exit_code": 3,
+        "error": "failed to map segment from shared object"
+      },
+      "private_readonly_bind": {
+        "nonce_bound_receipt": true,
+        "uid": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "gid": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "executable": "/usr/bin/dotnet",
+        "code_readonly": 1,
+        "capable": false,
+        "exit_code": 2,
+        "diagnostic_source_sha256": "bafabcd1f723c4f3353fc6a51179c82c124849fd7601a03a0666f4c0b7dcc56a"
+      },
+      "final_verification": {
+        "enrollment_preserved": true,
+        "history_entries": 28,
+        "history_unchanged": true,
+        "managed_ready": true,
+        "native_entry_qualified": false,
+        "no_global_code_bind": true,
+        "protected_hashes_preserved": true,
+        "retained_jobs_preserved": true,
+        "same_boot": true,
+        "same_worker": true,
+        "scopes_removed": true,
+        "sdk_loopback": true,
+        "settled": true
+      }
+    },
+    {
+      "model": "S90D",
+      "code_sha256": "7cf278b040579e0a4422e7af0370256f3a59a981e7445f7027715366f021e41a",
+      "helpers": [
+        {
+          "path": "/usr/bin/mount",
+          "uid": 0,
+          "gid": 0,
+          "mode": "0755",
+          "file_capabilities": [],
+          "sha256": "c8c9d263a008afa3a726610bb9e4974eefbb1d025a916d7a96e80ec20f966b03"
+        },
+        {
+          "path": "/usr/bin/unshare",
+          "uid": 0,
+          "gid": 0,
+          "mode": "0755",
+          "file_capabilities": [],
+          "sha256": "62a753f64e39392bc275e112226b5aea0276651e6abc139fdc065fb99dd39a01"
+        },
+        {
+          "path": "/usr/bin/nsenter",
+          "uid": 0,
+          "gid": 0,
+          "mode": "0755",
+          "file_capabilities": [],
+          "sha256": "0a82d6727b97fa413ef6591ffbafcc91a3c9c9292b84845f26fbe2e90e14ceda"
+        }
+      ],
+      "writable_vdfs": {
+        "dlopen_flags": "0x1002",
+        "exit_code": 3,
+        "error": "failed to map segment from shared object"
+      },
+      "writable_tmpfs": {
+        "identical_code_copy": true,
+        "exit_code": 3,
+        "error": "failed to map segment from shared object"
+      },
+      "private_readonly_bind": {
+        "nonce_bound_receipt": true,
+        "uid": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "gid": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "executable": "/usr/bin/dotnet",
+        "code_readonly": 1,
+        "capable": false,
+        "exit_code": 2,
+        "diagnostic_source_sha256": "bafabcd1f723c4f3353fc6a51179c82c124849fd7601a03a0666f4c0b7dcc56a"
+      },
+      "final_verification": {
+        "enrollment_preserved": true,
+        "history_entries": 29,
+        "history_unchanged": true,
+        "managed_ready": true,
+        "native_entry_qualified": false,
+        "no_global_code_bind": true,
+        "protected_hashes_preserved": true,
+        "receipt_process_absent": true,
+        "retained_jobs_preserved": true,
+        "same_boot": true,
+        "same_worker": true,
+        "scopes_removed": true,
+        "sdk_loopback": true,
+        "settled": true
+      }
+    }
+  ],
+  "static_analysis": {
+    "target": "QN90A captured launchpad-loader and libdlog.so.0",
+    "loader_preload_pseudocode_evidence": "ev_b3491a439d8bb76bcad75b3956f4db50ea0bbb8f9c61db8752abdeba1b26fdf6",
+    "logging_configuration_evidence": [
+      "ev_6b11c136730d978840cab0cf7eb0b0659ab0e505270f57a2f99a5ced1a81102a",
+      "ev_e952265e653f08ea2f45665f614a375a21a3cdf5abec6e88070983b5a13284f8"
+    ],
+    "libdlog_sha256": "ccaab20eb9c9a32f1b850e60bd82fb03e2934dd76280b79ae01ec1c78d9300ac",
+    "conclusion": "Preload errors use __dlog_print; the inspected configuration path reads fixed files. No environment override was found in this path. No logging configuration was changed.",
+    "limits": "Static observations do not prove the earlier SDK-loader failure cause; other logging paths and S90D libdlog were not analyzed."
+  },
+  "limitations": [
+    "All mapping diagnostics used the existing managed root executor, not the SDK UID/GID 901 vendor-loader context.",
+    "Writable VDFS and tmpfs mapping refusal in this context does not establish the kernel mechanism or the exact error in the earlier direct SDK-loader trials.",
+    "The stock helper inventory covers direct entries in four system binary directories only, not every executable or vendor namespace preparation path.",
+    "No production code or installed package changed; no runtime fallback was removed.",
+    "An initial managed environment setter did not supply the constructor nonce; libc setenv was used for the successful complete receipts.",
+    "A first oversized diagnostic command was explicitly rejected before execution; a fresh compressed command was used.",
+    "Namespace numbers are not durable process identities. S90D cleanup verification was refined to inspect the original receipt process and actual code binds after a transient namespace-number match.",
+    "Private identities, nonces, process IDs, namespaces, raw output, vendor binaries and diagnostic builds remain outside Git."
+  ],
+  "local_validation": {
+    "npm_test": {
+      "passed": 404,
+      "skipped": 143,
+      "failed": 0
+    },
+    "production_source_changed": false,
+    "python_client_or_setup_changed": false,
+    "fresh_container_suites_rerun": false,
+    "reason": "Documentation and hardware diagnostic evidence only; production source and packages are unchanged."
+  }
+}

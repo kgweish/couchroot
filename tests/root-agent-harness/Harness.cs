@@ -3,14 +3,44 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Security.Cryptography;
-class Harness { public static int Main(string[] args){if(args.Length==1 && args[0]=="--native-resource"){using(var resource=typeof(SamsungTvRootAgent).Assembly.GetManifestResourceStream("Couchroot.AppLauncher")){if(resource==null)throw new Exception("Missing resource");Console.WriteLine("NATIVE_RESOURCE_SHA256 "+Convert.ToHexString(SHA256.HashData(resource)).ToLowerInvariant());}return 0;}if(args.Length>0)return SamsungTvRootAgent.Main(args);SamsungTvRootAgent.TestOperations();return 0;} }
+class Harness { public static int Main(string[] args){if(args.Length==2 && args[0]=="--validate-staging"){try{Console.WriteLine(SamsungTvRootAgent.ValidateProductionStaging(args[1]));return 0;}catch(ArgumentException){return 64;}}if(args.Length==1 && args[0]=="--job-identity-test")return SamsungTvRootAgent.TestStartedProcessIdentity();if(args.Length==3 && args[0]=="--parity-wire")return SamsungTvRootAgent.ParityWire(int.Parse(args[1]),args[2]);if(args.Length==2 && args[0]=="--parity")return SamsungTvRootAgent.ParityBridge(args[1]);if(args.Length==1 && args[0]=="--native-resource"){using(var resource=typeof(SamsungTvRootAgent).Assembly.GetManifestResourceStream("Couchroot.AppLauncher")){if(resource==null)throw new Exception("Missing resource");Console.WriteLine("NATIVE_RESOURCE_SHA256 "+Convert.ToHexString(SHA256.HashData(resource)).ToLowerInvariant());}return 0;}if(args.Length>0)return SamsungTvRootAgent.Main(args);SamsungTvRootAgent.TestOperations();return 0;} }
 internal static partial class SamsungTvRootAgent
 {
+    public static string ValidateProductionStaging(string value){return ValidateStagingDirectory(value);}
     private static void Check(bool value,string message){if(!value)throw new Exception(message);}
     private static JsonElement Call(object request,string root){using(var doc=JsonDocument.Parse(JsonSerializer.Serialize(request)))return JsonSerializer.SerializeToElement(Operation(doc.RootElement,root,root));}
     private static void Reject(Action action,string message){try{action();}catch(ArgumentException){return;}catch(InvalidDataException){return;}catch(IOException){return;}throw new Exception(message);}
+    private static void TestReadOpenFlags()
+    {
+        Check(ReadOpenFlags(false, System.Runtime.InteropServices.Architecture.Arm) == 0x28800, "ARM32 O_NOFOLLOW/O_LARGEFILE differ");
+        Check(ReadOpenFlags(false, System.Runtime.InteropServices.Architecture.Arm64) == 0x8800, "ARM64 flags differ");
+        Check(ReadOpenFlags(false, System.Runtime.InteropServices.Architecture.X64) == 0x20800, "x64 flags differ");
+        Check(ReadOpenFlags(true, System.Runtime.InteropServices.Architecture.Arm64) == 0x104, "Darwin flags differ");
+    }
+    private static void TestExecDrain(string root)
+    {
+        string marker = root + "exec-background-survived";
+        var clock = System.Diagnostics.Stopwatch.StartNew();
+        var result = Execute("(sleep 1; touch " + ShellQuote(marker) + ") & printf done; printf error >&2; exit 7", 3000);
+        Check(clock.ElapsedMilliseconds < 2500, "EXEC waited for background pipe owners");
+        Check(result.ExitCode == 7 && !result.TimedOut, "EXEC lost leader exit status");
+        Check(System.Text.Encoding.UTF8.GetString(result.StandardOutput) == "done", "EXEC lost stdout");
+        Check(System.Text.Encoding.UTF8.GetString(result.StandardError) == "error", "EXEC lost stderr");
+        System.Threading.Thread.Sleep(1200);
+        Check(!File.Exists(marker), "EXEC background child survived leader exit");
+        clock.Restart();
+        string ready = root + "exec-escaped-ready";
+        string escaped = "printf ready > " + ShellQuote(ready) + "; sleep 4";
+        Reject(() => Execute("setsid /bin/sh -c " + ShellQuote(escaped) + " & while [ ! -s " + ShellQuote(ready) + " ]; do sleep .01; done", 3000), "escaped pipe owner allowed success");
+        Check(clock.ElapsedMilliseconds < 2500, "escaped pipe owner blocked output drain");
+        clock.Restart();
+        result = Execute("sleep 10", 100);
+        Check(result.TimedOut && result.ExitCode == 124 && clock.ElapsedMilliseconds < 2500, "EXEC timeout is unbounded");
+        Console.WriteLine("PASS EXEC background cleanup, escaped-pipe drain bound and timeout");
+    }
     private static void TestJobs(string root)
     {
+        TestExecDrain(root);
         // Exercise the actual process boundary, including nested launcher quoting.
         string expected="apostrophe's \"double\" and \\backslash\nnext line";
         string command="printf '%s' "+ShellQuote(expected);
@@ -52,6 +82,7 @@ internal static partial class SamsungTvRootAgent
     public static void TestOperations()
     {
         TestProtocolReader();
+        TestReadOpenFlags();
         Reject(()=>AppCommand("echo should-not-run"),"unprepared native launcher accepted");
         string root=Path.GetTempPath()+"couchroot-operations-"+Guid.NewGuid().ToString("N")+"/";
         if(System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX) && root.StartsWith("/var/"))root="/private"+root;
@@ -84,6 +115,11 @@ internal static partial class SamsungTvRootAgent
             Check(new FileInfo(target).Length==0,"conditional replacement failed");
             File.CreateSymbolicLink(root+"link",target);
             Reject(()=>Call(new{op="file.open",path=root+"link"},root),"symlink accepted");
+            // Bypass the preliminary path check: a leaf replaced after that
+            // check must also be rejected by the actual open syscall.
+            int linkFd = open(root+"link", ReadOpenFlags(System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX), System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture));
+            if (linkFd >= 0) new Microsoft.Win32.SafeHandles.SafeFileHandle((IntPtr)linkFd, true).Dispose();
+            Check(linkFd < 0, "open followed a symlink after path validation");
             Reject(()=>Call(new{op="file.begin",path="/etc/not-allowed",size=0,sha256=digest,expected_sha256="absent"},root),"outside write allowlist accepted");
             var log=new LogRing();log.Add(bytes,bytes.Length);var tail=JsonSerializer.SerializeToElement(log.Read(0));
             Check(tail.GetProperty("truncated").GetBoolean(),"log truncation missing");

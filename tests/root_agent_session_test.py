@@ -69,6 +69,15 @@ class SessionTests(unittest.TestCase):
                         with self.assertRaises((RuntimeError,ValueError)):session.request('POST','/v1/files/read',raw_response=kind=='digest')
                         self.assertTrue(session.failed);conn.close.assert_called_once()
 
+    def test_reused_socket_applies_each_operation_budget(self):
+        conn=connection()
+        with patch.object(client.ssl,'create_default_context'),patch.object(client.http.client,'HTTPSConnection',return_value=conn) as factory:
+            with client.Session(CONFIG) as session:
+                for op in ('file.open','file.write','file.status'):
+                    client.operation(CONFIG,dict(op=op),session=session)
+                self.assertEqual([call.args[0] for call in conn.sock.settimeout.call_args_list],[130,70,40])
+                self.assertEqual(factory.call_count,1)
+
     def test_one_off_requests_close_and_destination_changes_are_rejected(self):
         conn=connection()
         with patch.object(client.ssl,'create_default_context'),patch.object(client.http.client,'HTTPSConnection',return_value=conn):

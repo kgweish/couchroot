@@ -1,0 +1,711 @@
+{
+  "schema": 1,
+  "date": "2026-10-16",
+  "scope": "S90D follow-up sync attribution on ordinary signed 0.7.46 bytes; eight measured pairs after two warmups",
+  "worker_source_commit": "bbf8645",
+  "diagnostic_source_commit": "9938fd7",
+  "package_version": "0.7.46",
+  "ordinary_worker_sha256": "613c21fa9231097d51540f06873775a3f4d6f9173f48ec896c84e99432dd1f8e",
+  "benchmark_sha256": "933ff1a5ef9d0dc0369213ffd936f82563cb1754cdefb81a8a6298e429ceae1b",
+  "timing_interposer_sha256": "1b280810ff46ee7e85024c966705b7dff449dbaddfb76df2239129fd73419cec",
+  "timing_source_sha256": "7a143f3e73d95f41d01dc0cc54d8ca6b299ba6a7893ad4fdd73b392194d9820c",
+  "job_attribution": {
+    "job_samples": [
+      {
+        "round": 0,
+        "profile": "root",
+        "admission_ms": 41.415,
+        "observed_completion_ms": 76.579,
+        "admission_sync_ms": 36.536,
+        "through_terminal_sync_ms": 54.044,
+        "admission_sync_fraction": 0.882,
+        "completion_sync_fraction": 0.706,
+        "sync_ms": [
+          27.033,
+          9.503,
+          7.576,
+          9.932,
+          8.232
+        ]
+      },
+      {
+        "round": 0,
+        "profile": "app",
+        "admission_ms": 25.662,
+        "observed_completion_ms": 65.329,
+        "admission_sync_ms": 20.254,
+        "through_terminal_sync_ms": 36.795,
+        "admission_sync_fraction": 0.789,
+        "completion_sync_fraction": 0.563,
+        "sync_ms": [
+          10.684,
+          9.57,
+          8.226,
+          8.315,
+          8.532
+        ]
+      },
+      {
+        "round": 1,
+        "profile": "root",
+        "admission_ms": 30.733,
+        "observed_completion_ms": 68.413,
+        "admission_sync_ms": 26.756,
+        "through_terminal_sync_ms": 49.141,
+        "admission_sync_fraction": 0.871,
+        "completion_sync_fraction": 0.718,
+        "sync_ms": [
+          20.15,
+          6.606,
+          11.889,
+          10.496,
+          10.169
+        ]
+      },
+      {
+        "round": 1,
+        "profile": "app",
+        "admission_ms": 23.241,
+        "observed_completion_ms": 66.275,
+        "admission_sync_ms": 15.913,
+        "through_terminal_sync_ms": 38.2,
+        "admission_sync_fraction": 0.685,
+        "completion_sync_fraction": 0.576,
+        "sync_ms": [
+          8.807,
+          7.106,
+          12.513,
+          9.774,
+          10.236
+        ]
+      },
+      {
+        "round": 2,
+        "profile": "root",
+        "admission_ms": 28.22,
+        "observed_completion_ms": 68.13,
+        "admission_sync_ms": 24.738,
+        "through_terminal_sync_ms": 45.156,
+        "admission_sync_fraction": 0.877,
+        "completion_sync_fraction": 0.663,
+        "sync_ms": [
+          17.057,
+          7.681,
+          10.331,
+          10.087,
+          11.673
+        ]
+      },
+      {
+        "round": 2,
+        "profile": "app",
+        "admission_ms": 22.712,
+        "observed_completion_ms": 64.321,
+        "admission_sync_ms": 16.681,
+        "through_terminal_sync_ms": 37.067,
+        "admission_sync_fraction": 0.734,
+        "completion_sync_fraction": 0.576,
+        "sync_ms": [
+          8.948,
+          7.733,
+          10.16,
+          10.226,
+          9.803
+        ]
+      },
+      {
+        "round": 3,
+        "profile": "root",
+        "admission_ms": 38.934,
+        "observed_completion_ms": 71.98,
+        "admission_sync_ms": 34.663,
+        "through_terminal_sync_ms": 52.539,
+        "admission_sync_fraction": 0.89,
+        "completion_sync_fraction": 0.73,
+        "sync_ms": [
+          26.952,
+          7.711,
+          9.528,
+          8.348,
+          9.491
+        ]
+      },
+      {
+        "round": 3,
+        "profile": "app",
+        "admission_ms": 23.572,
+        "observed_completion_ms": 188.915,
+        "admission_sync_ms": 18.626,
+        "through_terminal_sync_ms": 161.377,
+        "admission_sync_fraction": 0.79,
+        "completion_sync_fraction": 0.854,
+        "sync_ms": [
+          11.662,
+          6.964,
+          10.328,
+          132.423,
+          381.886
+        ]
+      },
+      {
+        "round": 4,
+        "profile": "root",
+        "admission_ms": 53.4,
+        "observed_completion_ms": 83.701,
+        "admission_sync_ms": 49.048,
+        "through_terminal_sync_ms": 65.249,
+        "admission_sync_fraction": 0.919,
+        "completion_sync_fraction": 0.78,
+        "sync_ms": [
+          38.932,
+          10.116,
+          8.423,
+          7.778,
+          7.29
+        ]
+      },
+      {
+        "round": 4,
+        "profile": "app",
+        "admission_ms": 22.362,
+        "observed_completion_ms": 54.296,
+        "admission_sync_ms": 18.557,
+        "through_terminal_sync_ms": 34.245,
+        "admission_sync_fraction": 0.83,
+        "completion_sync_fraction": 0.631,
+        "sync_ms": [
+          10.591,
+          7.966,
+          8.203,
+          7.485,
+          6.444
+        ]
+      },
+      {
+        "round": 5,
+        "profile": "root",
+        "admission_ms": 37.977,
+        "observed_completion_ms": 73.763,
+        "admission_sync_ms": 33.611,
+        "through_terminal_sync_ms": 52.036,
+        "admission_sync_fraction": 0.885,
+        "completion_sync_fraction": 0.705,
+        "sync_ms": [
+          25.292,
+          8.319,
+          10.004,
+          8.421,
+          7.001
+        ]
+      },
+      {
+        "round": 5,
+        "profile": "app",
+        "admission_ms": 26.505,
+        "observed_completion_ms": 63.751,
+        "admission_sync_ms": 21.438,
+        "through_terminal_sync_ms": 37.952,
+        "admission_sync_fraction": 0.809,
+        "completion_sync_fraction": 0.595,
+        "sync_ms": [
+          12.284,
+          9.154,
+          8.718,
+          7.796,
+          8.452
+        ]
+      },
+      {
+        "round": 6,
+        "profile": "root",
+        "admission_ms": 50.049,
+        "observed_completion_ms": 82.29,
+        "admission_sync_ms": 45.541,
+        "through_terminal_sync_ms": 60.908,
+        "admission_sync_fraction": 0.91,
+        "completion_sync_fraction": 0.74,
+        "sync_ms": [
+          36.687,
+          8.854,
+          8.378,
+          6.989,
+          9.433
+        ]
+      },
+      {
+        "round": 6,
+        "profile": "app",
+        "admission_ms": 24.866,
+        "observed_completion_ms": 64.124,
+        "admission_sync_ms": 19.949,
+        "through_terminal_sync_ms": 37.003,
+        "admission_sync_fraction": 0.802,
+        "completion_sync_fraction": 0.577,
+        "sync_ms": [
+          11.214,
+          8.735,
+          8.987,
+          8.067,
+          7.487
+        ]
+      },
+      {
+        "round": 7,
+        "profile": "root",
+        "admission_ms": 37.748,
+        "observed_completion_ms": 71.902,
+        "admission_sync_ms": 33.16,
+        "through_terminal_sync_ms": 49.318,
+        "admission_sync_fraction": 0.878,
+        "completion_sync_fraction": 0.686,
+        "sync_ms": [
+          24.594,
+          8.566,
+          8.622,
+          7.536,
+          8.632
+        ]
+      },
+      {
+        "round": 7,
+        "profile": "app",
+        "admission_ms": 26.356,
+        "observed_completion_ms": 70.04,
+        "admission_sync_ms": 21.082,
+        "through_terminal_sync_ms": 38.95,
+        "admission_sync_fraction": 0.8,
+        "completion_sync_fraction": 0.556,
+        "sync_ms": [
+          12.387,
+          8.695,
+          8.568,
+          9.3,
+          8.523
+        ]
+      }
+    ],
+    "all_job_sync_calls": 80,
+    "median_admission_sync_fraction": 0.851,
+    "median_completion_sync_fraction": 0.675,
+    "maximum_job_sync_ms": 381.886
+  },
+  "native_warm_launch_attribution": [
+    {
+      "round": -2,
+      "warmup": true,
+      "warm_launch_ms": 176.502,
+      "startup_sync_ms": 118.749,
+      "startup_sync_fraction": 0.673,
+      "phases": [
+        {
+          "phase": "namespace",
+          "file_sync_ms": 11.091,
+          "directory_sync_ms": 9.366
+        },
+        {
+          "phase": "runtime-reserved",
+          "file_sync_ms": 10.664,
+          "directory_sync_ms": 8.945
+        },
+        {
+          "phase": "runtime",
+          "file_sync_ms": 12.543,
+          "directory_sync_ms": 8.554
+        },
+        {
+          "phase": "freezer-reserved",
+          "file_sync_ms": 8.537,
+          "directory_sync_ms": 10.135
+        },
+        {
+          "phase": "contained",
+          "file_sync_ms": 11.523,
+          "directory_sync_ms": 9.352
+        },
+        {
+          "phase": "ready",
+          "file_sync_ms": 9.086,
+          "directory_sync_ms": 8.953
+        }
+      ]
+    },
+    {
+      "round": -1,
+      "warmup": true,
+      "warm_launch_ms": 165.03,
+      "startup_sync_ms": 120.857,
+      "startup_sync_fraction": 0.732,
+      "phases": [
+        {
+          "phase": "namespace",
+          "file_sync_ms": 17.644,
+          "directory_sync_ms": 4.741
+        },
+        {
+          "phase": "runtime-reserved",
+          "file_sync_ms": 14.538,
+          "directory_sync_ms": 9.178
+        },
+        {
+          "phase": "runtime",
+          "file_sync_ms": 7.172,
+          "directory_sync_ms": 8.69
+        },
+        {
+          "phase": "freezer-reserved",
+          "file_sync_ms": 10.203,
+          "directory_sync_ms": 10.05
+        },
+        {
+          "phase": "contained",
+          "file_sync_ms": 9.105,
+          "directory_sync_ms": 8.113
+        },
+        {
+          "phase": "ready",
+          "file_sync_ms": 9.201,
+          "directory_sync_ms": 12.222
+        }
+      ]
+    },
+    {
+      "round": 0,
+      "warmup": false,
+      "warm_launch_ms": 1401.74,
+      "startup_sync_ms": 1351.418,
+      "startup_sync_fraction": 0.964,
+      "phases": [
+        {
+          "phase": "namespace",
+          "file_sync_ms": 308.562,
+          "directory_sync_ms": 924.383
+        },
+        {
+          "phase": "runtime-reserved",
+          "file_sync_ms": 31.448,
+          "directory_sync_ms": 9.517
+        },
+        {
+          "phase": "runtime",
+          "file_sync_ms": 10.486,
+          "directory_sync_ms": 7.682
+        },
+        {
+          "phase": "freezer-reserved",
+          "file_sync_ms": 10.667,
+          "directory_sync_ms": 10.524
+        },
+        {
+          "phase": "contained",
+          "file_sync_ms": 8.684,
+          "directory_sync_ms": 8.61
+        },
+        {
+          "phase": "ready",
+          "file_sync_ms": 10.328,
+          "directory_sync_ms": 10.527
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "warmup": false,
+      "warm_launch_ms": 174.141,
+      "startup_sync_ms": 130.657,
+      "startup_sync_fraction": 0.75,
+      "phases": [
+        {
+          "phase": "namespace",
+          "file_sync_ms": 28.84,
+          "directory_sync_ms": 6.314
+        },
+        {
+          "phase": "runtime-reserved",
+          "file_sync_ms": 11.355,
+          "directory_sync_ms": 7.875
+        },
+        {
+          "phase": "runtime",
+          "file_sync_ms": 10.928,
+          "directory_sync_ms": 10.416
+        },
+        {
+          "phase": "freezer-reserved",
+          "file_sync_ms": 10.344,
+          "directory_sync_ms": 7.964
+        },
+        {
+          "phase": "contained",
+          "file_sync_ms": 10.136,
+          "directory_sync_ms": 10.832
+        },
+        {
+          "phase": "ready",
+          "file_sync_ms": 7.524,
+          "directory_sync_ms": 8.129
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "warmup": false,
+      "warm_launch_ms": 169.793,
+      "startup_sync_ms": 115.605,
+      "startup_sync_fraction": 0.681,
+      "phases": [
+        {
+          "phase": "namespace",
+          "file_sync_ms": 10.855,
+          "directory_sync_ms": 7.55
+        },
+        {
+          "phase": "runtime-reserved",
+          "file_sync_ms": 10.762,
+          "directory_sync_ms": 8.024
+        },
+        {
+          "phase": "runtime",
+          "file_sync_ms": 12.071,
+          "directory_sync_ms": 9.902
+        },
+        {
+          "phase": "freezer-reserved",
+          "file_sync_ms": 7.834,
+          "directory_sync_ms": 8.877
+        },
+        {
+          "phase": "contained",
+          "file_sync_ms": 11.878,
+          "directory_sync_ms": 9.0
+        },
+        {
+          "phase": "ready",
+          "file_sync_ms": 10.312,
+          "directory_sync_ms": 8.54
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "warmup": false,
+      "warm_launch_ms": 199.617,
+      "startup_sync_ms": 148.977,
+      "startup_sync_fraction": 0.746,
+      "phases": [
+        {
+          "phase": "namespace",
+          "file_sync_ms": 33.64,
+          "directory_sync_ms": 8.33
+        },
+        {
+          "phase": "runtime-reserved",
+          "file_sync_ms": 14.856,
+          "directory_sync_ms": 9.31
+        },
+        {
+          "phase": "runtime",
+          "file_sync_ms": 10.869,
+          "directory_sync_ms": 9.977
+        },
+        {
+          "phase": "freezer-reserved",
+          "file_sync_ms": 12.162,
+          "directory_sync_ms": 9.699
+        },
+        {
+          "phase": "contained",
+          "file_sync_ms": 9.193,
+          "directory_sync_ms": 8.277
+        },
+        {
+          "phase": "ready",
+          "file_sync_ms": 11.023,
+          "directory_sync_ms": 11.641
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "warmup": false,
+      "warm_launch_ms": 189.666,
+      "startup_sync_ms": 136.85,
+      "startup_sync_fraction": 0.722,
+      "phases": [
+        {
+          "phase": "namespace",
+          "file_sync_ms": 9.683,
+          "directory_sync_ms": 11.22
+        },
+        {
+          "phase": "runtime-reserved",
+          "file_sync_ms": 18.972,
+          "directory_sync_ms": 11.865
+        },
+        {
+          "phase": "runtime",
+          "file_sync_ms": 22.754,
+          "directory_sync_ms": 11.545
+        },
+        {
+          "phase": "freezer-reserved",
+          "file_sync_ms": 7.92,
+          "directory_sync_ms": 7.467
+        },
+        {
+          "phase": "contained",
+          "file_sync_ms": 8.338,
+          "directory_sync_ms": 10.721
+        },
+        {
+          "phase": "ready",
+          "file_sync_ms": 7.036,
+          "directory_sync_ms": 9.329
+        }
+      ]
+    },
+    {
+      "round": 5,
+      "warmup": false,
+      "warm_launch_ms": 1435.698,
+      "startup_sync_ms": 1391.552,
+      "startup_sync_fraction": 0.969,
+      "phases": [
+        {
+          "phase": "namespace",
+          "file_sync_ms": 28.05,
+          "directory_sync_ms": 10.204
+        },
+        {
+          "phase": "runtime-reserved",
+          "file_sync_ms": 11.099,
+          "directory_sync_ms": 8.467
+        },
+        {
+          "phase": "runtime",
+          "file_sync_ms": 10.921,
+          "directory_sync_ms": 11.553
+        },
+        {
+          "phase": "freezer-reserved",
+          "file_sync_ms": 9.625,
+          "directory_sync_ms": 648.834
+        },
+        {
+          "phase": "contained",
+          "file_sync_ms": 551.771,
+          "directory_sync_ms": 75.739
+        },
+        {
+          "phase": "ready",
+          "file_sync_ms": 14.702,
+          "directory_sync_ms": 10.587
+        }
+      ]
+    },
+    {
+      "round": 6,
+      "warmup": false,
+      "warm_launch_ms": 170.044,
+      "startup_sync_ms": 118.997,
+      "startup_sync_fraction": 0.7,
+      "phases": [
+        {
+          "phase": "namespace",
+          "file_sync_ms": 12.616,
+          "directory_sync_ms": 5.205
+        },
+        {
+          "phase": "runtime-reserved",
+          "file_sync_ms": 14.968,
+          "directory_sync_ms": 11.169
+        },
+        {
+          "phase": "runtime",
+          "file_sync_ms": 7.365,
+          "directory_sync_ms": 8.622
+        },
+        {
+          "phase": "freezer-reserved",
+          "file_sync_ms": 10.424,
+          "directory_sync_ms": 11.677
+        },
+        {
+          "phase": "contained",
+          "file_sync_ms": 9.5,
+          "directory_sync_ms": 6.921
+        },
+        {
+          "phase": "ready",
+          "file_sync_ms": 11.921,
+          "directory_sync_ms": 8.609
+        }
+      ]
+    },
+    {
+      "round": 7,
+      "warmup": false,
+      "warm_launch_ms": 180.075,
+      "startup_sync_ms": 134.941,
+      "startup_sync_fraction": 0.749,
+      "phases": [
+        {
+          "phase": "namespace",
+          "file_sync_ms": 29.482,
+          "directory_sync_ms": 7.88
+        },
+        {
+          "phase": "runtime-reserved",
+          "file_sync_ms": 13.055,
+          "directory_sync_ms": 9.913
+        },
+        {
+          "phase": "runtime",
+          "file_sync_ms": 10.096,
+          "directory_sync_ms": 6.526
+        },
+        {
+          "phase": "freezer-reserved",
+          "file_sync_ms": 11.999,
+          "directory_sync_ms": 9.709
+        },
+        {
+          "phase": "contained",
+          "file_sync_ms": 8.501,
+          "directory_sync_ms": 7.773
+        },
+        {
+          "phase": "ready",
+          "file_sync_ms": 10.427,
+          "directory_sync_ms": 9.58
+        }
+      ]
+    }
+  ],
+  "preservation": {
+    "scope_removed": true,
+    "helpers_released": true,
+    "retained_jobs_preserved": true,
+    "managed_worker_unchanged": true,
+    "history_unchanged": true,
+    "same_boot": true,
+    "sdk_loopback": true,
+    "rescue_inactive": true,
+    "rescue_fired": false,
+    "enrollment_and_protected_hashes_preserved": true
+  },
+  "native_helper_runtime_and_freezer_absent": true,
+  "findings": [
+    "All sixteen native jobs had exactly five successful sync calls: initial file/directory, terminal file/directory, then forget directory. The previous seven-call shape was reduced without removing required publication barriers.",
+    "Job admissions ranged from 22.362 to 53.400 ms in this diagnostic; the original 1016.031 ms app admission and later 1125.913 ms root admission did not reproduce and remain unattributed.",
+    "One terminal-directory sync took 132.423 ms and one forget-directory sync took 381.886 ms. Prior completion-only timings excluded forget latency.",
+    "Warm native launches at measured rounds 0 and 5 took 1401.740 and 1435.698 ms. Their six serial guardian publications spent almost all of that interval in fsync, including directory calls of 924.383 and 648.834 ms and a guardian-file call of 551.771 ms."
+  ],
+  "limits": [
+    "The interposer invokes each original fsync once and preserves its result/errno, but its timing and logging can perturb scheduling. This is diagnostic evidence, not a replacement production performance distribution.",
+    "Elapsed syscall time includes scheduling delays; it does not identify flash, filesystem writeback or another kernel mechanism as the cause.",
+    "This run used kernel ring-buffer tails. The subsequently implemented continuous collector was not present and must be qualified separately.",
+    "Warm launch excludes SDK/root acquisition, service scheduling and HTTPS. This run does not establish recovery or endurance timing gates.",
+    "Only S90D was repeated because its new job outlier motivated this diagnostic. QN90A 0.7.46 qualification remains in single-publication-results.json.",
+    "The installed managed worker, .NET entry/fallback and independent rescue were preserved; no package deployment or power action occurred in this run."
+  ]
+}

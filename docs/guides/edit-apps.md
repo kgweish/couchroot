@@ -1,5 +1,11 @@
 # Edit apps — Minimal Hub 0.3.8
 
+> **2026-10-12 recovery correction:** direct `tools/s90d/restore.py` commands
+> below are historical Home-settings procedures with placeholder addressing, not
+> current composite-helper/cache recovery. Use the original shared setup journal
+> for setup rollback and [boot checkpoints](s90d-boot-recovery.md) for a future
+> S90D boot trial. No current live state or physical boot timing was verified.
+
 This update keeps the existing signed package ID, Home-button assignment and
 startup settings. The launcher remains offline. Editing favorites needs only the
 TV remote; there is no companion server, resident root service, telemetry, or

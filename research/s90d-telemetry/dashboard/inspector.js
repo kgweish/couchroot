@@ -11,12 +11,14 @@ window.tvInspector=(()=>{
   processes:'Observed /proc processes. CPU is the average since the preceding inventory, as percent of one core. A first sample or reused PID has no CPU rate. Names can be truncated by the kernel; no app-to-process match is inferred.',
   startup:'Registered app on-boot and auto-restart flags. These do not cover systemd units, helper scripts, dependency launches, or prove that an app started.'
  };
+ function retired(){return payload?.device==='qn90a';}
  function section(){return payload?.inspector?.[view==='processes'?'processes':'apps'];}
  function age(){return payload?.latest&&payload?.inspector?Math.max(0,payload.server_time-payload.latest.received_at+payload.latest.uptime-payload.inspector.uptime+(Date.now()-received)/1000):null;}
  function status(p=paused,d=disconnected){
   paused=p;disconnected=d;
   const seconds=age(),badge=el('age');
   badge.className='badge loading';
+  if(retired()){badge.textContent='Retired on QN90A';return;}
   if(disconnected){badge.textContent='Disconnected · last snapshot';badge.className='badge offline';}
   else if(seconds===null)badge.textContent='Inventory unavailable';
   else if(paused)badge.textContent='View paused · saved snapshot';
@@ -24,6 +26,10 @@ window.tvInspector=(()=>{
  }
  function cell(row,text,detail){const td=document.createElement('td');td.textContent=text??'Unknown';if(detail){const small=document.createElement('small');small.textContent=detail;td.append(small);}row.append(td);}
  function draw(){
+  const off=retired();
+  for(const selector of ['.inspector-tools','.inspector-table','.inspector-pages','#inspector-description'])document.querySelector(selector).hidden=off;
+  el('note').textContent=off?'Basic telemetry only. Continuous app and process inspection is retired on QN90A.':'Snapshots every minute. App registration, running processes and startup flags describe different states.';
+  if(off){el('body').replaceChildren();el('head').replaceChildren();el('status').textContent='';el('page').textContent='';status();return;}
   el('description').textContent=descriptions[view];
   el('sort').disabled=view!=='processes';
   el('search').placeholder=view==='processes'?'Process name or PID':'Name, app ID or package';
@@ -55,5 +61,5 @@ window.tvInspector=(()=>{
  el('search').oninput=()=>{page=0;draw();};el('sort').onchange=()=>{page=0;draw();};
  el('prev').onclick=()=>{page--;draw();};el('next').onclick=()=>{page++;draw();};
  draw();
- return {render(value){payload=value;received=Date.now();disconnected=false;draw();},status,clear(){payload=null;page=0;disconnected=false;draw();}};
+ return {render(value){payload=value;received=Date.now();disconnected=false;draw();},status,clear(device){payload={device};page=0;disconnected=false;draw();}};
 })();

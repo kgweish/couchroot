@@ -2,6 +2,7 @@
 import hashlib
 import os
 from pathlib import Path
+import shlex
 import stat
 import shutil
 import subprocess
@@ -36,22 +37,22 @@ class RecoveryTests(unittest.TestCase):
         # the same file-digest contract in that host fixture, with real bytes.
         if not shutil.which('sha256sum'):
             checksum = self.bin / 'sha256sum'
-            checksum.write_text('#!' + sys.executable + '\n'
+            checksum.write_text('#!/bin/sh\nexec ' + shlex.quote(sys.executable) + ' -c ' + shlex.quote(
                 'import hashlib, pathlib, sys\n'
                 'for name in sys.argv[1:]:\n'
-                ' print(hashlib.sha256(pathlib.Path(name).read_bytes()).hexdigest() + "  " + name)\n')
+                ' print(hashlib.sha256(pathlib.Path(name).read_bytes()).hexdigest() + "  " + name)\n') + ' "$@"\n')
             checksum.chmod(0o755)
         # Model the firmware's unsigned-file rejection. Running command text is
         # permitted; submitting a script filename must fail this integration test.
         runner = self.bin / 'systemd-run'
-        runner.write_text('#!' + sys.executable + '\n'
+        runner.write_text('#!/bin/sh\nexec ' + shlex.quote(sys.executable) + ' -c ' + shlex.quote(
             'import os,sys,subprocess\n'
             'a=sys.argv[1:]\n'
             'with open(os.environ["CALLS"],"a") as f:f.write("systemd-run " + repr(a) + "\\n")\n'
             'if "/bin/sh" in a:\n'
             ' a=a[a.index("/bin/sh"):]\n'
             ' if a[1]!="-c":sys.exit(71)\n'
-            ' sys.exit(subprocess.call(a))\n')
+            ' sys.exit(subprocess.call(a))\n') + ' "$@"\n')
         runner.chmod(0o755)
         control = self.bin / 'systemctl'
         control.write_text('#!/bin/sh\nprintf "%s\\n" "$*" >> "$CALLS"\n')

@@ -59,6 +59,10 @@ class Service {
   } catch { Console.Error.WriteLine("Telemetry preferences unavailable"); }
  }
  static void StartCollector(string device) {
+  // The native candidate retains this caller-validated preference adapter.
+  // Its candidate handoff renames enabled to native-enabled, so
+  // the old managed loop also exits. Do not load another sampler on Hub return.
+  if(NativeSelected(Data,device))return;
   if(Interlocked.CompareExchange(ref started,1,0)!=0)return;
   var thread=new Thread(()=>{
    try { Assembly.LoadFrom(Path.Combine(AppContext.BaseDirectory,"Telemetry.dll")).GetType("Telemetry").GetMethod("RunWithPaths").Invoke(null,new object[]{Data,"/tmp/minimal-telemetry-"+device}); }
@@ -66,6 +70,14 @@ class Service {
    finally { Interlocked.Exchange(ref started,0); }
   }){IsBackground=true,Name="TVTelemetry"};
   try { thread.Start(); } catch { Interlocked.Exchange(ref started,0);throw; }
+ }
+ static bool NativeSelected(string root,string device) {
+  if(device!="qn90a")return false;
+  string marker=root+"/native-enabled";
+  // A malformed selection must not silently fall back to a second sampler.
+  try { File.GetAttributes(marker);return true; }
+  catch(FileNotFoundException){return false;}
+  catch(DirectoryNotFoundException){return false;}
  }
  static int Main(string[] args) {
   var callbacks=new Callbacks{create=_=>true,terminate=_=>{},control=Preferences};

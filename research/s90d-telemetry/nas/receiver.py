@@ -42,8 +42,11 @@ class Handler(http.server.BaseHTTPRequestHandler):
                 if time.monotonic()-device['last_request']<2: return self.reply(429)
                 raw=self.rfile.read(length)
                 if len(raw)!=length: return self.reply(400)
-                data=validate(json.loads(raw))
+                data=json.loads(raw)
+                if not isinstance(data,dict):return self.reply(400)
                 if data.get('device',device['id']) != device['id']: return self.reply(403)
+                data['device']=device['id']
+                data=validate(data)
                 previous=device['latest']
                 if previous and data['boot']==previous['boot']:
                     if data['uptime']<=previous['uptime']: return self.reply(409)

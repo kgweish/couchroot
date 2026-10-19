@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "date": "2026-10-16",
+  "scope": "Owner-requested pause of hardware qualification; both endurance invocations reconciled",
+  "hardware_qualification_paused": true,
+  "resume_requires_explicit_owner_direction": true,
+  "no_power_transitions": true,
+  "no_package_changes": true,
+  "devices": {
+    "s90d": {
+      "installed_version": "0.7.50",
+      "controller_duration_minutes": 19.82,
+      "verified_series_windows_before_stop": 6,
+      "individual_collector_captures_preserved": 8,
+      "host_controller_supervisor_and_sleep_prevention_exited": true,
+      "endurance_accepted": false,
+      "full_duration_completed": false,
+      "managed_ready": true,
+      "native_processes_exited": true,
+      "new_rescue_retired_without_firing": true,
+      "owner_requested_stop": true,
+      "previous_rescues_retired_without_firing": true,
+      "quiet_cancelled_and_preserved_then_forgotten": true,
+      "remaining_collectors_preserved_and_cleaned": true,
+      "retained_jobs_enrollment_protected_hashes_preserved": true,
+      "same_boot": true,
+      "same_coordinator": true,
+      "sdk_loopback": true
+    },
+    "qn90a": {
+      "installed_version": "0.7.48",
+      "controller_duration_minutes": 146.491,
+      "verified_series_windows_before_stop": 53,
+      "individual_collector_captures_preserved": 55,
+      "host_controller_supervisor_and_sleep_prevention_exited": true,
+      "endurance_accepted": false,
+      "full_duration_completed": false,
+      "managed_ready": true,
+      "native_processes_exited": true,
+      "new_rescue_retired_without_firing": true,
+      "owner_requested_stop": true,
+      "previous_rescues_retired_without_firing": true,
+      "quiet_cancelled_and_preserved_then_forgotten": true,
+      "remaining_collectors_preserved_and_cleaned": true,
+      "retained_jobs_enrollment_protected_hashes_preserved": true,
+      "same_boot": true,
+      "same_coordinator": true,
+      "sdk_loopback": true
+    }
+  },
+  "qualification_limits": [
+    "Neither shortened invocation satisfies the 24-hour endurance gate.",
+    "Completed individual collector windows remain evidence; shortened or interrupted runs must not be combined into a full-duration acceptance.",
+    "Resource/performance, clean reboot, remaining power lifecycle, native-only entry and managed retirement gates remain open.",
+    ".NET entry, managed fallback and independent recovery artifacts remain installed."
+  ],
+  "validation": {
+    "npm": {
+      "tests": 610,
+      "passed": 432,
+      "skipped": 178,
+      "failed": 0
+    }
+  }
+}

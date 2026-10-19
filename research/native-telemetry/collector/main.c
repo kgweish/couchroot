@@ -30,8 +30,15 @@ static bool uuid(char output[37]) {
     return true;
 }
 
-static bool enabled(int directory) {
+static bool enabled(int directory, bool native_handoff) {
     struct stat st;
+    if (native_handoff) {
+        // Never compete with an enabled managed sampler, including a symlink or
+        // unreadable marker. The handoff renames its empty marker atomically.
+        if (!fstatat(directory, "enabled", &st, AT_SYMLINK_NOFOLLOW) || errno != ENOENT) return false;
+        return !fstatat(directory, "native-enabled", &st, AT_SYMLINK_NOFOLLOW) &&
+            S_ISREG(st.st_mode) && st.st_size == 0 && st.st_nlink == 1;
+    }
     return !fstatat(directory, "enabled", &st, AT_SYMLINK_NOFOLLOW) && S_ISREG(st.st_mode);
 }
 
@@ -64,15 +71,16 @@ static void wait_until(double deadline) {
     }
 }
 
-static int run(const char *root, const char *runtime, int duration) {
+static int run(const char *root, const char *runtime, int duration, bool native_handoff) {
     int result = 1, data = -1, runfd = -1, lease = -1;
     struct sender sender = {0}; struct config cfg = {0};
     char *boot = NULL, session[37];
     umask(0077);
     data = open(root, O_RDONLY | O_DIRECTORY | O_NOFOLLOW | O_CLOEXEC);
     if (data < 0) goto done;
-    if (!enabled(data)) { result = 0; goto done; }
+    if (!enabled(data, native_handoff)) { result = 0; goto done; }
     if (!load_config(data, &cfg)) { fputs("Collector configuration rejected\n", stderr); goto done; }
+    if (native_handoff && strcmp(cfg.device, "qn90a")) goto done;
     if (mkdir(runtime, 0700) && errno != EEXIST) goto done;
     runfd = open(runtime, O_RDONLY | O_DIRECTORY | O_NOFOLLOW | O_CLOEXEC);
     struct stat st;
@@ -99,7 +107,7 @@ static int run(const char *root, const char *runtime, int duration) {
     int backoff = 10, last_error = 0;
     bool previous_enabled = false;
     char endpoint[513]; strcpy(endpoint, cfg.endpoint);
-    while (!stopping && enabled(data)) {
+    while (!stopping && enabled(data, native_handoff)) {
         double now = uptime_seconds();
         if (now < 0) goto done;
         if (finish && now >= finish) break;
@@ -152,7 +160,7 @@ done:
 }
 
 int main(int argc, char **argv) {
-    const char *root = NULL, *runtime = NULL; int duration = 0; bool check = false;
+    const char *root = NULL, *runtime = NULL; int duration = 0; bool check = false, native_handoff = false;
     if (curl_global_init(CURL_GLOBAL_DEFAULT)) return 1;
     if (argc == 2 && !strcmp(argv[1], "--sample")) {
         char *boot = read_bounded("/proc/sys/kernel/random/boot_id", 64), session[37];
@@ -165,6 +173,7 @@ int main(int argc, char **argv) {
     }
     for (int i = 1; i < argc; ++i) {
         if (!strcmp(argv[i], "--check-config")) check = true;
+        else if (!strcmp(argv[i], "--native-handoff")) native_handoff = true;
         else if (!strcmp(argv[i], "--root") && i + 1 < argc) root = argv[++i];
         else if (!strcmp(argv[i], "--runtime") && i + 1 < argc) runtime = argv[++i];
         else if (!strcmp(argv[i], "--run-for") && i + 1 < argc) {
@@ -177,14 +186,15 @@ int main(int argc, char **argv) {
         struct config cfg = {0};
         int fd = open(root, O_RDONLY | O_DIRECTORY | O_NOFOLLOW | O_CLOEXEC);
         bool ok = fd >= 0 && load_config(fd, &cfg);
+        if (ok && native_handoff) ok = !strcmp(cfg.device, "qn90a");
         if (fd >= 0) close(fd);
         OPENSSL_cleanse(&cfg, sizeof cfg); curl_global_cleanup();
         return ok ? 0 : 1;
     }
     if (!root || root[0] != '/' || !runtime || runtime[0] != '/') {
-        fputs("Usage: collector --root ABSOLUTE_DATA_DIR --runtime ABSOLUTE_RAM_DIR [--run-for SECONDS]\n", stderr);
+        fputs("Usage: collector --root ABSOLUTE_DATA_DIR --runtime ABSOLUTE_RAM_DIR [--run-for SECONDS] [--native-handoff]\n", stderr);
         return 2;
     }
-    int result = run(root, runtime, duration);
+    int result = run(root, runtime, duration, native_handoff);
     curl_global_cleanup(); return result;
 }

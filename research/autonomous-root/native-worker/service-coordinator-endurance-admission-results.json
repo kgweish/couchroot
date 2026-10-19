@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "date": "2026-10-16",
+  "scope": "S90D fresh coordinator admission after signed cross-boot repair",
+  "installed_version": "0.7.50",
+  "rejected_invocation": {
+    "reason": "Private harness accepted a completed managed return, but the production API permits only one migration per coordinator.",
+    "api_refusal_before_migration": true,
+    "operation_and_selection_unchanged": true,
+    "retained_jobs_and_enrollment_unchanged": true,
+    "no_collector_or_quiet_job_started": true,
+    "rescue_retired_unfired": true,
+    "immutable_failed_invocation_preserved": true,
+    "replayed": false
+  },
+  "guarded_service_restart": {
+    "power_transition": false,
+    "independent_300_second_rescue": true,
+    "launcher_type": "oneshot",
+    "launcher_remain_after_exit": true,
+    "launcher_empty_control_group_verified_before_stop": true,
+    "same_boot": true,
+    "fresh_worker_ready": true,
+    "native_operation_null": true,
+    "selection_preserved": true,
+    "retained_jobs_preserved": true,
+    "enrollment_and_protected_files_preserved": true,
+    "owned_scope_removed": true,
+    "owned_units_inactive": true,
+    "rescue_retired_unfired": true,
+    "sdk_loopback": true
+  },
+  "fresh_endurance": {
+    "distinct_immutable_invocation": true,
+    "requires_no_previous_native_operation": true,
+    "production_guard_unchanged": true,
+    "native_migration_completed": true,
+    "native_worker_ready": true,
+    "quiet_job_timeout_seconds": 86400,
+    "full_endurance_accepted": false,
+    "first_collector_verified": true,
+    "first_window_samples": 220,
+    "first_window_skipped_intervals": 0,
+    "first_window_kernel_complete": true,
+    "first_window_owned_cleanup_verified": true,
+    "first_checksum_transfer_bytes": 1048576,
+    "first_checksum_transfer_verified": true
+  },
+  "qualification_limits": [
+    "The production one-migration-per-coordinator guard remains unchanged.",
+    "This service restart does not explain or retroactively accept the earlier incomplete service restarts.",
+    "The new endurance invocation must pass full continuity and resource-trend analysis independently.",
+    "QN90A remains untouched on 0.7.48 in its existing endurance invocation.",
+    ".NET entry, managed fallback and independent SDK rescue remain required."
+  ],
+  "validation": {
+    "production_api_tests_passed": 19,
+    "completed_return_refusal_preserves_journal_and_task": true,
+    "fresh_coordinator_preserves_original_request_replay_protection": true,
+    "private_admission_tests_passed": 6,
+    "npm": {
+      "tests": 610,
+      "passed": 432,
+      "skipped": 178,
+      "failed": 0
+    }
+  }
+}

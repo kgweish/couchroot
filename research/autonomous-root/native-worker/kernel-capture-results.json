@@ -1,0 +1,383 @@
+{
+  "schema": 1,
+  "date": "2026-10-16",
+  "scope": "Bounded continuous kernel capture across two warmup pairs and four measured managed/native pairs per TV; warm executor launch, jobs and transfers, excluding root acquisition and public HTTPS",
+  "package_version": "0.7.46",
+  "worker_source_commit": "bbf8645",
+  "ordinary_worker_sha256": "613c21fa9231097d51540f06873775a3f4d6f9173f48ec896c84e99432dd1f8e",
+  "benchmark_sha256": "b7cc546d6c864808a320acbd37aaf219015587af6183e50cc4acac297e828615",
+  "toolchain_image": "sha256:8d04ca4a4d08ce5a17ffb904b6c5a7742f51e885506f2e3215b8e2db7659a3c4",
+  "reproducible_builds": 2,
+  "source_sha256": {
+    "research/autonomous-root/native-worker/bench-kernel.h": "3d1065b9a42a6518e2749e0e103852e2f247aeb642fc54f3f0a91185909d012d",
+    "research/autonomous-root/native-worker/bench.c": "5f8a4fbe16e65421670554d0ba5bea4628ea02e54e9f95141fd3a13af75e1845",
+    "tests/native_benchmark_test.py": "98f2feff7927f184430aa3e3d6e3cafff749d6dac650f4557533d6e84701de84",
+    "tests/native_kernel_capture_test.py": "e93d472e00853983a1550516e9e08ad527894d9f515b14cd494e59c17642695e"
+  },
+  "local_tests": {
+    "kernel_capture": 9,
+    "benchmark": 6,
+    "npm_passed": 414,
+    "npm_skipped": 157
+  },
+  "devices": {
+    "s90d": {
+      "measured_pairs": 4,
+      "warmup_pairs": 2,
+      "coverage": {
+        "records": 656,
+        "bytes": 58236,
+        "capacity_bytes": 2097152,
+        "overruns": 0,
+        "known_sequence_gaps": 0,
+        "malformed_records": 0,
+        "reordered_records": 0,
+        "read_error": 0,
+        "capacity_exceeded": false,
+        "suspend_detected": false,
+        "complete": true,
+        "duration_ms": 88662.54,
+        "all_launch_to_retirement_intervals_covered": true,
+        "raw_sequence_and_size_independently_verified": true
+      },
+      "kernel_signature_counts": {
+        "oom": 0,
+        "panic_oops_warning": 0,
+        "io_error": 0,
+        "hung_task": 0
+      },
+      "timings_ms": {
+        "native": {
+          "warm_launch_ms": {
+            "min": 190.326,
+            "median": 195.88,
+            "max": 223.739
+          },
+          "jobs": {
+            "root": {
+              "admission_ms": {
+                "min": 28.326,
+                "median": 44.319,
+                "max": 51.363
+              },
+              "observed_completion_ms": {
+                "min": 74.919,
+                "median": 84.483,
+                "max": 94.352
+              },
+              "output_ms": {
+                "min": 1.762,
+                "median": 2.01,
+                "max": 2.239
+              },
+              "forget_ms": {
+                "min": 12.804,
+                "median": 15.417,
+                "max": 16.561
+              },
+              "through_forget_ms": {
+                "min": 93.497,
+                "median": 100.741,
+                "max": 111.544
+              }
+            },
+            "app": {
+              "admission_ms": {
+                "min": 20.558,
+                "median": 26.106,
+                "max": 26.393
+              },
+              "observed_completion_ms": {
+                "min": 67.628,
+                "median": 73.053,
+                "max": 80.091
+              },
+              "output_ms": {
+                "min": 1.64,
+                "median": 1.73,
+                "max": 3.266
+              },
+              "forget_ms": {
+                "min": 12.413,
+                "median": 16.285,
+                "max": 18.687
+              },
+              "through_forget_ms": {
+                "min": 82.162,
+                "median": 91.642,
+                "max": 100.48
+              }
+            }
+          }
+        },
+        "dotnet": {
+          "warm_launch_ms": {
+            "min": 715.574,
+            "median": 763.806,
+            "max": 928.623
+          },
+          "jobs": {
+            "root": {
+              "admission_ms": {
+                "min": 79.39,
+                "median": 84.181,
+                "max": 98.975
+              },
+              "observed_completion_ms": {
+                "min": 99.981,
+                "median": 114.019,
+                "max": 124.97
+              },
+              "output_ms": {
+                "min": 25.184,
+                "median": 26.831,
+                "max": 29.087
+              },
+              "forget_ms": {
+                "min": 16.448,
+                "median": 17.68,
+                "max": 22.073
+              },
+              "through_forget_ms": {
+                "min": 149.112,
+                "median": 157.599,
+                "max": 170.54
+              }
+            },
+            "app": {
+              "admission_ms": {
+                "min": 20.893,
+                "median": 24.094,
+                "max": 27.084
+              },
+              "observed_completion_ms": {
+                "min": 45.233,
+                "median": 48.441,
+                "max": 81.046
+              },
+              "output_ms": {
+                "min": 14.651,
+                "median": 16.183,
+                "max": 18.161
+              },
+              "forget_ms": {
+                "min": 15.969,
+                "median": 16.934,
+                "max": 18.306
+              },
+              "through_forget_ms": {
+                "min": 75.865,
+                "median": 82.824,
+                "max": 115.021
+              }
+            }
+          }
+        }
+      },
+      "preservation": {
+        "scope_removed": true,
+        "helpers_released": true,
+        "retained_jobs_preserved": true,
+        "managed_worker_unchanged": true,
+        "history_unchanged": true,
+        "same_boot": true,
+        "sdk_loopback": true,
+        "rescue_inactive": true,
+        "rescue_fired": false,
+        "enrollment_and_protected_hashes_preserved": true,
+        "native_helper_runtime_and_freezer_absent": true
+      }
+    },
+    "qn90a": {
+      "measured_pairs": 4,
+      "warmup_pairs": 2,
+      "coverage": {
+        "records": 567,
+        "bytes": 45370,
+        "capacity_bytes": 2097152,
+        "overruns": 0,
+        "known_sequence_gaps": 0,
+        "malformed_records": 0,
+        "reordered_records": 0,
+        "read_error": 0,
+        "capacity_exceeded": false,
+        "suspend_detected": false,
+        "complete": true,
+        "duration_ms": 102798.515,
+        "all_launch_to_retirement_intervals_covered": true,
+        "raw_sequence_and_size_independently_verified": true
+      },
+      "kernel_signature_counts": {
+        "oom": 0,
+        "panic_oops_warning": 0,
+        "io_error": 0,
+        "hung_task": 0
+      },
+      "timings_ms": {
+        "native": {
+          "warm_launch_ms": {
+            "min": 137.842,
+            "median": 145.293,
+            "max": 181.182
+          },
+          "jobs": {
+            "root": {
+              "admission_ms": {
+                "min": 29.063,
+                "median": 30.539,
+                "max": 37.118
+              },
+              "observed_completion_ms": {
+                "min": 60.814,
+                "median": 63.84,
+                "max": 75.059
+              },
+              "output_ms": {
+                "min": 1.024,
+                "median": 1.251,
+                "max": 1.944
+              },
+              "forget_ms": {
+                "min": 7.273,
+                "median": 10.71,
+                "max": 12.697
+              },
+              "through_forget_ms": {
+                "min": 71.646,
+                "median": 75.373,
+                "max": 88.081
+              }
+            },
+            "app": {
+              "admission_ms": {
+                "min": 17.259,
+                "median": 17.934,
+                "max": 19.008
+              },
+              "observed_completion_ms": {
+                "min": 49.352,
+                "median": 53.144,
+                "max": 58.315
+              },
+              "output_ms": {
+                "min": 0.953,
+                "median": 1.005,
+                "max": 1.103
+              },
+              "forget_ms": {
+                "min": 7.318,
+                "median": 9.707,
+                "max": 12.591
+              },
+              "through_forget_ms": {
+                "min": 61.786,
+                "median": 64.531,
+                "max": 66.596
+              }
+            }
+          }
+        },
+        "dotnet": {
+          "warm_launch_ms": {
+            "min": 369.131,
+            "median": 382.908,
+            "max": 432.359
+          },
+          "jobs": {
+            "root": {
+              "admission_ms": {
+                "min": 60.694,
+                "median": 63.252,
+                "max": 87.915
+              },
+              "observed_completion_ms": {
+                "min": 95.506,
+                "median": 97.313,
+                "max": 103.32
+              },
+              "output_ms": {
+                "min": 19.158,
+                "median": 19.643,
+                "max": 25.407
+              },
+              "forget_ms": {
+                "min": 12.121,
+                "median": 12.82,
+                "max": 14.008
+              },
+              "through_forget_ms": {
+                "min": 128.035,
+                "median": 132.136,
+                "max": 136.825
+              }
+            },
+            "app": {
+              "admission_ms": {
+                "min": 23.529,
+                "median": 25.119,
+                "max": 26.358
+              },
+              "observed_completion_ms": {
+                "min": 35.02,
+                "median": 37.143,
+                "max": 39.271
+              },
+              "output_ms": {
+                "min": 10.088,
+                "median": 10.281,
+                "max": 10.438
+              },
+              "forget_ms": {
+                "min": 10.353,
+                "median": 11.067,
+                "max": 12.253
+              },
+              "through_forget_ms": {
+                "min": 57.374,
+                "median": 58.504,
+                "max": 60.079
+              }
+            }
+          }
+        }
+      },
+      "preservation": {
+        "scope_removed": true,
+        "helpers_released": true,
+        "retained_jobs_preserved": true,
+        "managed_worker_unchanged": true,
+        "history_unchanged": true,
+        "same_boot": true,
+        "sdk_loopback": true,
+        "rescue_inactive": true,
+        "rescue_fired": false,
+        "enrollment_and_protected_hashes_preserved": true,
+        "native_helper_runtime_and_freezer_absent": true
+      }
+    }
+  },
+  "kernel_signature_patterns": {
+    "oom": "\\bout of memory\\b|\\boom-kill\\b|\\bkilled process\\b",
+    "panic_oops_warning": "\\bkernel panic\\b|\\bOops:|\\bBUG:|\\bWARNING:",
+    "io_error": "\\bI/O error\\b|\\bwriteback error\\b|\\bEXT[234]-fs error\\b",
+    "hung_task": "\\bblocked for more than\\b|\\bsoft lockup\\b|\\bhard LOCKUP\\b"
+  },
+  "preceding_qn90a_attempt": {
+    "benchmark_completed_exit_zero": true,
+    "complete_capture_records": 1140,
+    "complete_capture_bytes": 99365,
+    "qualified": false,
+    "reason": "Boot identity changed after the measured run and before cleanup; the saved job was reconciled without replay and original evidence retained privately. Prior-boot rescue outcome is unproven.",
+    "owned_files_cleaned": true,
+    "retained_jobs_history_enrollment_and_protected_bytes_preserved": true,
+    "fresh_attempt_used_distinct_intents": true
+  },
+  "limits": [
+    "The sampler observes only these bounded benchmark windows; it is not full acquisition/public-HTTPS or continuous lifetime resource coverage.",
+    "The benchmark reads whole kernel records into 2 MiB of prefaulted memory, then persists after measurements. Sampler memory/CPU is excluded from worker accounting but can affect scheduling and pressure.",
+    "Kernel signature scans are literal diagnostics, not proof that all errors are absent and not causal attribution of latency. Raw logs and identities remain private.",
+    "Four measured pairs per TV are too few to characterize tails; these comparisons do not close the no-regression gate. Earlier one-second job admissions and the historical QN90A timeout remain unexplained.",
+    "Original sync attribution and this non-interposed capture are separate trials; no individual sync latency is inferred from this capture.",
+    "No package, power or policy change was issued. Unexpected boot changes occurred between qualification windows; they are not controlled reboot acceptance. Managed fallback and independent .NET SDK recovery remain installed."
+  ]
+}

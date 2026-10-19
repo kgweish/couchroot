@@ -1,0 +1,82 @@
+{
+  "schema": 1,
+  "date": "2026-10-15",
+  "version": "0.7.34",
+  "source_base_commit": "4480626",
+  "service_sha256": {
+    "agent.js": "771c7766ad2e3ce1e7c5812a27010b6aeeba71362e37d55e88e709d965dc1fc1",
+    "native-api-task.js": "826d30c587cc42d945472e038dc5b433b2c6fd4f87ca51c9c16c444cd7d61310",
+    "restart-rollback.js": "b206807a569b021288ba1e590e163cb604a2db8869b09b30f6f27533073e4f58"
+  },
+  "scope": "Automatic same-coordinator rollback and managed readmission after provider loss; S90D explicit cleanup still requires separate maintenance",
+  "local": {
+    "node_passed": 380,
+    "node_skipped": 140,
+    "fresh_rehearsal_process_cases": 6,
+    "fresh_restart_and_live_process_cases": 14,
+    "fresh_published_and_ambiguous_commit_refusal_cases": 2
+  },
+  "devices": {
+    "qn90a": {
+      "all_owned_units_inactive": 11,
+      "automatic_rollback_qualified": true,
+      "cleanup_without_maintenance_qualified": true,
+      "committed_entries": 22,
+      "coordinator_unchanged": true,
+      "coordinator_unchanged_scope": "Automatic rollback and readmission",
+      "enrollment_preserved": true,
+      "history_entries": 26,
+      "managed_ready": true,
+      "managed_recovery_unchanged": true,
+      "original_requests_not_replayed": true,
+      "original_requests_not_rewritten_as_success": true,
+      "owned_units_inactive": 11,
+      "package_version": "0.7.34",
+      "pending_setup": false,
+      "phases": [
+        "provider-loss"
+      ],
+      "retained_jobs_preserved": true,
+      "rolled_back_entries": 4,
+      "same_boot": true,
+      "sdk_loopback": true,
+      "settled": true,
+      "trial_witness_scopes_removed": true
+    },
+    "s90d": {
+      "all_owned_units_inactive": 30,
+      "automatic_rollback_qualified": true,
+      "cleanup_without_maintenance_qualified": false,
+      "committed_entries": 22,
+      "coordinator_unchanged": true,
+      "coordinator_unchanged_scope": "Automatic rollback and readmission",
+      "enrollment_preserved": true,
+      "history_entries": 27,
+      "managed_ready": true,
+      "managed_recovery_unchanged": true,
+      "original_requests_not_replayed": true,
+      "original_requests_not_rewritten_as_success": true,
+      "owned_units_inactive": 20,
+      "package_version": "0.7.34",
+      "pending_setup": false,
+      "phases": [
+        "provider-loss-unpaused"
+      ],
+      "retained_jobs_preserved": true,
+      "rolled_back_entries": 5,
+      "same_boot": true,
+      "sdk_loopback": true,
+      "settled": true,
+      "trial_witness_scopes_removed": true
+    }
+  },
+  "limits": [
+    "QN90A automatic rollback and explicit cleanup completed with the original coordinator identity unchanged.",
+    "S90D unpaused provider loss recovered on the first held-executor verification attempt with unchanged coordinator PID/start time. Its source-exit observer remnant prevented normal cleanup; separate exact-scope maintenance and a later coordinator restart reconciled the original cleanup intent.",
+    "The S90D coordinator-unchanged result covers rollback and readmission, not the subsequent maintenance used to finish cleanup. Cleanup without maintenance remains unqualified.",
+    "A preceding paused S90D trial lost the coordinator for an unproven reason. The already-armed 300-second .NET SDK rescue reopened SDK access on the same boot; recovery used the original transaction without migration replay.",
+    "Original migration requests and the interrupted cleanup remain submitted in the durable request journal; successful reconciliation does not rewrite their uncertain outcomes.",
+    "Both TVs run signed 0.7.34 with the managed worker selected and the native acquisition bridge enabled. The .NET bridge, packaged fallback and independent rescue remain present.",
+    "Later production readiness interruption, production endurance, power lifecycle, native-default rollout and native-only code entry remain separate gates. No reboot or standby was performed."
+  ]
+}

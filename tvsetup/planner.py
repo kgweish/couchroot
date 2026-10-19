@@ -69,17 +69,24 @@ class Plan:
         return result
 
 
-def hub_sources(device):
-    names = ('index.html','style.css','bridge.js','presentation.js','model.js','feedback.js','hub.js','icon.png','tvos.js','tvos.css','streaming-artwork.js')
+def hub_sources(device, *, device_id=None):
+    """Exact Hub inputs; None preserves the unconfigured native WebView source."""
+    names = ('index.html','style.css','bridge.js','presentation.js','model.js','feedback.js','hub.js','icon.png','config.xml','tvos.js','tvos.css','streaming-artwork.js')
     result = {name:(REPO/'web'/name).read_bytes() for name in names}
-    result.update({'logos/'+p.name:p.read_bytes() for p in sorted((REPO/'web/logos').iterdir()) if p.suffix in ('.svg','.png','.jpg')})
+    logos = ('amc.jpg','appletv.jpg','crunchyroll.jpg','directv.jpg','discovery.jpg','disney.jpg',
+             'espn.png','fubo.jpg','hbomax.jpg','hulu.svg','netflix.png','paramount.jpg','pbs.jpg',
+             'peacock.png','plex.svg','pluto.jpg','prime.png','roku.png','sling.jpg','spotify.svg',
+             'starz.jpg','tubi.png','tvplus.svg','vix.jpg','youtube.svg','youtubetv.jpg')
+    result.update({'logos/'+name:(REPO/'web/logos'/name).read_bytes() for name in logos})
+    if device is None:return result
     if device == 's89c':
         result['index.html'] = result['index.html'].replace(b'<body>', b'<body data-design="tvos">').replace(b"img-src 'self' data: file:;", b"img-src 'self' data: file: https://images.unsplash.com;")
+        result['config.xml'] = result['config.xml'].replace(b'  <content ', b'  <access origin="https://images.unsplash.com" subdomains="false"/>\n  <tizen:privilege name="http://tizen.org/privilege/internet"/>\n  <content ', 1).replace(b'metadata/use.network" value="false"', b'metadata/use.network" value="true"')
     # Retain the existing collectors only in builds for these legacy profiles.
     if device in ('s90d','qn90a'):
         for name in ('telemetry.js', 'telemetry-service.js'):
             result[name] = (REPO/'research/s90d-telemetry/legacy-hub'/name).read_bytes()
-        result['telemetry.js'] = ('window.HUB_DEVICE_ID = '+json.dumps(device)+';\n').encode()+result['telemetry.js']
+        result['telemetry.js'] = ('window.HUB_DEVICE_ID = '+json.dumps(device_id or device)+';\n').encode()+result['telemetry.js']
         result['index.html'] = result['index.html'].replace(b'</head>', b'  <script src="telemetry.js" defer></script>\n  <script src="telemetry-service.js" defer></script>\n</head>')
     if device == 'qn90a':
         result['index.html'] = result['index.html'].replace(b'</head>', b'  <script src="qn90a-idle.js" defer></script>\n</head>')
@@ -158,7 +165,8 @@ def plan(profile, choices, state, ledger=None):
         if not exists or before != expected:
             p.add(component,'package',before if exists else None,expected,artifact=key,package=pkg,previous_version=exists[0][3] if exists else None)
     if 'hub' in want:
-        expected = {'/opt/usr/apps/MiniHub001/res/wgt/'+n:sha(b) for n,b in hub_sources(device).items()}
+        expected = {'/opt/usr/apps/MiniHub001/res/wgt/'+n:sha(b) for n,b in hub_sources(device).items() if n != 'config.xml'}
+        # The signer advances the widget version; compare runtime content only.
         package('hub','hub','MiniHub001',expected)
     if device=='qn90a':
         if 'screensaver' in want:

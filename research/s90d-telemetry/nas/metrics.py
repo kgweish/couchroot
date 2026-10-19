@@ -25,7 +25,7 @@ def validate(data):
             raise ValueError(name)
     parse(data)
     result = {key: data[key] for key in ('schema', 'boot', 'seq', 'uptime', 'collector_cpu_seconds', 'collector_rss_bytes') + FIELDS + tuple(k for k in ('session','device') if k in data)}
-    if 'inspector' in data:
+    if data.get('device') != 'qn90a' and 'inspector' in data:
         from inspector import validate as validate_inspector
         result['inspector'] = validate_inspector(data['inspector'], data['uptime'])
     return result

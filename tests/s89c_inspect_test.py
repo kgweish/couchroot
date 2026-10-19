@@ -3,15 +3,56 @@ import contextlib
 import http.client
 import io
 import json
+import socketserver
 import subprocess
 import sys
+import threading
+import time
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from tvsetup.common import REPO, Refused
 
 
 class S89CInspectionTests(unittest.TestCase):
+    def test_whole_request_deadline_bounds_trickling_headers_and_body(self):
+        from tvsetup import s89c_inspect
+        connection = http.client.HTTPConnection
+        body = json.dumps({'device': {'modelName': 'QN77S89CBFXZA',
+                                     'model': 'synthetic-platform'}}).encode()
+        headers = b'HTTP/1.1 200 OK\r\nContent-Length: ' + str(len(body)).encode() + b'\r\n\r\n'
+        for phase in ('headers', 'body'):
+            requests = []
+            class SlowResponse(socketserver.StreamRequestHandler):
+                def handle(self):
+                    requests.append(self.rfile.readline())
+                    while self.rfile.readline().strip():
+                        pass
+                    try:
+                        if phase == 'body':
+                            self.wfile.write(headers)
+                        data = headers + body if phase == 'headers' else body
+                        for offset in range(0, len(data), 4):
+                            self.wfile.write(data[offset:offset + 4])
+                            time.sleep(0.025)
+                    except OSError:
+                        pass
+            with self.subTest(phase=phase), socketserver.TCPServer(('127.0.0.1', 0), SlowResponse) as server:
+                worker = threading.Thread(target=server.handle_request, daemon=True)
+                worker.start()
+                def connect(host, port, **kwargs):
+                    return connection('127.0.0.1', server.server_address[1], **kwargs)
+                started = time.monotonic()
+                try:
+                    with patch.object(s89c_inspect, 'REQUEST_TIMEOUT', 0.15, create=True), \
+                         patch.object(s89c_inspect.http.client, 'HTTPConnection', side_effect=connect), \
+                         self.assertRaises(Refused):
+                        s89c_inspect.inspect('192.0.2.50')
+                    self.assertLess(time.monotonic() - started, 0.7)
+                finally:
+                    worker.join(2)
+                self.assertEqual(requests, [b'GET /api/v2/ HTTP/1.1\r\n'])
+
     def test_help_runs_without_sdk_signing_or_device_configuration(self):
         result = subprocess.run(
             [sys.executable, '-m', 'tvsetup.s89c_inspect', '--help'],
@@ -28,6 +69,7 @@ class S89CInspectionTests(unittest.TestCase):
             'name': 'private-room-name'}}).encode())
         response.status = 200
         with patch.object(s89c_inspect.http.client, 'HTTPConnection', autospec=True) as connect:
+            connect.return_value.sock = Mock()
             connect.return_value.getresponse.return_value = response
             result = s89c_inspect.inspect('192.0.2.50')
         connect.assert_called_once_with('192.0.2.50', 8001, timeout=5)

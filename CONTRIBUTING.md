@@ -8,6 +8,12 @@ meaningful failures. Run the offline checks in docs/project/release-readiness.md
 contact or modify someone else's TV or NAS, and do not treat mocked device state
 as hardware validation. Live mutations require the device owner's authorization.
 
+CI uses four Linux jobs for web/setup, managed fallback, native worker and QN90A
+saver checks, plus a focused macOS 14/Python 3.12 job for setup, installer and
+UI-deploy tests. It runs on pull requests and `main`; use the manual workflow trigger
+for a branch without a PR. Broader macOS and newer-Python checks stay local for
+releases and host-specific changes. See [validation details](docs/project/release-readiness.md#validation-and-reproducibility).
+
 New firmware/model support needs a separate reviewed profile, original resource
 hashes, model-specific transport evidence and a documented recovery path. Never
 weaken firmware, signature, package protection or cleanup allowlist checks to make

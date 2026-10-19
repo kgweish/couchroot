@@ -1,0 +1,153 @@
+{
+  "source_commit": "ffe97f334d7995691e1c2a32aaac853e152a8e0e",
+  "purpose": "Prototype job and helper lifecycle acceptance; .NET remains deployed",
+  "date": "2026-10-13",
+  "worker_sha256": "fe7b41d4ddf0dab36064064a6b43dd8ca10f803384e79c34008063844da2999c",
+  "worker_bytes": 61152,
+  "local_validation": {
+    "repository_tests_passed": 226,
+    "native_sanitizer_tests_passed": 16,
+    "sanitizers": [
+      "address",
+      "undefined-behavior"
+    ],
+    "host_helper_staging": "Fails closed without real Smack/mount support; lifecycle validated on TVs"
+  },
+  "devices": {
+    "QN90A": {
+      "acceptance_exit_code": 0,
+      "checks": [
+        {
+          "check": "helper_digest_readonly_and_namespace",
+          "passed": true
+        },
+        {
+          "check": "native_staged_helper_app_job_identity",
+          "passed": true
+        },
+        {
+          "check": "timeout_cancel_during_foreground_and_no_survivor",
+          "passed": true
+        },
+        {
+          "check": "nonzero_exit_bounded_logs_and_cursors",
+          "passed": true
+        },
+        {
+          "check": "background_job_over_25_seconds_and_idle_connection",
+          "passed": true
+        },
+        {
+          "check": "helper_release_and_unknown_id",
+          "passed": true
+        },
+        {
+          "check": "helper_retention_limit_and_release",
+          "passed": true
+        },
+        {
+          "check": "disconnect_cleans_job_and_helper",
+          "passed": true
+        },
+        {
+          "check": "restart_saved_status_no_replay_and_forget",
+          "passed": true
+        },
+        {
+          "check": "graceful_stop_cleans_active_job_and_helper",
+          "passed": true
+        },
+        {
+          "check": "signal_stop_cleans_active_job_and_helper",
+          "passed": true
+        },
+        {
+          "check": "graceful_shutdown_and_owned_storage_cleanup",
+          "passed": true
+        }
+      ],
+      "cleanup": {
+        "boot_unchanged": true,
+        "deployed_pid_unchanged": true,
+        "deployed_worker_unchanged": true,
+        "files_removed": true,
+        "helpers_released": true,
+        "launcher_hash_unchanged": true,
+        "native_helper_storage_removed": true,
+        "original_execution_mounts_unchanged": true,
+        "protected_files_unchanged": true
+      }
+    },
+    "S90D": {
+      "acceptance_exit_code": 0,
+      "checks": [
+        {
+          "check": "helper_digest_readonly_and_namespace",
+          "passed": true
+        },
+        {
+          "check": "native_staged_helper_app_job_identity",
+          "passed": true
+        },
+        {
+          "check": "timeout_cancel_during_foreground_and_no_survivor",
+          "passed": true
+        },
+        {
+          "check": "nonzero_exit_bounded_logs_and_cursors",
+          "passed": true
+        },
+        {
+          "check": "background_job_over_25_seconds_and_idle_connection",
+          "passed": true
+        },
+        {
+          "check": "helper_release_and_unknown_id",
+          "passed": true
+        },
+        {
+          "check": "helper_retention_limit_and_release",
+          "passed": true
+        },
+        {
+          "check": "disconnect_cleans_job_and_helper",
+          "passed": true
+        },
+        {
+          "check": "restart_saved_status_no_replay_and_forget",
+          "passed": true
+        },
+        {
+          "check": "graceful_stop_cleans_active_job_and_helper",
+          "passed": true
+        },
+        {
+          "check": "signal_stop_cleans_active_job_and_helper",
+          "passed": true
+        },
+        {
+          "check": "graceful_shutdown_and_owned_storage_cleanup",
+          "passed": true
+        }
+      ],
+      "cleanup": {
+        "boot_unchanged": true,
+        "deployed_pid_unchanged": true,
+        "deployed_worker_unchanged": true,
+        "files_removed": true,
+        "helpers_released": true,
+        "launcher_hash_unchanged": true,
+        "native_helper_storage_removed": true,
+        "original_execution_mounts_unchanged": true,
+        "protected_files_unchanged": true
+      }
+    }
+  },
+  "limits": [
+    "Five-minute experimental worker lifetime; no 24-hour job qualification",
+    "In-memory logs; saved records survive but previous-worker cancellation is refused",
+    "No autonomous acquisition, independent launcher staging or production replacement",
+    "No SIGKILL/crash recovery or deliberate descendant escape containment qualification",
+    "Historical performance measurements predate this lifecycle extension"
+  ]
+}

@@ -313,13 +313,13 @@ test('scroll cues follow Home and list boundaries at both viewport sizes without
  for(const viewport of [{width:1920,height:1080},{width:960,height:540}]){
   const p=await setup();await p.setViewportSize(viewport);
   await p.evaluate(()=>localStorage.setItem('minimal-hub.shortcuts.v1',JSON.stringify({version:1,apps:window.testApps})));
-  await p.reload();await p.waitForTimeout(80);
+  await p.reload();await p.locator('#home-scroll.can-scroll-down:not(.can-scroll-up)').waitFor({state:'attached',timeout:3000});
   assert.equal(await p.locator('#home-scroll.can-scroll-down').count(),1);assert.equal(await p.locator('#home-scroll.can-scroll-up').count(),0);
-  for(let i=0;i<4;i++)await key(p,'ArrowDown');await p.waitForTimeout(30);
-  await p.locator('#home-scroll.can-scroll-up').waitFor({state:'attached'});assert.equal(await p.locator('#home-scroll.can-scroll-up').count(),1);assert.equal(await p.locator('#home-scroll.can-scroll-down').count(),0);
+  for(let i=0;i<4;i++)await key(p,'ArrowDown');await p.locator('#home-scroll.can-scroll-up:not(.can-scroll-down)').waitFor({state:'attached',timeout:3000});
+  assert.equal(await p.locator('#home-scroll.can-scroll-up').count(),1);assert.equal(await p.locator('#home-scroll.can-scroll-down').count(),0);
   assert.ok(await p.locator('#favorites > button').evaluateAll(bs=>bs.every(b=>getComputedStyle(b).opacity==='1')));
-  await p.locator('#edit-apps').click();assert.equal(await p.locator('#editor-scroll.can-scroll-down').count(),1);
-  for(let i=0;i<14;i++)await key(p,'ArrowDown');await p.waitForTimeout(30);
+  await p.locator('#edit-apps').click();await p.locator('#editor-scroll.can-scroll-down').waitFor({state:'attached',timeout:3000});assert.equal(await p.locator('#editor-scroll.can-scroll-down').count(),1);
+  for(let i=0;i<14;i++)await key(p,'ArrowDown');await p.locator('#editor-scroll.can-scroll-up:not(.can-scroll-down)').waitFor({state:'attached',timeout:3000});
   assert.equal(await p.locator('#editor-scroll.can-scroll-up').count(),1);assert.equal(await p.locator('#editor-scroll.can-scroll-down').count(),0);
   await key(p,'Escape');await p.locator('#settings').click();
   for(let i=0;i<6;i++)await key(p,'ArrowDown');
@@ -460,4 +460,18 @@ test('S89C uses installed IDs, five-column arrows and source fallback while pres
   return !!caption&&!!grid&&caption.getBoundingClientRect().bottom<=grid.getBoundingClientRect().bottom;
  }),true);
  assert.deepEqual(errors,[]);await p.close();
+});
+
+test('a second move without arrows has only its own moving tile and badge',async()=>{
+ const p=await setup();
+ try {
+  await p.locator('#edit-apps').click();await key(p,'ArrowDown','Enter','Enter');
+  const first=await p.locator('#favorites .moving').getAttribute('data-id');
+  await key(p,'Escape','ArrowDown','Enter','Enter');
+  assert.equal(await p.locator('#favorites .moving').count(),1);
+  assert.equal(await p.locator('#favorites .move-label').count(),1);
+  assert.notEqual(await p.locator('#favorites .moving').getAttribute('data-id'),first);
+  assert.equal(await p.locator('#favorites .moving').getAttribute('aria-disabled'),null);
+  await key(p,'Enter');assert.equal(await p.locator('#move-banner').isVisible(),false);
+ } finally {await p.close();}
 });

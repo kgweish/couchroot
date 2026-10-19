@@ -1,0 +1,195 @@
+{
+  "date": "2026-10-13",
+  "worker_source_commit": "f9ae1824c77709319c9cb8e2e231fa183bbf9063",
+  "scope": "One-hour repeated root/app jobs and helper lifecycle, followed by the extended crash, guardian-loss, stale-journal, startup and storage suite.",
+  "deployed_implementation": ".NET remained active and unchanged",
+  "tv_reboots": 0,
+  "build_artifacts": {
+    "worker": {
+      "bytes": 89428,
+      "sha256": "a0af1e1a44e240fb89bb44a07a24ee3051fba608cdfcdb3e5fbf878a70f3615c"
+    },
+    "worker-fault-test": {
+      "bytes": 89860,
+      "sha256": "a91ec127991e5daf2cdc572e10b5a670d65d439b7fb5508dd52c0000825261ba"
+    },
+    "accept-fault-test": {
+      "bytes": 69888,
+      "sha256": "c88b02d0d3208ea6f917753e00084ca53cdce414cedbb03ebb19a408306bd291"
+    },
+    "app-launcher": {
+      "bytes": 13296,
+      "sha256": "4ba756c8b725ba2e375ca02608c9ca7579f6d6275c4ed96348ba93bf5b8a6d55"
+    }
+  },
+  "source_manifest": {
+    "research/autonomous-root/native-worker/jobs.h": "fd8139b3f2d2e0fae48b2290951c01c09124030ca9fc0d06f98bc38583d2c2c9",
+    "research/autonomous-root/native-worker/progress.h": "f41818cad98bb65dc6d1a781475f70aabc6658bf775d2abaa5fb33e3894b1536",
+    "research/autonomous-root/native-worker/reconcile.h": "ba2125ccbd4fb130b570d51419e7f86cf67a734d1425be6203274a1bfe313373",
+    "research/autonomous-root/native-worker/fault-test.h": "82a7c7a90b262713579d2d4d732dee7f4d58c5f60f42424d4076bdd1a0eb91b9",
+    "research/autonomous-root/native-worker/worker.c": "5bc99247d34d3c63f21614e65b74b06fd4d30317ea976b1596f73029379b92f0",
+    "research/autonomous-root/native-worker/guardian.h": "9ce0953e32bb11f6bd5f58fc20acfe2edf95b897a646889ce7e446a94365e285",
+    "research/autonomous-root/native-worker/runtime.h": "8321eaefff8c73f5121e9da559fd460dc1673970cc15f0bd92c1bc4ff95b11c9",
+    "research/autonomous-root/native-worker/controller.h": "d3dee61521c7d053f338dacd81a9a8c956d6f28c975e7343946b913a6612d234",
+    "research/autonomous-root/native-worker/accept.c": "1d2e12143abdbc61a357632cd7f9181e7e51d3a718d70d3e5ce946c85386d7f6",
+    "research/autonomous-root/native-worker/build.sh": "0c116a0d6af98923069e9d93da83fe6d3995aaa6f6eeabeda3991c840bcb3fc1",
+    "research/autonomous-root/native-worker/common.h": "8daf905c6d2d28b08d5c643ed711f85755a533c39b7148a2e19362bd9a151760",
+    "research/autonomous-root/native-worker/guardian-loss-accept.h": "3f9a00fac2c46bcf66986fd03fda066c902195f376887254d7fdb80164e5b320",
+    "research/autonomous-root/native-worker/bench.c": "2510870f457565fae1224fd8017203085a51a3893b183ad7a5c22e3c2c946219",
+    "research/autonomous-root/native-worker/helpers.h": "1e6781e3d4ded03192ad887224803d2361147e7dac2aeec24251561691c415f9",
+    "research/autonomous-root/native-worker/storage-accept.h": "88a56a3197acc7e8491b5f6e9c6016e92158243837e3d2229d41ae8a15a16a14",
+    "research/autonomous-root/native-worker/containment.h": "b64df702fd7e9123020cd38c1096132d7aec395b808eac8a6147f87c68fec85f"
+  },
+  "devices": {
+    "qn90a": {
+      "exit_code": 0,
+      "result_rows": 389,
+      "distinct_checks": 44,
+      "all_checks_passed": true,
+      "soak_passed": true,
+      "checks": [
+        "independent_launcher_digest_and_readonly_view",
+        "helper_digest_readonly_and_namespace",
+        "native_staged_helper_app_job_identity",
+        "timeout_cancel_during_foreground_and_no_survivor",
+        "nonzero_exit_bounded_logs_and_cursors",
+        "background_job_over_25_seconds_and_idle_connection",
+        "helper_release_and_unknown_id",
+        "root_and_app_command_faults_preserve_worker",
+        "root_and_app_helper_memory_faults_normal_release",
+        "bounded_lifetime_soak",
+        "helper_retention_limit_and_release",
+        "disconnect_cleans_job_and_helper",
+        "restart_saved_status_no_replay_and_forget",
+        "graceful_stop_cleans_active_job_and_helper",
+        "signal_stop_cleans_active_job_and_helper",
+        "sigkill_recovery_reaps_detached_children_and_restages_launcher",
+        "sigsegv_recovery_no_replay_and_app_execution",
+        "stopped_worker_watchdog_freezes_owned_group_and_recovers",
+        "main_thread_memory_fault_recovery",
+        "new_worker_thread_memory_fault_recovery",
+        "active_request_progress_watchdog_recovery",
+        "job_monitor_progress_watchdog_recovery",
+        "stale_journal_refuses_namespace_bind_mount_pin",
+        "guardian_loss_exitkill_and_pinned_namespace_refusal",
+        "stale_journal_scope_resource_boot_and_live_identity_refusal",
+        "guardian_loss_reconciles_without_pid_signals_or_job_replay",
+        "frozen_guardian_loss_thaws_pending_exitkill_without_replay",
+        "stale_namespace_number_reuse_preserves_unrelated_process",
+        "startup_checkpoint_recovery_namespace",
+        "startup_checkpoint_recovery_runtime",
+        "startup_checkpoint_recovery_launcher-created",
+        "startup_checkpoint_recovery_launcher-partial-copy",
+        "startup_checkpoint_recovery_launcher-copy",
+        "startup_checkpoint_recovery_launcher",
+        "startup_checkpoint_recovery_contained",
+        "startup_checkpoint_recovery_ready",
+        "startup_checkpoint_recovery_journal-runtime",
+        "startup_checkpoint_recovery_journal-contained",
+        "startup_checkpoint_recovery_journal-ready",
+        "enospc_terminal_result_retried_without_command_replay",
+        "enospc_intent_not_published_or_executed_then_retry",
+        "readonly_intent_not_published_or_executed_then_app_retry",
+        "enospc_crash_cleans_resources_retains_journal_then_reconciles",
+        "graceful_shutdown_and_owned_storage_cleanup"
+      ],
+      "soak": {
+        "elapsed_ms": 3608304,
+        "cycles": 341,
+        "worker_rss_min_kb": 824,
+        "worker_rss_max_kb": 916,
+        "guardian_rss_max_kb": 1084,
+        "worker_fds": 18,
+        "worker_threads": 3,
+        "worker_mounts": 39
+      },
+      "cleanup_and_preservation": {
+        "boot_unchanged": true,
+        "deployed_pid_unchanged": true,
+        "deployed_worker_unchanged": true,
+        "files_removed": true,
+        "helpers_released": true,
+        "launcher_hash_unchanged": true,
+        "native_helper_storage_removed": true,
+        "original_cgroup_membership_unchanged": true,
+        "original_execution_mounts_unchanged": true,
+        "protected_files_unchanged": true,
+        "prototype_freezer_groups_removed": true
+      },
+      "kernel_observations": {
+        "lines": 6180,
+        "collector_wait_lines": 0,
+        "worker_executable_dump_lines": 0
+      }
+    },
+    "s90d": {
+      "exit_code": 1,
+      "result_rows": 358,
+      "distinct_checks": 17,
+      "all_checks_passed": false,
+      "soak_passed": true,
+      "checks": [
+        "independent_launcher_digest_and_readonly_view",
+        "helper_digest_readonly_and_namespace",
+        "native_staged_helper_app_job_identity",
+        "timeout_cancel_during_foreground_and_no_survivor",
+        "nonzero_exit_bounded_logs_and_cursors",
+        "background_job_over_25_seconds_and_idle_connection",
+        "helper_release_and_unknown_id",
+        "root_and_app_command_faults_preserve_worker",
+        "root_and_app_helper_memory_faults_normal_release",
+        "bounded_lifetime_soak",
+        "helper_retention_limit_and_release",
+        "disconnect_cleans_job_and_helper",
+        "restart_saved_status_no_replay_and_forget",
+        "graceful_stop_cleans_active_job_and_helper",
+        "signal_stop_cleans_active_job_and_helper",
+        "sigkill_recovery_reaps_detached_children_and_restages_launcher",
+        "sigsegv_recovery_no_replay_and_app_execution"
+      ],
+      "soak": {
+        "elapsed_ms": 3600799,
+        "cycles": 340,
+        "worker_rss_min_kb": 868,
+        "worker_rss_max_kb": 916,
+        "guardian_rss_max_kb": 1140,
+        "worker_fds": 14,
+        "worker_threads": 3,
+        "worker_mounts": 40
+      },
+      "cleanup_and_preservation": {
+        "boot_unchanged": true,
+        "deployed_pid_unchanged": true,
+        "deployed_worker_unchanged": true,
+        "files_removed": true,
+        "helpers_released": true,
+        "launcher_hash_unchanged": true,
+        "native_helper_storage_removed": true,
+        "original_cgroup_membership_unchanged": true,
+        "original_execution_mounts_unchanged": true,
+        "protected_files_unchanged": true,
+        "prototype_freezer_groups_removed": true
+      },
+      "kernel_observations": {
+        "lines": 5841,
+        "collector_wait_lines": 0,
+        "worker_executable_dump_lines": 0
+      },
+      "failed_gate": {
+        "check": "stopped_worker_recovery_latency",
+        "limit_ms": 2000,
+        "observed_ms": 2188,
+        "worker_exited": true,
+        "descendants_drained": true,
+        "follow_on_suite_incomplete": true
+      }
+    }
+  },
+  "limits": [
+    "S90D passed the one-hour exercise but failed a subsequent stopped-worker latency gate. Its remaining follow-on checks did not run; the complete endurance-plus-recovery suite is not qualified on both TVs.",
+    "The tested worker is the storage-qualified f9ae182 build; later recovery and diagnostic revisions require separate device qualification.",
+    "The acceptance harness additionally verifies immediate freezer removal using an absolute cgroup path.",
+    "Descriptor, thread and mount counts were checked every cycle. RSS figures are observations, not proof of absence of every memory leak.",
+    "This is a one-hour qualification; longer-term production, cross-boot and power-loss behavior remain unqualified."
+  ]
+}

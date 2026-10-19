@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "date": "2026-10-16",
+  "scope": "Local ordinary signed candidate preparation; no device mutation",
+  "source_commit": "4f39d1d42b1975f9b10de856f42b684052bb92da",
+  "devices": {
+    "qn90a": {
+      "package_version": "0.7.49",
+      "previous_version": "0.7.48",
+      "signed_package_verified": true,
+      "forward_inventory_reviewed": true,
+      "native_worker_sha256": "1dfa73afb9a983c9361943b87bf0dc30dc1e491e7000d7566b1bd846fcbab93a",
+      "independent_native_builds": 2,
+      "native_builds_byte_identical": true,
+      "payload_changes": [
+        "manifest.json",
+        "native-manifest.json",
+        "native-worker"
+      ],
+      "other_payload_members_unchanged": 16,
+      "managed_worker_and_entry_bridge_unchanged": true,
+      "installed": false,
+      "hardware_qualified": false
+    },
+    "s90d": {
+      "package_version": "0.7.49",
+      "previous_version": "0.7.48",
+      "signed_package_verified": true,
+      "forward_inventory_reviewed": true,
+      "native_worker_sha256": "1dfa73afb9a983c9361943b87bf0dc30dc1e491e7000d7566b1bd846fcbab93a",
+      "independent_native_builds": 2,
+      "native_builds_byte_identical": true,
+      "payload_changes": [
+        "manifest.json",
+        "native-manifest.json",
+        "native-worker"
+      ],
+      "other_payload_members_unchanged": 16,
+      "managed_worker_and_entry_bridge_unchanged": true,
+      "installed": false,
+      "hardware_qualified": false
+    }
+  },
+  "qualification_limits": [
+    "Both TVs still run 0.7.48 in independent supervised endurance trials; no 24-hour acceptance is claimed.",
+    "Selected-native startup, bootstrap recovery and pending managed-return recovery across boots remain locally tested only.",
+    "The .NET entry bridge, managed fallback and independent deployed recovery utility remain available.",
+    "Signature and repeated-build verification do not qualify TV reboot behavior."
+  ],
+  "next_hardware_steps": [
+    "Finish or reconcile each original endurance invocation before acquiring its deployment lock. Preserve all original evidence and retained outcomes.",
+    "Perform fresh per-TV identity, package, enrollment, retained-job and pending-state checks against the actual installed baseline; prepare a new unique deployment intent and independent 300-second rescue.",
+    "Deploy sequentially and qualify service restart, selected-native reacquisition and managed return before a separately journaled software reboot trial.",
+    "Require an observed boot transition, immutable activation and retained-state checks, public native operations, successful managed return and owned-resource cleanup. Record any host-assisted recovery separately.",
+    "Re-establish a verified recovery path across reboot: a transient systemd rescue timer is not evidence of a reboot-surviving rescue.",
+    "Standby, deep suspend and interrupted-power trials remain outside the current authorization."
+  ],
+  "local_validation": {
+    "npm_passed": 431,
+    "npm_skipped": 174,
+    "npm_failed": 0,
+    "privacy_audit_findings": 0,
+    "device_operations_performed": false
+  }
+}

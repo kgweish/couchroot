@@ -1,0 +1,661 @@
+{
+ "date": "2026-10-13",
+ "source_commit": "43ec7bcf91f6f28e6141c44b6fbeba1332dbb00c",
+ "baseline_commit": "6aebc0ab2669880c6ea5223470a43a511e483d25",
+ "scope": "Cleanup/optimization pass: event-driven guardian, job-monitor and foreground waits plus lifecycle deduplication. Full extended same-boot acceptance and before/after probes; not endurance, cross-boot or production qualification.",
+ "overall_passed": true,
+ "deployed_implementation": ".NET unchanged",
+ "tv_reboots": 0,
+ "builds": {
+  "base_worker": "2b7f3c0201094a1a8425fe37213122215abf2fd40a87b14cf2f2a5b4ed6a8619",
+  "base_worker_note": "Identical bytes to the 4e40d47 descriptor-validation worker.",
+  "worker": "1500cda1fd6b3a51aa627c22c9cb2eb5b98c49e9a165adac901c4e3f80cc3d95",
+  "worker_fault_test": "8f3737b7c45f21d7401e97fb3e40ee772058fbf9fa1566d771a573946d3cba99",
+  "accept_fault_test": "be13805915e58c475124c50dc1a59b6168dae3aac6aad429c8a5a11753db49a2",
+  "app_launcher": "4ba756c8b725ba2e375ca02608c9ca7579f6d6275c4ed96348ba93bf5b8a6d55"
+ },
+ "descriptor_capacity": {
+  "checks_unchanged": true,
+  "order": "free slot before retention scan and intent; six before output pipes and launch gate",
+  "new_permanent_descriptor": "job monitor eventfd, created at startup and counted by the acceptance fixture inventory",
+  "failure_messages_distinguish": [
+   "descriptors",
+   "memory",
+   "launch"
+  ]
+ },
+ "host_validation": {
+  "platform": "Linux ARM64 container, ptrace-capable, privileged for tmpfs fixtures",
+  "native_sanitizer_tests_passed": 48,
+  "sanitizer_runs": 3,
+  "new_test": "test_descriptor_sets_stable_across_command_and_job_lifecycles",
+  "repository_tests_passed": 274,
+  "repository_native_tests_skipped": 48,
+  "measurement": {
+   "method": "Non-sanitized -O2 host build, 5 fresh workers per build; medians and ranges.",
+   "reps": 5,
+   "metrics": {
+    "idle_worker_switches_per_s": {
+     "base_median": 26.4,
+     "new_median": 10.78,
+     "base_range": [
+      25.97,
+      26.59
+     ],
+     "new_range": [
+      10.4,
+      11.2
+     ]
+    },
+    "idle_guardian_switches_per_s": {
+     "base_median": 78.91,
+     "new_median": 9.58,
+     "base_range": [
+      77.69,
+      79.39
+     ],
+     "new_range": [
+      9.4,
+      9.6
+     ]
+    },
+    "quiet_exec_worker_switches_per_s": {
+     "base_median": 106.67,
+     "new_median": 13.26,
+     "base_range": [
+      104.13,
+      107.99
+     ],
+     "new_range": [
+      12.95,
+      13.62
+     ]
+    },
+    "quiet_exec_guardian_switches_per_s": {
+     "base_median": 79.06,
+     "new_median": 12.59,
+     "base_range": [
+      78.28,
+      79.88
+     ],
+     "new_range": [
+      11.93,
+      12.62
+     ]
+    },
+    "fork_exec_ms_per_process": {
+     "base_median": 50.85,
+     "new_median": 0.25,
+     "base_range": [
+      50.41,
+      51.43
+     ],
+     "new_range": [
+      0.24,
+      0.27
+     ]
+    },
+    "quiet_job_worker_switches_per_s": {
+     "base_median": 94.4,
+     "new_median": 35.84,
+     "base_range": [
+      93.4,
+      96.98
+     ],
+     "new_range": [
+      34.88,
+      36.99
+     ]
+    },
+    "short_job_completion_ms": {
+     "base_median": 49.25,
+     "new_median": 14.05,
+     "base_range": [
+      43.56,
+      53.82
+     ],
+     "new_range": [
+      11.19,
+      14.99
+     ]
+    }
+   }
+  }
+ },
+ "devices": {
+  "qn90a": {
+   "acceptance": {
+    "exit_code": 0,
+    "result_rows": 78,
+    "distinct_checks": 74,
+    "failed_rows": 0,
+    "checks": [
+     "active_request_progress_watchdog_recovery",
+     "background_job_over_25_seconds_and_idle_connection",
+     "bounded_original_command_fault_history_preserves_actual_exit_and_resets",
+     "descriptor_exhaustion_no_launch_then_app_execution_and_reconciliation",
+     "disconnect_cleans_job_and_helper",
+     "enospc_crash_cleans_resources_retains_journal_then_reconciles",
+     "enospc_intent_not_published_or_executed_then_retry",
+     "enospc_terminal_result_retried_without_command_replay",
+     "freezer_reservation_rejects_busy_group_and_parent_mismatch",
+     "frozen_guardian_loss_thaws_pending_exitkill_without_replay",
+     "graceful_shutdown_and_owned_storage_cleanup",
+     "graceful_stop_cleans_active_job_and_helper",
+     "guardian_loss_exitkill_and_pinned_namespace_refusal",
+     "guardian_loss_reconciles_without_pid_signals_or_job_replay",
+     "helper_digest_readonly_and_namespace",
+     "helper_release_and_unknown_id",
+     "helper_retention_limit_and_release",
+     "independent_launcher_digest_and_readonly_view",
+     "job_monitor_progress_watchdog_recovery",
+     "json_upload_chunk_limit_and_binary_interoperability",
+     "main_thread_memory_fault_recovery",
+     "native_staged_helper_app_job_identity",
+     "new_worker_thread_memory_fault_recovery",
+     "nonzero_exit_bounded_logs_and_cursors",
+     "orphan_intent_created_interrupted_without_replay",
+     "orphan_intent_linked_interrupted_without_replay",
+     "orphan_intent_partial_interrupted_without_replay",
+     "orphan_intent_synced_interrupted_without_replay",
+     "readonly_intent_not_published_or_executed_then_app_retry",
+     "restart_saved_status_no_replay_and_forget",
+     "root_and_app_command_faults_preserve_worker",
+     "root_and_app_helper_memory_faults_normal_release",
+     "runtime_reservation_rejects_foreign_content_and_parent_mismatch",
+     "saved_retention_limit_preserves_records_and_app_capacity_recovers",
+     "sigkill_recovery_reaps_detached_children_and_restages_launcher",
+     "signal_stop_cleans_active_job_and_helper",
+     "sigsegv_recovery_no_replay_and_app_execution",
+     "stale_journal_refuses_namespace_bind_mount_pin",
+     "stale_journal_scope_resource_boot_and_live_identity_refusal",
+     "stale_namespace_number_reuse_preserves_unrelated_process",
+     "startup_checkpoint_recovery_contained",
+     "startup_checkpoint_recovery_fail-contained",
+     "startup_checkpoint_recovery_fail-freezer-reserved",
+     "startup_checkpoint_recovery_fail-namespace",
+     "startup_checkpoint_recovery_fail-ready",
+     "startup_checkpoint_recovery_fail-runtime",
+     "startup_checkpoint_recovery_fail-runtime-reserved",
+     "startup_checkpoint_recovery_freezer-created",
+     "startup_checkpoint_recovery_freezer-reserved",
+     "startup_checkpoint_recovery_initial-created",
+     "startup_checkpoint_recovery_initial-partial",
+     "startup_checkpoint_recovery_initial-synced",
+     "startup_checkpoint_recovery_journal-contained",
+     "startup_checkpoint_recovery_journal-freezer-reserved",
+     "startup_checkpoint_recovery_journal-ready",
+     "startup_checkpoint_recovery_journal-runtime",
+     "startup_checkpoint_recovery_journal-runtime-reserved",
+     "startup_checkpoint_recovery_launcher",
+     "startup_checkpoint_recovery_launcher-copy",
+     "startup_checkpoint_recovery_launcher-created",
+     "startup_checkpoint_recovery_launcher-partial-copy",
+     "startup_checkpoint_recovery_namespace",
+     "startup_checkpoint_recovery_partial-contained",
+     "startup_checkpoint_recovery_partial-freezer-reserved",
+     "startup_checkpoint_recovery_partial-ready",
+     "startup_checkpoint_recovery_partial-runtime",
+     "startup_checkpoint_recovery_partial-runtime-reserved",
+     "startup_checkpoint_recovery_ready",
+     "startup_checkpoint_recovery_runtime",
+     "startup_checkpoint_recovery_runtime-created",
+     "startup_checkpoint_recovery_runtime-parent-created",
+     "startup_checkpoint_recovery_runtime-reserved",
+     "stopped_worker_watchdog_freezes_owned_group_and_recovers",
+     "timeout_cancel_during_foreground_and_no_survivor"
+    ],
+    "worker_fault_recovery_ms": {
+     "disconnect": [
+      222
+     ],
+     "sigterm": [
+      252
+     ],
+     "sigkill": [
+      141
+     ],
+     "sigsegv": [
+      131
+     ],
+     "sigstop_heartbeat_watchdog": [
+      1131
+     ],
+     "main_thread_memory_fault": [
+      144
+     ],
+     "new_thread_memory_fault": [
+      143
+     ],
+     "active_request_stall": [
+      214
+     ],
+     "job_monitor_stall": [
+      223
+     ]
+    },
+    "recovery_gate_ms": 2000,
+    "graceful_stop_ms": {
+     "samples": 42,
+     "median": 173.0,
+     "max": 415,
+     "max_note": "Slowest stop spent its time in post-exit record/runtime/cgroup cleanup, outside the changed wait loop."
+    },
+    "recovery_gate_applies_to": [
+     "sigkill",
+     "sigsegv",
+     "sigstop_heartbeat_watchdog",
+     "main_thread_memory_fault",
+     "new_thread_memory_fault",
+     "active_request_stall",
+     "job_monitor_stall"
+    ]
+   },
+   "before_after_probe": {
+    "method": "Alternating base/new worker launches as a root job; 3 launches per build.",
+    "metrics": {
+     "idle_worker_switches_per_s": {
+      "base_median": 28.4,
+      "new_median": 11.2,
+      "base_range": [
+       28.39,
+       28.4
+      ],
+      "new_range": [
+       10.8,
+       11.4
+      ],
+      "samples": 3
+     },
+     "idle_guardian_switches_per_s": {
+      "base_median": 99.4,
+      "new_median": 10.0,
+      "base_range": [
+       99.2,
+       99.6
+      ],
+      "new_range": [
+       9.8,
+       10.0
+      ],
+      "samples": 3
+     },
+     "quiet_exec_worker_switches_per_s": {
+      "base_median": 128.2,
+      "new_median": 14.9,
+      "base_range": [
+       128.18,
+       128.28
+      ],
+      "new_range": [
+       13.93,
+       15.25
+      ],
+      "samples": 3
+     },
+     "quiet_exec_guardian_switches_per_s": {
+      "base_median": 99.3,
+      "new_median": 11.9,
+      "base_range": [
+       99.16,
+       99.67
+      ],
+      "new_range": [
+       11.6,
+       12.6
+      ],
+      "samples": 3
+     },
+     "fork_exec_ms_per_process": {
+      "base_median": 40.9,
+      "new_median": 3.4,
+      "base_range": [
+       40.92,
+       40.94
+      ],
+      "new_range": [
+       2.92,
+       3.6
+      ],
+      "samples": 3
+     },
+     "quiet_job_worker_switches_per_s": {
+      "base_median": 123.5,
+      "new_median": 55.7,
+      "base_range": [
+       123.46,
+       126.91
+      ],
+      "new_range": [
+       52.09,
+       58.44
+      ],
+      "samples": 3
+     },
+     "short_job_completion_ms": {
+      "base_median": 98.9,
+      "new_median": 89.0,
+      "base_range": [
+       96.88,
+       103.82
+      ],
+      "new_range": [
+       83.25,
+       96.17
+      ],
+      "samples": 3
+     }
+    },
+    "short_job_split": {
+     "method": "60 sequential exit-0 jobs per build; start = job.start response (durable intent and running record), complete = start response until exit code visible.",
+     "base": {
+      "jobs": 60,
+      "start_median_ms": 53.7,
+      "complete_median_ms": 45.7,
+      "start_max_ms": 372.8,
+      "complete_max_ms": 56.5,
+      "over_250ms": 1
+     },
+     "new": {
+      "jobs": 60,
+      "start_median_ms": 44.5,
+      "complete_median_ms": 29.5,
+      "start_max_ms": 1313.0,
+      "complete_max_ms": 69.3,
+      "over_250ms": 3
+     }
+    }
+   },
+   "kernel_observations": {
+    "collector_wait_lines": 0,
+    "lines": 6147,
+    "worker_executable_dump_lines": 0,
+    "file_open_checker_events": 0,
+    "too_many_open_files_events": 0,
+    "retained_seconds": 324,
+    "unobserved_seconds_after_start": 104,
+    "coverage_note": "Samsung kernel logging wraps the ring buffer within minutes; only the retained tail of the run was scanned."
+   },
+   "cleanup_and_preservation": {
+    "boot_unchanged": true,
+    "deployed_pid_unchanged": true,
+    "deployed_worker_unchanged": true,
+    "files_removed": true,
+    "helpers_released": true,
+    "launcher_hash_unchanged": true,
+    "native_helper_storage_removed": true,
+    "original_cgroup_membership_unchanged": true,
+    "original_execution_mounts_unchanged": true,
+    "protected_files_unchanged": true,
+    "prototype_freezer_groups_removed": true
+   }
+  },
+  "s90d": {
+   "acceptance": {
+    "exit_code": 0,
+    "result_rows": 78,
+    "distinct_checks": 74,
+    "failed_rows": 0,
+    "checks": [
+     "active_request_progress_watchdog_recovery",
+     "background_job_over_25_seconds_and_idle_connection",
+     "bounded_original_command_fault_history_preserves_actual_exit_and_resets",
+     "descriptor_exhaustion_no_launch_then_app_execution_and_reconciliation",
+     "disconnect_cleans_job_and_helper",
+     "enospc_crash_cleans_resources_retains_journal_then_reconciles",
+     "enospc_intent_not_published_or_executed_then_retry",
+     "enospc_terminal_result_retried_without_command_replay",
+     "freezer_reservation_rejects_busy_group_and_parent_mismatch",
+     "frozen_guardian_loss_thaws_pending_exitkill_without_replay",
+     "graceful_shutdown_and_owned_storage_cleanup",
+     "graceful_stop_cleans_active_job_and_helper",
+     "guardian_loss_exitkill_and_pinned_namespace_refusal",
+     "guardian_loss_reconciles_without_pid_signals_or_job_replay",
+     "helper_digest_readonly_and_namespace",
+     "helper_release_and_unknown_id",
+     "helper_retention_limit_and_release",
+     "independent_launcher_digest_and_readonly_view",
+     "job_monitor_progress_watchdog_recovery",
+     "json_upload_chunk_limit_and_binary_interoperability",
+     "main_thread_memory_fault_recovery",
+     "native_staged_helper_app_job_identity",
+     "new_worker_thread_memory_fault_recovery",
+     "nonzero_exit_bounded_logs_and_cursors",
+     "orphan_intent_created_interrupted_without_replay",
+     "orphan_intent_linked_interrupted_without_replay",
+     "orphan_intent_partial_interrupted_without_replay",
+     "orphan_intent_synced_interrupted_without_replay",
+     "readonly_intent_not_published_or_executed_then_app_retry",
+     "restart_saved_status_no_replay_and_forget",
+     "root_and_app_command_faults_preserve_worker",
+     "root_and_app_helper_memory_faults_normal_release",
+     "runtime_reservation_rejects_foreign_content_and_parent_mismatch",
+     "saved_retention_limit_preserves_records_and_app_capacity_recovers",
+     "sigkill_recovery_reaps_detached_children_and_restages_launcher",
+     "signal_stop_cleans_active_job_and_helper",
+     "sigsegv_recovery_no_replay_and_app_execution",
+     "stale_journal_refuses_namespace_bind_mount_pin",
+     "stale_journal_scope_resource_boot_and_live_identity_refusal",
+     "stale_namespace_number_reuse_preserves_unrelated_process",
+     "startup_checkpoint_recovery_contained",
+     "startup_checkpoint_recovery_fail-contained",
+     "startup_checkpoint_recovery_fail-freezer-reserved",
+     "startup_checkpoint_recovery_fail-namespace",
+     "startup_checkpoint_recovery_fail-ready",
+     "startup_checkpoint_recovery_fail-runtime",
+     "startup_checkpoint_recovery_fail-runtime-reserved",
+     "startup_checkpoint_recovery_freezer-created",
+     "startup_checkpoint_recovery_freezer-reserved",
+     "startup_checkpoint_recovery_initial-created",
+     "startup_checkpoint_recovery_initial-partial",
+     "startup_checkpoint_recovery_initial-synced",
+     "startup_checkpoint_recovery_journal-contained",
+     "startup_checkpoint_recovery_journal-freezer-reserved",
+     "startup_checkpoint_recovery_journal-ready",
+     "startup_checkpoint_recovery_journal-runtime",
+     "startup_checkpoint_recovery_journal-runtime-reserved",
+     "startup_checkpoint_recovery_launcher",
+     "startup_checkpoint_recovery_launcher-copy",
+     "startup_checkpoint_recovery_launcher-created",
+     "startup_checkpoint_recovery_launcher-partial-copy",
+     "startup_checkpoint_recovery_namespace",
+     "startup_checkpoint_recovery_partial-contained",
+     "startup_checkpoint_recovery_partial-freezer-reserved",
+     "startup_checkpoint_recovery_partial-ready",
+     "startup_checkpoint_recovery_partial-runtime",
+     "startup_checkpoint_recovery_partial-runtime-reserved",
+     "startup_checkpoint_recovery_ready",
+     "startup_checkpoint_recovery_runtime",
+     "startup_checkpoint_recovery_runtime-created",
+     "startup_checkpoint_recovery_runtime-parent-created",
+     "startup_checkpoint_recovery_runtime-reserved",
+     "stopped_worker_watchdog_freezes_owned_group_and_recovers",
+     "timeout_cancel_during_foreground_and_no_survivor"
+    ],
+    "worker_fault_recovery_ms": {
+     "disconnect": [
+      131
+     ],
+     "sigterm": [
+      131
+     ],
+     "sigkill": [
+      71
+     ],
+     "sigsegv": [
+      70
+     ],
+     "sigstop_heartbeat_watchdog": [
+      1206
+     ],
+     "main_thread_memory_fault": [
+      82
+     ],
+     "new_thread_memory_fault": [
+      83
+     ],
+     "active_request_stall": [
+      113
+     ],
+     "job_monitor_stall": [
+      122
+     ]
+    },
+    "recovery_gate_ms": 2000,
+    "graceful_stop_ms": {
+     "samples": 42,
+     "median": 103.5,
+     "max": 1176,
+     "max_note": "Slowest stop spent its time in post-exit record/runtime/cgroup cleanup, outside the changed wait loop."
+    },
+    "recovery_gate_applies_to": [
+     "sigkill",
+     "sigsegv",
+     "sigstop_heartbeat_watchdog",
+     "main_thread_memory_fault",
+     "new_thread_memory_fault",
+     "active_request_stall",
+     "job_monitor_stall"
+    ]
+   },
+   "before_after_probe": {
+    "method": "Alternating base/new worker launches as a root job; 3 launches per build.",
+    "metrics": {
+     "idle_worker_switches_per_s": {
+      "base_median": 28.8,
+      "new_median": 12.2,
+      "base_range": [
+       28.4,
+       29.0
+      ],
+      "new_range": [
+       11.4,
+       13.0
+      ],
+      "samples": 3
+     },
+     "idle_guardian_switches_per_s": {
+      "base_median": 100.0,
+      "new_median": 10.0,
+      "base_range": [
+       99.8,
+       100.4
+      ],
+      "new_range": [
+       10.0,
+       10.0
+      ],
+      "samples": 3
+     },
+     "quiet_exec_worker_switches_per_s": {
+      "base_median": 129.6,
+      "new_median": 15.2,
+      "base_range": [
+       129.58,
+       130.13
+      ],
+      "new_range": [
+       15.24,
+       16.24
+      ],
+      "samples": 3
+     },
+     "quiet_exec_guardian_switches_per_s": {
+      "base_median": 100.6,
+      "new_median": 11.6,
+      "base_range": [
+       99.73,
+       100.7
+      ],
+      "new_range": [
+       11.6,
+       11.93
+      ],
+      "samples": 3
+     },
+     "fork_exec_ms_per_process": {
+      "base_median": 40.8,
+      "new_median": 3.1,
+      "base_range": [
+       40.77,
+       40.83
+      ],
+      "new_range": [
+       3.04,
+       3.48
+      ],
+      "samples": 3
+     },
+     "quiet_job_worker_switches_per_s": {
+      "base_median": 150.4,
+      "new_median": 66.0,
+      "base_range": [
+       138.13,
+       153.78
+      ],
+      "new_range": [
+       65.69,
+       66.9
+      ],
+      "samples": 3
+     },
+     "short_job_completion_ms": {
+      "base_median": 104.1,
+      "new_median": 99.8,
+      "base_range": [
+       96.84,
+       115.52
+      ],
+      "new_range": [
+       92.43,
+       1332.73
+      ],
+      "samples": 3
+     }
+    },
+    "short_job_split": {
+     "method": "60 sequential exit-0 jobs per build; start = job.start response (durable intent and running record), complete = start response until exit code visible.",
+     "base": {
+      "jobs": 60,
+      "start_median_ms": 52.0,
+      "complete_median_ms": 45.1,
+      "start_max_ms": 1106.5,
+      "complete_max_ms": 853.8,
+      "over_250ms": 5
+     },
+     "new": {
+      "jobs": 60,
+      "start_median_ms": 49.9,
+      "complete_median_ms": 33.0,
+      "start_max_ms": 1237.8,
+      "complete_max_ms": 871.6,
+      "over_250ms": 5
+     }
+    }
+   },
+   "kernel_observations": {
+    "collector_wait_lines": 0,
+    "lines": 6143,
+    "worker_executable_dump_lines": 0,
+    "file_open_checker_events": 0,
+    "too_many_open_files_events": 0,
+    "retained_seconds": 229,
+    "unobserved_seconds_after_start": 201,
+    "coverage_note": "Samsung kernel logging wraps the ring buffer within minutes; only the retained tail of the run was scanned."
+   },
+   "cleanup_and_preservation": {
+    "boot_unchanged": true,
+    "deployed_pid_unchanged": true,
+    "deployed_worker_unchanged": true,
+    "files_removed": true,
+    "helpers_released": true,
+    "launcher_hash_unchanged": true,
+    "native_helper_storage_removed": true,
+    "original_cgroup_membership_unchanged": true,
+    "original_execution_mounts_unchanged": true,
+    "protected_files_unchanged": true,
+    "prototype_freezer_groups_removed": true
+   }
+  }
+ }
+}

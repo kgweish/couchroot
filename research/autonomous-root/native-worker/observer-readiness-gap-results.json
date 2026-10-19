@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "date": "2026-10-16",
+  "scope": "owner-authorized QN90A native endurance attempt; private raw evidence retained outside Git",
+  "installed_version": "0.7.48",
+  "attempt": {
+    "terminal": true,
+    "duration_minutes": 39.144,
+    "completed_windows_before_failure": 13,
+    "endurance_accepted": false
+  },
+  "failed_collector": {
+    "index": 13,
+    "unit_exit_code": 1,
+    "samples": 219,
+    "skipped_intervals": 1,
+    "first_sample_delay_ms": 1142.935385,
+    "maximum_sample_gap_ms": 1000.923869,
+    "maximum_sample_duration_ms": 73.482299,
+    "sampling_failed": false,
+    "kernel_complete": true,
+    "kernel_records": 1071,
+    "kernel_overruns": 0,
+    "kernel_sequence_gaps": 0,
+    "suspend_detected": false,
+    "interval_complete": false
+  },
+  "reconciliation": {
+    "failed_capture_downloaded_and_hash_verified": true,
+    "following_collector_completed_and_cleaned": true,
+    "quiet_job_cancelled_preserved_across_managed_return_then_forgotten": true,
+    "retained_jobs_enrollment_protected_hashes_preserved": true,
+    "same_boot_and_coordinator": true,
+    "native_processes_exited": true,
+    "sdk_loopback": true,
+    "all_owned_rescues_retired_without_firing": true
+  },
+  "interpretation": "The sampling clock starts before synchronous readiness publication. The first snapshot arrived after one interval; later gaps stayed near one interval. The capture is invalid under the unchanged acceptance rules. The evidence does not isolate time spent in each startup syscall.",
+  "next_step": "Move sampling admission after startup persistence without weakening skipped-interval or successful-exit requirements; add delayed-persistence tests and qualify a new observer separately.",
+  "s90d": "Independent original endurance trial still running; its source snapshot and installed package were not modified."
+}

@@ -1,5 +1,6 @@
 """Linux integration tests against real TLS, production C code and receiver parsing."""
 import hashlib
+import fcntl
 import http.server
 import json
 import os
@@ -82,10 +83,11 @@ class CollectorTests(unittest.TestCase):
         temp.write_text(json.dumps(dict(schema=1, enabled=enabled, endpoint=endpoint or self.endpoint)))
         temp.replace(self.data/'preferences.json')
 
-    def start(self, duration=2):
+    def start(self, duration=2, native=False):
         env = dict(os.environ, HTTPS_PROXY='http://127.0.0.1:1', ALL_PROXY='http://127.0.0.1:1')
         process = subprocess.Popen([BINARY, '--root', str(self.data), '--runtime', str(self.runtime),
-                                    '--run-for', str(duration)], stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=env)
+                                    '--run-for', str(duration)] + (['--native-handoff'] if native else []),
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=env)
         self.children.append(process); return process
 
     def finish(self, duration=2):
@@ -184,6 +186,68 @@ class CollectorTests(unittest.TestCase):
         (self.runtime/'lock').symlink_to(target)
         process = self.start(); self.assertEqual(process.wait(timeout=2), 1)
         self.assertEqual(target.read_text(), 'unchanged')
+
+    def select_native(self):
+        (self.data/'enabled').rename(self.data/'native-enabled')
+
+    def test_native_handoff_requires_explicit_exclusive_selection(self):
+        process = self.start(native=True)
+        self.assertEqual(process.wait(timeout=3), 0)
+        self.assertFalse(self.runtime.exists())
+        (self.data/'native-enabled').touch()  # Both markers is an invalid handoff.
+        self.assertEqual(self.start(native=True).wait(timeout=3), 0)
+        self.assertEqual(self.requests, [])
+
+    def test_native_selection_reuses_pairing_preferences_and_receiver_contract(self):
+        original = (self.data/'config.json').read_bytes()
+        self.select_native()
+        self.preferences(False)
+        process = self.start(35, native=True)
+        self.wait_for(lambda: (self.runtime/'status.json').exists())
+        self.assertEqual(self.requests, [])
+        self.preferences(True)
+        self.wait_for(lambda: len(self.requests) == 1, 12)
+        validate(self.requests[0][2])
+        self.assertNotIn('inspector', self.requests[0][2])
+        self.assertEqual(self.requests[0][1], 'Bearer '+self.config['token'])
+        (self.data/'native-enabled').unlink()
+        self.assertEqual(process.wait(timeout=12), 0)
+        self.assertEqual((self.data/'config.json').read_bytes(), original)
+        self.assertFalse((self.data/'enabled').exists())
+
+    def test_native_selection_is_qn90a_only(self):
+        self.select_native()
+        self.config['device_id'] = 's90d'
+        self.config['endpoint'] = self.endpoint.replace('qn90a', 's90d')
+        self.write_config()
+        self.assertEqual(self.start(native=True).wait(timeout=3), 1)
+        self.assertEqual(subprocess.run([BINARY, '--check-config', '--native-handoff', '--root', str(self.data)],
+                                       capture_output=True).returncode, 1)
+        self.assertEqual(self.requests, [])
+
+    def test_native_marker_symlink_content_and_hardlink_are_rejected(self):
+        self.select_native()
+        marker = self.data/'native-enabled'
+        marker.write_text('unknown selection')
+        self.assertEqual(self.start(native=True).wait(timeout=3), 0)
+        marker.unlink()
+        target = self.data/'keep'; target.touch()
+        marker.symlink_to(target)
+        self.assertEqual(self.start(native=True).wait(timeout=3), 0)
+        marker.unlink(); os.link(target, marker)
+        self.assertEqual(self.start(native=True).wait(timeout=3), 0)
+        self.assertEqual(self.requests, [])
+
+    def test_native_uses_the_existing_managed_lease(self):
+        self.select_native()
+        self.runtime.mkdir(mode=0o700)
+        with (self.runtime/'lock').open('w') as lock:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            self.assertEqual(self.start(native=True).wait(timeout=3), 0)
+            self.assertEqual(self.requests, [])
+        process = self.start(native=True)
+        self.assertEqual(process.wait(timeout=5), 0)
+        self.assertEqual(len(self.requests), 1)
 
 
 if __name__ == '__main__':

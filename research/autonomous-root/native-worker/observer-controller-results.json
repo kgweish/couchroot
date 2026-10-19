@@ -1,0 +1,96 @@
+{
+  "schema": 1,
+  "date": "2026-10-16",
+  "scope": "Rolling capture and independent rescue renewal during short selected-native trials",
+  "package_version": "0.7.48",
+  "installed_package_changed": false,
+  "source_sha256": {
+    "research/autonomous-root/native-worker/observer-series-controller.py": "aeef0f971f9a666ac53f7093ab31898347ba39560620271357e16f1f0079406c",
+    "tests/native_observer_controller_test.py": "00f56d314f75b20907c9c97d1a744cded87901ad09ad18716eb18331a1e19210",
+    "research/autonomous-root/native-worker/verify-observer-series.py": "6f6cfbea41a854a9ffa73b0ba7ea9d01da706fc9dc561f9866a8687c400f86d2",
+    "research/autonomous-root/native-worker/observe.c": "597f8d9499c6695abaeeff6f1774f748abf3891b113d179b416ae528c1d50792"
+  },
+  "observer_sha256": "a298920bf9530e1b413df958e3b83614708a55f8e8f3b5f4fde60853965c3c5d",
+  "ordinary_worker_sha256": "613c21fa9231097d51540f06873775a3f4d6f9173f48ec896c84e99432dd1f8e",
+  "local_tests": {
+    "controller_passed": 9,
+    "series_passed": 17,
+    "linux_observer_skipped": 13,
+    "npm_passed": 423,
+    "npm_skipped": 157
+  },
+  "devices": {
+    "qn90a": {
+      "all_native_identities_in_every_sample": true,
+      "all_rescues_retired_without_firing": true,
+      "continuity": {
+        "complete": true,
+        "covered_ms": 180000.0,
+        "duplicate_kernel_records_verified": 257,
+        "maximum_sample_gap_ms": 1001.496,
+        "resource_samples": 240,
+        "schema": 1,
+        "unique_kernel_records": 924,
+        "windows": 3
+      },
+      "enrollment_and_retained_jobs_preserved": true,
+      "health_checks": 27,
+      "managed_ready": true,
+      "mixed_jobs": 8,
+      "owned_scopes_removed": true,
+      "owned_units_inactive": true,
+      "quiet_job_seconds": 150,
+      "quiet_result_preserved_after_return": true,
+      "rescue_timers": 6,
+      "same_boot": true,
+      "same_coordinator": true,
+      "sdk_loopback": true,
+      "rolling_window_seconds": 80,
+      "stride_seconds": 50,
+      "rescue_renewal_interval_seconds": 45,
+      "stream_output_after_retirement": "Unavailable by contract; completed status/exit metadata is retained",
+      "controller_source_unchanged_during_trial": true,
+      "harness_correction": "Capture and managed return completed. An incorrect post-retirement job.output assertion failed; current status and the completed return receipt were inspected, then only remaining fixture cleanup and preservation checks ran. No migration, return or job launch was replayed."
+    },
+    "s90d": {
+      "all_native_identities_in_every_sample": true,
+      "all_rescues_retired_without_firing": true,
+      "continuity": {
+        "complete": true,
+        "covered_ms": 180000.0,
+        "duplicate_kernel_records_verified": 261,
+        "maximum_sample_gap_ms": 1001.362,
+        "resource_samples": 240,
+        "schema": 1,
+        "unique_kernel_records": 1014,
+        "windows": 3
+      },
+      "enrollment_and_retained_jobs_preserved": true,
+      "health_checks": 27,
+      "managed_ready": true,
+      "mixed_jobs": 8,
+      "owned_scopes_removed": true,
+      "owned_units_inactive": true,
+      "quiet_job_seconds": 150,
+      "quiet_result_preserved_after_return": true,
+      "rescue_timers": 6,
+      "same_boot": true,
+      "same_coordinator": true,
+      "sdk_loopback": true,
+      "rolling_window_seconds": 80,
+      "stride_seconds": 50,
+      "rescue_renewal_interval_seconds": 45,
+      "stream_output_after_retirement": "Unavailable by contract; completed status/exit metadata is retained",
+      "controller_source_unchanged_during_trial": true,
+      "all_launcher_attempt_units_inactive": true,
+      "launcher_reconciliation": "Initial supported relaunch finished without a changed worker/task. Its rescue was disarmed after inspecting the unchanged ready state. A proposed direct TERM was refused before arming because the registered app PID differed from the shared listener. A fresh supported relaunch captured successful exit codes and reset the worker/task while retaining the shared host; the owned log was verified and removed. The original elapsed launcher timer was explicitly stopped and all owned launcher units were verified inactive."
+    }
+  },
+  "limits": [
+    "180 seconds of predeclared coverage per TV is controller qualification, not 24-hour endurance or long-duration memory stability.",
+    "Native guardian and worker identities from the production receipt were present, valid and error-free in every one of the 240 resource rows per TV. Sampling remains periodic and mapping detail sparse.",
+    "The controller is adapter-driven. Device/firmware/signing/process checks, durable intents, hash-verified downloads and owned cleanup remain the adapter responsibility; scheduler completion alone does not prove continuity.",
+    "A full endurance invocation still needs supervised host execution, free-space monitoring, a 24-hour job and an appropriate mixed work/idle schedule. Standby/reboot is not authorized.",
+    "Managed acquisition entry, worker fallback and the independent 300-second .NET SDK rescue remain deployed. No package update, power transition, global policy, persistent file capability or SMACK change occurred."
+  ]
+}

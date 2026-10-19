@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "date": "2026-10-16",
+  "scope": "Owner-authorized independent QN90A observer probe; private evidence stays outside Git",
+  "installed_version": "0.7.48",
+  "package_changed": false,
+  "observer_sha256": "aaf22cfbf18a8ca2761eb7939003682ac00432c40c281bacda420c48425787a0",
+  "build": {
+    "independent_builds": 2,
+    "byte_identical": true
+  },
+  "change": "Sync empty readiness and output directory entries before the capture epoch; sync the readiness payload before successful collector exit.",
+  "local_tests": {
+    "observer_cases": 78,
+    "passed": 78,
+    "npm_passed": 427,
+    "npm_skipped": 162,
+    "fault_cases": [
+      "1200 ms startup fsync delay precedes capture epoch",
+      "350 ms readiness write delay after epoch invalidates interval",
+      "admission sync failure does not declare capture",
+      "final readiness sync failure prevents successful exit"
+    ]
+  },
+  "qn90a_probe": {
+    "seconds": 5,
+    "samples": 5,
+    "skipped_intervals": 0,
+    "first_sample_delay_ms": 0.329305,
+    "interval_complete": true,
+    "kernel_complete": true,
+    "kernel_records": 22,
+    "unit_exit_code": 0,
+    "active_zero_status_observed": true,
+    "capture_complete": true,
+    "exit_wait_seconds": 5.510832083877176,
+    "observations": 13,
+    "owned_scope_cleaned": true,
+    "rescue_retired_without_firing": true,
+    "retained_exit_success_observed": true,
+    "same_boot": true,
+    "same_managed_worker": true
+  },
+  "qualification_limits": [
+    "Short managed-worker probe; new native endurance trial is separately declared and not yet accepted.",
+    "S90D retains its original live endurance observer. The corrected observer is not yet qualified on S90D.",
+    "Installed native worker and service are unchanged. Cross-boot source remains uninstalled.",
+    ".NET entry, managed fallback and independent 300-second rescue remain."
+  ],
+  "qn90a_endurance_admission": {
+    "first_invocation_refused_before_mutation": true,
+    "reason": "Completed return operation still present in coordinator memory; strict idle-operation guard refused.",
+    "guarded_service_restart_completed": true,
+    "retained_jobs_and_enrollment_preserved": true,
+    "same_boot": true,
+    "rescue_retired_without_firing": true,
+    "fresh_run_requires_new_intent": true,
+    "fresh_supervised_run_started": true,
+    "native_ready": true,
+    "quiet_24_hour_job_started": true,
+    "first_collector_started": true,
+    "endurance_accepted": false
+  }
+}

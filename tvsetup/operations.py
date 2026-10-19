@@ -11,7 +11,7 @@ from .staging import clear_verified_stage
 from .artifacts import Builder, verify_package, next_version, manifest_bytes
 from .common import PRIVATE, REPO, Refused, atomic_json, run, sha
 from .planner import CACHE_PATCHED, CACHE_STOCK, EMPTY, cleanup_eligibility, managed_package_ok
-from .transport import CONTEXT_DB, PKG_DB, WAS_DB, TABLES, Q, hash_guard, guard
+from .transport import CONTEXT_DB, PKG_DB, WAS_DB, TABLES, Q, hash_guard, identity_guard, managed_guard
 from .telemetry import DATA, LEGACY_MARKER, LEGACY_RUNTIME, drain, legacy_action, service_ready
 
 
@@ -180,7 +180,7 @@ class Driver:
         script=f"trap 'rm -f {stage}' EXIT\n"+hash_guard(stage,sha(self.control.read_bytes()))
         script+='/usr/bin/dotnet '+Q(stage)+' '+' '.join(map(Q,args))+'\n'
         if root:self.tv.root(script)
-        else:self.tv.sdk(guard(self.profile)+script)
+        else:self.tv.sdk(managed_guard(self.profile)+script)
         if mode=='reload':
             import time
             time.sleep(6) # native context manager's documented debounce
@@ -217,6 +217,8 @@ class Driver:
             path=Path(info['artifact'])
             if sha(path.read_bytes())!=info['sha256']:raise Refused('Prepared package changed')
             verify_package(path,self.profile,action.options['package'])
+            if action.options['package'] in ('MiniHubBoot', 'MiniTelemetry'):
+                self.tv.sdk(managed_guard(self.profile))
             try:output=run([self.builder.cli,'install','-s',self.profile['host']+':26101','-n',path.name,'--',path.parent],timeout=120)
             except Refused as error:
                 (self.folder/(action.id+'-install.log')).write_text(getattr(error,'output',str(error)))
@@ -270,7 +272,7 @@ class Driver:
                 if table not in before:continue
                 expected=sorted([r for r in before[table] if r[index]!=pkg],key=str)
                 if sorted(after[table],key=str)!=expected:raise Refused('Unexpected uninstall scope: '+table)
-            self.tv.sdk(guard(self.profile)+f'test ! -e /opt/usr/apps/{pkg}\ntest ! -e /opt/share/packages/{pkg}.xml\n')
+            self.tv.sdk(identity_guard(self.profile)+f'test ! -e /opt/usr/apps/{pkg}\ntest ! -e /opt/share/packages/{pkg}.xml\n')
 
     def rollback(self,action,info,state):
         current=observed(action,state)
@@ -319,6 +321,8 @@ class Driver:
         else:raise Refused('Unsupported rollback')
 
     def reinstall_recovery(self,action,info):
+        if action.options['package'] in ('MiniHubBoot', 'MiniTelemetry'):
+            self.tv.sdk(managed_guard(self.profile))
         source=Path(info['recovery_package'])
         if sha(source.read_bytes())!=info['recovery_sha256']:raise Refused('Recovery archive changed')
         members,_=verify_package(source,self.profile,action.options['package'])

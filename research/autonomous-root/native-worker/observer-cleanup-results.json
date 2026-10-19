@@ -1,0 +1,98 @@
+{
+  "schema": 1,
+  "date": "2026-10-15",
+  "version": "0.7.36",
+  "source_base_commit": "cfcd0ef",
+  "source_sha256": {
+    "service/observer-recovery.js": "c1004e4bd2e666064466e093471d35dd5c372226a988b52f97b667bb7f2580b1",
+    "service/restart-cleanup.js": "d12a93f10613f46fc55f52fdbbae0e9c9e213c7f7c4c6a94455d9239398fa838",
+    "service/native-api-task.js": "a43a06f6de11f5cf93c13851ff78192c580689ebcf085b9a5c24394551a9dc68",
+    "client.py": "342b19bb27781a990defbfba47ca26347712f69b0aace69bd7d589875683d847"
+  },
+  "scope": "Same-coordinator forward rollback, terminal S90D observer retirement and explicitly bound continuation of uncertain cleanup",
+  "local": {
+    "node_passed": 404,
+    "node_skipped": 142,
+    "python_run": 399,
+    "python_passed": 263,
+    "python_skipped": 136,
+    "fresh_rehearsal_process_cases": 6,
+    "fresh_restart_and_live_process_cases": 18
+  },
+  "devices": {
+    "qn90a": {
+      "committed_entries": 22,
+      "coordinator_unchanged": true,
+      "enrollment_preserved": true,
+      "history_entries": 27,
+      "managed_ready": true,
+      "managed_recovery_unchanged": true,
+      "original_requests_not_replayed": true,
+      "original_requests_not_rewritten_as_success": true,
+      "owned_units_inactive": 9,
+      "package_version": "0.7.36",
+      "pending_setup": false,
+      "phases": [
+        "provider-loss-unpaused"
+      ],
+      "retained_jobs_preserved": true,
+      "rolled_back_entries": 5,
+      "same_boot": true,
+      "sdk_loopback": true,
+      "settled": true,
+      "trial_witness_scopes_removed": true,
+      "all_owned_units_inactive": 15,
+      "bound_cleanup_resume": true,
+      "cleanup_without_maintenance_qualified": true,
+      "original_cleanup_state": "submitted",
+      "resumed_cleanup_state": "completed",
+      "observer_recovery_checkpoint": "not-applicable",
+      "coordinator_unchanged_scope": "Provider loss, automatic rollback/readmission, refused cleanup and bound continuation",
+      "managed_worker_and_capability_bridge_artifacts_unchanged": true
+    },
+    "s90d": {
+      "committed_entries": 22,
+      "coordinator_unchanged": true,
+      "enrollment_preserved": true,
+      "history_entries": 28,
+      "managed_ready": true,
+      "managed_recovery_unchanged": true,
+      "original_requests_not_replayed": true,
+      "original_requests_not_rewritten_as_success": true,
+      "owned_units_inactive": 9,
+      "package_version": "0.7.36",
+      "pending_setup": false,
+      "phases": [
+        "provider-loss-unpaused"
+      ],
+      "retained_jobs_preserved": true,
+      "rolled_back_entries": 6,
+      "same_boot": true,
+      "sdk_loopback": true,
+      "settled": true,
+      "trial_witness_scopes_removed": true,
+      "all_owned_units_inactive": 9,
+      "bound_cleanup_resume": true,
+      "cleanup_without_maintenance_qualified": true,
+      "original_cleanup_state": "submitted",
+      "resumed_cleanup_state": "completed",
+      "observer_recovery_checkpoint": "complete",
+      "coordinator_unchanged_scope": "Provider loss, automatic rollback/readmission, refused cleanup and bound continuation",
+      "managed_worker_and_capability_bridge_artifacts_unchanged": true
+    }
+  },
+  "qualification": [
+    "Both unpaused watchers terminated only a freshly bound provider guardian. Automatic rollback and managed readmission retained the original coordinator PID/start identity.",
+    "An inert uniquely owned file in the recorded execution directory forced cleanup refusal. The fixture removed only that exact file after metadata/hash checks; a fresh request naming the original cleanup and transaction completed reconciliation.",
+    "S90D retained its prepared observer checkpoint after refusal, completed it during the bound continuation, and retired the observer unit, executable and local scope through service code. No separate observer maintenance or coordinator restart was used.",
+    "Original migration and refused cleanup requests remain submitted in the durable journal. Only the continuation is completed.",
+    "Retained jobs, enrollment/configuration, protected files and independent managed recovery hashes matched their baselines. All milestone-owned units are inactive, test witness scopes are absent, and both devices are settled on SDK loopback."
+  ],
+  "limits": [
+    "Lost remote acknowledgement and partial local deletion are covered by local fixtures and real-process container tests; hardware used a deliberate exact-file obstruction instead of transport acknowledgement loss.",
+    "Observer recovery requires same-boot, bound terminal evidence. Missing receipts, unfinished receipt publication, changed entries and active or foreign resources remain refused.",
+    "The unexplained coordinator exit in the earlier paused S90D trial remains unresolved; these trials never paused the coordinator.",
+    "Native-only entry, later production-readiness interruption, broader maintenance/endurance/resource-pressure qualification, native-default rollout and power lifecycle remain separate gates.",
+    "The .NET capability-entry bridge, packaged worker fallback and independent rescue remain available. No reboot, standby or platform-policy change was performed."
+  ]
+}

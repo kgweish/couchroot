@@ -1,0 +1,896 @@
+{
+  "date": "2026-10-13",
+  "prototype_source": "8d8e195",
+  "settled_harness_source": "fb5bcc4",
+  "deployed_agent_version": "0.7.0",
+  "deployed_worker": "dotnet",
+  "rebooted": false,
+  "devices": {
+    "qn90a": {
+      "dotnet": {
+        "startup_ms": {
+          "median": 457.64,
+          "min": 403.616,
+          "max": 588.23,
+          "samples": 8
+        },
+        "startup_cpu_ms": {
+          "median": 366.0,
+          "min": 360.0,
+          "max": 412.0,
+          "samples": 8
+        },
+        "peak_rss_kib": {
+          "median": 25112.0,
+          "min": 22852,
+          "max": 25924,
+          "samples": 8
+        },
+        "ready_memory": {
+          "rss_kib": {
+            "median": 21658.0,
+            "min": 19624,
+            "max": 21684,
+            "samples": 8
+          },
+          "pss_kib": {
+            "median": 8556.0,
+            "min": 6522,
+            "max": 8582,
+            "samples": 8
+          },
+          "private_kib": {
+            "median": 6342.0,
+            "min": 4308,
+            "max": 6368,
+            "samples": 8
+          },
+          "swap_kib": {
+            "median": 0.0,
+            "min": 0,
+            "max": 1868,
+            "samples": 8
+          },
+          "swap_pss_kib": {
+            "median": 0.0,
+            "min": 0,
+            "max": 1868,
+            "samples": 8
+          }
+        },
+        "loaded_memory": {
+          "rss_kib": {
+            "median": 23656.0,
+            "min": 21612,
+            "max": 25040,
+            "samples": 8
+          },
+          "pss_kib": {
+            "median": 9990.0,
+            "min": 7944,
+            "max": 11375,
+            "samples": 8
+          },
+          "private_kib": {
+            "median": 7638.0,
+            "min": 5592,
+            "max": 9024,
+            "samples": 8
+          },
+          "swap_kib": {
+            "median": 1198.0,
+            "min": 0,
+            "max": 2712,
+            "samples": 8
+          },
+          "swap_pss_kib": {
+            "median": 1198.0,
+            "min": 0,
+            "max": 2712,
+            "samples": 8
+          }
+        },
+        "initial_transfer": {
+          "upload_ms": {
+            "median": 379.657,
+            "min": 350.356,
+            "max": 587.868,
+            "samples": 8
+          },
+          "upload_cpu_ms": {
+            "median": 142.0,
+            "min": 124.0,
+            "max": 156.0,
+            "samples": 8
+          },
+          "download_ms": {
+            "median": 94.064,
+            "min": 86.017,
+            "max": 230.012,
+            "samples": 8
+          },
+          "download_cpu_ms": {
+            "median": 56.0,
+            "min": 52.0,
+            "max": 72.0,
+            "samples": 8
+          }
+        },
+        "warm_transfer": {
+          "upload_ms": {
+            "median": 394.233,
+            "min": 378.023,
+            "max": 405.948,
+            "samples": 6
+          },
+          "upload_cpu_ms": {
+            "median": 160.0,
+            "min": 140.0,
+            "max": 180.0,
+            "samples": 6
+          },
+          "download_ms": {
+            "median": 84.296,
+            "min": 80.653,
+            "max": 151.439,
+            "samples": 6
+          },
+          "download_cpu_ms": {
+            "median": 58.0,
+            "min": 52.0,
+            "max": 64.0,
+            "samples": 6
+          }
+        },
+        "settled_memory": {
+          "rss_kib": {
+            "median": 16308.0,
+            "min": 16304,
+            "max": 16312,
+            "samples": 2
+          },
+          "pss_kib": {
+            "median": 2695.0,
+            "min": 2691,
+            "max": 2699,
+            "samples": 2
+          },
+          "private_kib": {
+            "median": 396.0,
+            "min": 392,
+            "max": 400,
+            "samples": 2
+          },
+          "swap_kib": {
+            "median": 7656.0,
+            "min": 7648,
+            "max": 7664,
+            "samples": 2
+          },
+          "swap_pss_kib": {
+            "median": 7656.0,
+            "min": 7648,
+            "max": 7664,
+            "samples": 2
+          }
+        },
+        "idle_20s_cpu_ms": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            12.0,
+            0.0
+          ],
+          [
+            4.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            8.0,
+            0.0
+          ]
+        ],
+        "idle_seconds_2_to_20_cpu_ms": {
+          "median": 10.0,
+          "min": 8.0,
+          "max": 12.0,
+          "samples": 2
+        }
+      },
+      "native": {
+        "startup_ms": {
+          "median": 11.064,
+          "min": 7.822,
+          "max": 12.8,
+          "samples": 8
+        },
+        "startup_cpu_ms": {
+          "median": 8.0,
+          "min": 4.0,
+          "max": 8.0,
+          "samples": 8
+        },
+        "peak_rss_kib": {
+          "median": 2184.0,
+          "min": 2184,
+          "max": 2332,
+          "samples": 8
+        },
+        "ready_memory": {
+          "rss_kib": {
+            "median": 1292.0,
+            "min": 1292,
+            "max": 1292,
+            "samples": 8
+          },
+          "pss_kib": {
+            "median": 327.0,
+            "min": 327,
+            "max": 327,
+            "samples": 8
+          },
+          "private_kib": {
+            "median": 320.0,
+            "min": 320,
+            "max": 320,
+            "samples": 8
+          },
+          "swap_kib": {
+            "median": 0.0,
+            "min": 0,
+            "max": 0,
+            "samples": 8
+          },
+          "swap_pss_kib": {
+            "median": 0.0,
+            "min": 0,
+            "max": 0,
+            "samples": 8
+          }
+        },
+        "loaded_memory": {
+          "rss_kib": {
+            "median": 1220.0,
+            "min": 1220,
+            "max": 1348,
+            "samples": 8
+          },
+          "pss_kib": {
+            "median": 243.0,
+            "min": 243,
+            "max": 371,
+            "samples": 8
+          },
+          "private_kib": {
+            "median": 236.0,
+            "min": 236,
+            "max": 364,
+            "samples": 8
+          },
+          "swap_kib": {
+            "median": 128.0,
+            "min": 0,
+            "max": 128,
+            "samples": 8
+          },
+          "swap_pss_kib": {
+            "median": 128.0,
+            "min": 0,
+            "max": 128,
+            "samples": 8
+          }
+        },
+        "initial_transfer": {
+          "upload_ms": {
+            "median": 394.895,
+            "min": 380.178,
+            "max": 1387.166,
+            "samples": 8
+          },
+          "upload_cpu_ms": {
+            "median": 128.0,
+            "min": 116.0,
+            "max": 140.0,
+            "samples": 8
+          },
+          "download_ms": {
+            "median": 88.141,
+            "min": 86.757,
+            "max": 106.923,
+            "samples": 8
+          },
+          "download_cpu_ms": {
+            "median": 56.0,
+            "min": 56.0,
+            "max": 60.0,
+            "samples": 8
+          }
+        },
+        "warm_transfer": {
+          "upload_ms": {
+            "median": 383.742,
+            "min": 372.694,
+            "max": 1406.28,
+            "samples": 6
+          },
+          "upload_cpu_ms": {
+            "median": 134.0,
+            "min": 116.0,
+            "max": 140.0,
+            "samples": 6
+          },
+          "download_ms": {
+            "median": 87.153,
+            "min": 82.481,
+            "max": 95.4,
+            "samples": 6
+          },
+          "download_cpu_ms": {
+            "median": 56.0,
+            "min": 56.0,
+            "max": 60.0,
+            "samples": 6
+          }
+        },
+        "settled_memory": {
+          "rss_kib": {
+            "median": 1104.0,
+            "min": 988,
+            "max": 1220,
+            "samples": 2
+          },
+          "pss_kib": {
+            "median": 127.0,
+            "min": 11,
+            "max": 243,
+            "samples": 2
+          },
+          "private_kib": {
+            "median": 120.0,
+            "min": 4,
+            "max": 236,
+            "samples": 2
+          },
+          "swap_kib": {
+            "median": 230.0,
+            "min": 128,
+            "max": 332,
+            "samples": 2
+          },
+          "swap_pss_kib": {
+            "median": 230.0,
+            "min": 128,
+            "max": 332,
+            "samples": 2
+          }
+        },
+        "idle_20s_cpu_ms": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "idle_seconds_2_to_20_cpu_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "samples": 2
+        }
+      }
+    },
+    "s90d": {
+      "dotnet": {
+        "startup_ms": {
+          "median": 748.398,
+          "min": 703.717,
+          "max": 871.056,
+          "samples": 8
+        },
+        "startup_cpu_ms": {
+          "median": 704.0,
+          "min": 664.0,
+          "max": 780.0,
+          "samples": 8
+        },
+        "peak_rss_kib": {
+          "median": 28610.0,
+          "min": 25896,
+          "max": 28676,
+          "samples": 8
+        },
+        "ready_memory": {
+          "rss_kib": {
+            "median": 22672.0,
+            "min": 22488,
+            "max": 22680,
+            "samples": 8
+          },
+          "pss_kib": {
+            "median": 8375.0,
+            "min": 8268,
+            "max": 8383,
+            "samples": 8
+          },
+          "private_kib": {
+            "median": 7108.0,
+            "min": 7012,
+            "max": 7116,
+            "samples": 8
+          },
+          "swap_kib": {
+            "median": 0.0,
+            "min": 0,
+            "max": 0,
+            "samples": 8
+          },
+          "swap_pss_kib": {
+            "median": 0.0,
+            "min": 0,
+            "max": 0,
+            "samples": 8
+          }
+        },
+        "loaded_memory": {
+          "rss_kib": {
+            "median": 26676.0,
+            "min": 23940,
+            "max": 26740,
+            "samples": 8
+          },
+          "pss_kib": {
+            "median": 11740.5,
+            "min": 9012,
+            "max": 11812,
+            "samples": 8
+          },
+          "private_kib": {
+            "median": 10372.0,
+            "min": 7640,
+            "max": 10448,
+            "samples": 8
+          },
+          "swap_kib": {
+            "median": 0.0,
+            "min": 0,
+            "max": 1984,
+            "samples": 8
+          },
+          "swap_pss_kib": {
+            "median": 0.0,
+            "min": 0,
+            "max": 1984,
+            "samples": 8
+          }
+        },
+        "initial_transfer": {
+          "upload_ms": {
+            "median": 387.875,
+            "min": 358.244,
+            "max": 1590.288,
+            "samples": 8
+          },
+          "upload_cpu_ms": {
+            "median": 298.0,
+            "min": 260.0,
+            "max": 368.0,
+            "samples": 8
+          },
+          "download_ms": {
+            "median": 120.085,
+            "min": 112.244,
+            "max": 142.94,
+            "samples": 8
+          },
+          "download_cpu_ms": {
+            "median": 90.0,
+            "min": 84.0,
+            "max": 108.0,
+            "samples": 8
+          }
+        },
+        "warm_transfer": {
+          "upload_ms": {
+            "median": 461.321,
+            "min": 354.292,
+            "max": 1681.357,
+            "samples": 6
+          },
+          "upload_cpu_ms": {
+            "median": 342.0,
+            "min": 220.0,
+            "max": 428.0,
+            "samples": 6
+          },
+          "download_ms": {
+            "median": 88.632,
+            "min": 83.468,
+            "max": 100.285,
+            "samples": 6
+          },
+          "download_cpu_ms": {
+            "median": 70.0,
+            "min": 60.0,
+            "max": 84.0,
+            "samples": 6
+          }
+        },
+        "settled_memory": {
+          "rss_kib": {
+            "median": 18180.0,
+            "min": 18148,
+            "max": 18212,
+            "samples": 2
+          },
+          "pss_kib": {
+            "median": 3637.0,
+            "min": 3606,
+            "max": 3668,
+            "samples": 2
+          },
+          "private_kib": {
+            "median": 2298.0,
+            "min": 2268,
+            "max": 2328,
+            "samples": 2
+          },
+          "swap_kib": {
+            "median": 7250.0,
+            "min": 7212,
+            "max": 7288,
+            "samples": 2
+          },
+          "swap_pss_kib": {
+            "median": 7250.0,
+            "min": 7212,
+            "max": 7288,
+            "samples": 2
+          }
+        },
+        "idle_20s_cpu_ms": [
+          [
+            492.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            4.0
+          ],
+          [
+            420.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            8.0
+          ]
+        ],
+        "idle_seconds_2_to_20_cpu_ms": {
+          "median": 6.0,
+          "min": 4.0,
+          "max": 8.0,
+          "samples": 2
+        }
+      },
+      "native": {
+        "startup_ms": {
+          "median": 12.325,
+          "min": 11.328,
+          "max": 12.694,
+          "samples": 8
+        },
+        "startup_cpu_ms": {
+          "median": 8.0,
+          "min": 4.0,
+          "max": 8.0,
+          "samples": 8
+        },
+        "peak_rss_kib": {
+          "median": 2308.0,
+          "min": 2308,
+          "max": 2308,
+          "samples": 8
+        },
+        "ready_memory": {
+          "rss_kib": {
+            "median": 1300.0,
+            "min": 1300,
+            "max": 1300,
+            "samples": 8
+          },
+          "pss_kib": {
+            "median": 336.0,
+            "min": 336,
+            "max": 336,
+            "samples": 8
+          },
+          "private_kib": {
+            "median": 328.0,
+            "min": 328,
+            "max": 328,
+            "samples": 8
+          },
+          "swap_kib": {
+            "median": 0.0,
+            "min": 0,
+            "max": 0,
+            "samples": 8
+          },
+          "swap_pss_kib": {
+            "median": 0.0,
+            "min": 0,
+            "max": 0,
+            "samples": 8
+          }
+        },
+        "loaded_memory": {
+          "rss_kib": {
+            "median": 1356.0,
+            "min": 1220,
+            "max": 1356,
+            "samples": 8
+          },
+          "pss_kib": {
+            "median": 376.0,
+            "min": 240,
+            "max": 376,
+            "samples": 8
+          },
+          "private_kib": {
+            "median": 368.0,
+            "min": 232,
+            "max": 368,
+            "samples": 8
+          },
+          "swap_kib": {
+            "median": 0.0,
+            "min": 0,
+            "max": 136,
+            "samples": 8
+          },
+          "swap_pss_kib": {
+            "median": 0.0,
+            "min": 0,
+            "max": 136,
+            "samples": 8
+          }
+        },
+        "initial_transfer": {
+          "upload_ms": {
+            "median": 395.129,
+            "min": 363.738,
+            "max": 2828.178,
+            "samples": 8
+          },
+          "upload_cpu_ms": {
+            "median": 146.0,
+            "min": 132.0,
+            "max": 288.0,
+            "samples": 8
+          },
+          "download_ms": {
+            "median": 130.885,
+            "min": 103.415,
+            "max": 148.845,
+            "samples": 8
+          },
+          "download_cpu_ms": {
+            "median": 76.0,
+            "min": 52.0,
+            "max": 84.0,
+            "samples": 8
+          }
+        },
+        "warm_transfer": {
+          "upload_ms": {
+            "median": 360.13,
+            "min": 313.211,
+            "max": 2645.351,
+            "samples": 6
+          },
+          "upload_cpu_ms": {
+            "median": 134.0,
+            "min": 92.0,
+            "max": 256.0,
+            "samples": 6
+          },
+          "download_ms": {
+            "median": 83.489,
+            "min": 78.443,
+            "max": 91.869,
+            "samples": 6
+          },
+          "download_cpu_ms": {
+            "median": 50.0,
+            "min": 44.0,
+            "max": 52.0,
+            "samples": 6
+          }
+        },
+        "settled_memory": {
+          "rss_kib": {
+            "median": 992.0,
+            "min": 992,
+            "max": 992,
+            "samples": 2
+          },
+          "pss_kib": {
+            "median": 12.0,
+            "min": 12,
+            "max": 12,
+            "samples": 2
+          },
+          "private_kib": {
+            "median": 4.0,
+            "min": 4,
+            "max": 4,
+            "samples": 2
+          },
+          "swap_kib": {
+            "median": 336.0,
+            "min": 336,
+            "max": 336,
+            "samples": 2
+          },
+          "swap_pss_kib": {
+            "median": 336.0,
+            "min": 336,
+            "max": 336,
+            "samples": 2
+          }
+        },
+        "idle_20s_cpu_ms": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "idle_seconds_2_to_20_cpu_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "samples": 2
+        }
+      }
+    }
+  },
+  "native_worker_bytes": 37788,
+  "native_worker_sha256": "df175894ce6ae0a5c25000123c5d6152857f030f71ed2fb0e85232c6c1d1d967"
+}

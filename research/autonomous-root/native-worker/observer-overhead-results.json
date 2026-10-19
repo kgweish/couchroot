@@ -1,0 +1,364 @@
+{
+  "schema": 1,
+  "date": "2026-10-16",
+  "scope": "Paired 20-second idle observer comparison plus a fresh integrated acquisition/public HTTPS/managed-return round per TV",
+  "package_version": "0.7.46",
+  "baseline_observer_source_commit": "125cacb",
+  "baseline_observer_sha256": "d74c3c17323a0a09210522fa2364c54541c7ec09c798c0eae71f6585db422c22",
+  "observer_sha256": "a298920bf9530e1b413df958e3b83614708a55f8e8f3b5f4fde60853965c3c5d",
+  "toolchain_image": "sha256:8d04ca4a4d08ce5a17ffb904b6c5a7742f51e885506f2e3215b8e2db7659a3c4",
+  "reproducible_builds": 2,
+  "source_sha256": {
+    "research/autonomous-root/native-worker/observe.c": "597f8d9499c6695abaeeff6f1774f748abf3891b113d179b416ae528c1d50792",
+    "research/autonomous-root/native-worker/observe-process.h": "21710c2cf82b59b6567feaf47416e56ec5bf1e98608a90a80b2ceefa61ad395c",
+    "tests/native_observer_test.py": "5b73e4ccef961935233f9e59e0f02fda529d4c2e9269609f8ac2c6171159f52b"
+  },
+  "local_tests": {
+    "observer": 13,
+    "kernel_capture": 9,
+    "npm_passed": 414,
+    "npm_skipped": 157
+  },
+  "devices": {
+    "qn90a": {
+      "order": [
+        "baseline",
+        "reduced"
+      ],
+      "idle": {
+        "baseline": {
+          "samples": 20,
+          "detailed_observer_samples": 20,
+          "interval_ms": 1000,
+          "cpu_delta_ms": 1636.0,
+          "cpu_observation_ms": 18988.796,
+          "cpu_percent_one_core": 8.616,
+          "max_sampled_pss_plus_swap_kib": 10526,
+          "max_sample_duration_ms": 101.595,
+          "max_sample_gap_ms": 1000.769,
+          "skipped_intervals": 0,
+          "recorded_resource_bytes": 30793,
+          "kernel_records": 103,
+          "kernel_bytes": 8512,
+          "kernel_complete": true,
+          "all_read_fields_valid": true
+        },
+        "reduced": {
+          "samples": 20,
+          "detailed_observer_samples": 4,
+          "interval_ms": 1000,
+          "cpu_delta_ms": 540.0,
+          "cpu_observation_ms": 18991.724,
+          "cpu_percent_one_core": 2.843,
+          "max_sampled_pss_plus_swap_kib": 2354,
+          "max_sample_duration_ms": 63.731,
+          "max_sample_gap_ms": 1000.685,
+          "skipped_intervals": 0,
+          "recorded_resource_bytes": 32563,
+          "kernel_records": 90,
+          "kernel_bytes": 7296,
+          "kernel_complete": true,
+          "all_read_fields_valid": true
+        }
+      },
+      "cpu_rate_reduction_percent": 66.998,
+      "sampled_pss_plus_swap_reduction_percent": 77.636,
+      "integrated": {
+        "samples": 40,
+        "detailed_observer_samples": 8,
+        "interval_ms": 1000,
+        "cpu_delta_ms": 1208.0,
+        "cpu_observation_ms": 38990.083,
+        "cpu_percent_one_core": 3.098,
+        "max_sampled_pss_plus_swap_kib": 2467,
+        "max_sample_duration_ms": 113.779,
+        "max_sample_gap_ms": 1000.805,
+        "skipped_intervals": 0,
+        "recorded_resource_bytes": 78941,
+        "kernel_records": 332,
+        "kernel_bytes": 29709,
+        "kernel_complete": true,
+        "all_read_fields_valid": true
+      },
+      "native_identity_bound_resources": {
+        "guardian": {
+          "samples": 12,
+          "memory_detail_samples": 3,
+          "max_sampled_pss_kib": 325,
+          "max_resident_pages": 294
+        },
+        "worker": {
+          "samples": 11,
+          "memory_detail_samples": 3,
+          "max_sampled_pss_kib": 361,
+          "max_resident_pages": 485
+        }
+      },
+      "acquisition_ms": {
+        "disable_enable_ready_ms": 1574.435,
+        "enable_ready_ms": 1455.643,
+        "poll_interval_ms": 200
+      },
+      "migration_ms": 5599.823,
+      "return_ms": 14597.185,
+      "public_phases": {
+        "managed-public": {
+          "jobs": [
+            {
+              "admission_ms": 155.110959,
+              "observed_completion_ms": 205.429667,
+              "profile": "root",
+              "through_forget_ms": 385.114625
+            },
+            {
+              "admission_ms": 153.917125,
+              "observed_completion_ms": 205.809375,
+              "profile": "app",
+              "through_forget_ms": 378.012542
+            },
+            {
+              "admission_ms": 152.019083,
+              "observed_completion_ms": 212.229666,
+              "profile": "root",
+              "through_forget_ms": 416.812833
+            },
+            {
+              "admission_ms": 156.3655,
+              "observed_completion_ms": 226.997791,
+              "profile": "app",
+              "through_forget_ms": 430.075166
+            }
+          ],
+          "transfer": {
+            "bytes": 8677890,
+            "download_ms": 2813.806167,
+            "upload_ms": 2323.418958
+          },
+          "measurement_scope": "Host end-to-end including durable client intent/result writes, fresh TLS for job RPCs, 200 ms completion polling, and local transfer checksum/fsync; transfer chunks use keep-alive"
+        },
+        "native-public": {
+          "jobs": [
+            {
+              "admission_ms": 150.4495,
+              "observed_completion_ms": 212.131541,
+              "profile": "root",
+              "through_forget_ms": 396.892583
+            },
+            {
+              "admission_ms": 122.192625,
+              "observed_completion_ms": 176.913459,
+              "profile": "app",
+              "through_forget_ms": 373.572959
+            },
+            {
+              "admission_ms": 117.198542,
+              "observed_completion_ms": 164.551167,
+              "profile": "root",
+              "through_forget_ms": 340.879667
+            },
+            {
+              "admission_ms": 117.315083,
+              "observed_completion_ms": 166.680125,
+              "profile": "app",
+              "through_forget_ms": 337.045458
+            }
+          ],
+          "transfer": {
+            "bytes": 8677890,
+            "download_ms": 2822.401708,
+            "upload_ms": 2295.457083
+          },
+          "measurement_scope": "Host end-to-end including durable client intent/result writes, fresh TLS for job RPCs, 200 ms completion polling, and local transfer checksum/fsync; transfer chunks use keep-alive"
+        }
+      },
+      "preservation": {
+        "idle_same_boot_worker_coordinator_and_history": true,
+        "integrated_same_boot_coordinator": true,
+        "retained_jobs_preserved": true,
+        "managed_ready_after_return": true,
+        "owned_scopes_and_mounts_absent": true,
+        "enrollment_and_protected_hashes_preserved": true,
+        "sdk_loopback": true,
+        "rescues_inactive_and_unfired": true
+      }
+    },
+    "s90d": {
+      "order": [
+        "reduced",
+        "baseline"
+      ],
+      "idle": {
+        "baseline": {
+          "samples": 20,
+          "detailed_observer_samples": 20,
+          "interval_ms": 1000,
+          "cpu_delta_ms": 2488.0,
+          "cpu_observation_ms": 18983.338,
+          "cpu_percent_one_core": 13.106,
+          "max_sampled_pss_plus_swap_kib": 10545,
+          "max_sample_duration_ms": 158.459,
+          "max_sample_gap_ms": 1000.85,
+          "skipped_intervals": 0,
+          "recorded_resource_bytes": 31176,
+          "kernel_records": 123,
+          "kernel_bytes": 11821,
+          "kernel_complete": true,
+          "all_read_fields_valid": true
+        },
+        "reduced": {
+          "samples": 20,
+          "detailed_observer_samples": 4,
+          "interval_ms": 1000,
+          "cpu_delta_ms": 872.0,
+          "cpu_observation_ms": 18984.132,
+          "cpu_percent_one_core": 4.593,
+          "max_sampled_pss_plus_swap_kib": 2369,
+          "max_sample_duration_ms": 105.222,
+          "max_sample_gap_ms": 1000.666,
+          "skipped_intervals": 0,
+          "recorded_resource_bytes": 32838,
+          "kernel_records": 102,
+          "kernel_bytes": 9382,
+          "kernel_complete": true,
+          "all_read_fields_valid": true
+        }
+      },
+      "cpu_rate_reduction_percent": 64.953,
+      "sampled_pss_plus_swap_reduction_percent": 77.534,
+      "integrated": {
+        "samples": 52,
+        "detailed_observer_samples": 11,
+        "interval_ms": 1000,
+        "cpu_delta_ms": 2316.0,
+        "cpu_observation_ms": 50984.605,
+        "cpu_percent_one_core": 4.543,
+        "max_sampled_pss_plus_swap_kib": 2503,
+        "max_sample_duration_ms": 155.345,
+        "max_sample_gap_ms": 1001.124,
+        "skipped_intervals": 0,
+        "recorded_resource_bytes": 104027,
+        "kernel_records": 402,
+        "kernel_bytes": 38959,
+        "kernel_complete": true,
+        "all_read_fields_valid": true
+      },
+      "native_identity_bound_resources": {
+        "guardian": {
+          "samples": 15,
+          "memory_detail_samples": 4,
+          "max_sampled_pss_kib": 245,
+          "max_resident_pages": 295
+        },
+        "worker": {
+          "samples": 15,
+          "memory_detail_samples": 4,
+          "max_sampled_pss_kib": 399,
+          "max_resident_pages": 413
+        }
+      },
+      "acquisition_ms": {
+        "disable_enable_ready_ms": 2709.644,
+        "enable_ready_ms": 2586.942,
+        "poll_interval_ms": 200
+      },
+      "migration_ms": 8215.247,
+      "return_ms": 21085.309,
+      "public_phases": {
+        "managed-public": {
+          "jobs": [
+            {
+              "admission_ms": 194.077833,
+              "observed_completion_ms": 270.044792,
+              "profile": "root",
+              "through_forget_ms": 509.319083
+            },
+            {
+              "admission_ms": 174.472,
+              "observed_completion_ms": 253.890667,
+              "profile": "app",
+              "through_forget_ms": 445.535667
+            },
+            {
+              "admission_ms": 222.366542,
+              "observed_completion_ms": 295.707292,
+              "profile": "root",
+              "through_forget_ms": 531.886667
+            },
+            {
+              "admission_ms": 197.535167,
+              "observed_completion_ms": 285.759084,
+              "profile": "app",
+              "through_forget_ms": 518.331334
+            }
+          ],
+          "transfer": {
+            "bytes": 8677890,
+            "download_ms": 2771.562583,
+            "upload_ms": 3545.407958
+          },
+          "measurement_scope": "Host end-to-end including durable client intent/result writes, fresh TLS for job RPCs, 200 ms completion polling, and local transfer checksum/fsync; transfer chunks use keep-alive"
+        },
+        "native-public": {
+          "jobs": [
+            {
+              "admission_ms": 166.796833,
+              "observed_completion_ms": 216.695875,
+              "profile": "root",
+              "through_forget_ms": 406.095833
+            },
+            {
+              "admission_ms": 151.756958,
+              "observed_completion_ms": 207.906458,
+              "profile": "app",
+              "through_forget_ms": 439.320167
+            },
+            {
+              "admission_ms": 160.1115,
+              "observed_completion_ms": 215.252167,
+              "profile": "root",
+              "through_forget_ms": 420.944792
+            },
+            {
+              "admission_ms": 166.621917,
+              "observed_completion_ms": 226.717375,
+              "profile": "app",
+              "through_forget_ms": 453.430542
+            }
+          ],
+          "transfer": {
+            "bytes": 8677890,
+            "download_ms": 1317.818375,
+            "upload_ms": 3153.788333
+          },
+          "measurement_scope": "Host end-to-end including durable client intent/result writes, fresh TLS for job RPCs, 200 ms completion polling, and local transfer checksum/fsync; transfer chunks use keep-alive"
+        }
+      },
+      "preservation": {
+        "idle_same_boot_worker_coordinator_and_history": true,
+        "integrated_same_boot_coordinator": true,
+        "retained_jobs_preserved": true,
+        "managed_ready_after_return": true,
+        "owned_scopes_and_mounts_absent": true,
+        "enrollment_and_protected_hashes_preserved": true,
+        "sdk_loopback": true,
+        "rescues_inactive_and_unfired": true
+      }
+    }
+  },
+  "service_latency_findings": [
+    "api.js journals job.start before dispatch and journals completion before replying. Each Journal.save performs file sync, rename and directory sync; a successful journaled operation therefore has two service publications in addition to worker persistence. No barrier was removed.",
+    "The preceding S90D native root outlier spent 1138.673 ms inside its HTTPS request versus 1141.376 ms in the outer harness measurement; local journal writes explain only about 2.703 ms of that sample, not its one-second delay.",
+    "The preceding managed app forget outlier spent 1547.874 ms in its HTTPS RPC. Existing timing cannot partition TLS/network, coordinator journal begin, worker execution and journal finish.",
+    "The earlier S90D preflight had 638 request rows and its integrated harness traced 101 journaled requests. Those observations do not point to the 1000-row archive threshold as the cause; phase timing is still needed rather than inferring a storage mechanism.",
+    "Native saved job timestamps have whole-second precision, which is too coarse to resolve the required subintervals. The next implementation step is authenticated server-side phase timing around journal begin, worker execution and journal finish, preserving request semantics and persistence barriers."
+  ],
+  "limits": [
+    "One counterbalanced pair of 20-second idle runs per TV is a bounded comparison, not a statistical overhead distribution. CPU deltas cover the first-to-last sample interval and exclude observer launch/persistence.",
+    "PSS plus Swap is a sampled accounting proxy, not exact physical memory ownership. Baseline has twenty mapping observations; the reduced observer has four. Resident pages and lifetime peak RSS remain sampled every tick.",
+    "Mapping details are now sampled every fifth tick and on each new PID/start/executable identity. Null fast-row fields are intentionally unsampled; do not carry forward stale detail values. Short mapping peaks may be missed.",
+    "The full 8 MiB resource capacity remains reserved, but only populated pages are dirtied. Page faults during buffer growth are included in observer cost. Kernel collection retains its 2 MiB prefaulted buffer.",
+    "The first intermediate paired comparison, before discovery filtering, reduced CPU by roughly 30 percent and is retained privately. Reported final binaries also skip unrelated proc stat/cmdline reads.",
+    "The fresh integrated rounds did not reproduce one-second admissions; that does not resolve previous outliers or close the no-regression gate. The observer still has nonzero CPU, memory and scheduling effects.",
+    "Installed worker/service bytes and .NET bridge/fallback/recovery are unchanged. No reboot, standby, global policy, persistent capability or SMACK change was issued. Endurance, native-only entry and native-default observation remain open."
+  ]
+}

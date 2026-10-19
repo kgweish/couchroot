@@ -2,8 +2,16 @@
 const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const hash=data=>crypto.createHash('sha256').update(data).digest('hex');
 function read(file,limit=65536){const stat=fs.lstatSync(file);if(!stat.isFile()||stat.isSymbolicLink()||stat.size>limit)throw Error('Invalid configuration file');return fs.readFileSync(file);}
-function atomic(file,value){const tmp=file+'.new-'+crypto.randomBytes(8).toString('hex');const fd=fs.openSync(tmp,'wx',0o600);try{fs.writeFileSync(fd,JSON.stringify(value));fs.fsyncSync(fd);}finally{fs.closeSync(fd);}fs.renameSync(tmp,file);const parent=fs.openSync(path.dirname(file),'r');try{fs.fsyncSync(parent);}finally{fs.closeSync(parent);}}
+// Optional request-local sync accounting. The same synchronous durability barrier
+// runs exactly once; even a thrown sync is timed without changing its outcome.
+function sync(fd,timing,kind){
+ if(!timing)return fs.fsyncSync(fd);
+ const start=process.hrtime();
+ try{return fs.fsyncSync(fd);}finally{const d=process.hrtime(start),v=timing[kind]||(timing[kind]={ms:0,calls:0});v.ms+=d[0]*1000+d[1]/1e6;v.calls++;}
+}
+function atomic(file,value,timing){const tmp=file+'.new-'+crypto.randomBytes(8).toString('hex');const fd=fs.openSync(tmp,'wx',0o600);try{fs.writeFileSync(fd,JSON.stringify(value));sync(fd,timing,'file_sync');}finally{fs.closeSync(fd);}fs.renameSync(tmp,file);const parent=fs.openSync(path.dirname(file),'r');try{sync(parent,timing,'directory_sync');}finally{fs.closeSync(parent);}}
 function config(data){
+ if(data&&data.service_acquisition!==undefined&&!['managed','native'].includes(data.service_acquisition))throw Error('Invalid service acquisition selection');
  if(data&&data.boot_launcher!==undefined&&(typeof data.boot_launcher!=='boolean'||(data.boot_launcher&&data.device!=='qn90a')))throw Error('Boot launcher is QN90A-only');
  if(!data||data.schema!==1||!['qn90a','s90d'].includes(data.device)||typeof data.enabled!=='boolean'||!Number.isInteger(data.port)||data.port<1024||data.port>65535)throw Error('Invalid agent configuration');
  if(!/^[a-f0-9]{64}$/.test(data.client_sha256)||!data.firmware||!data.hashes||!Object.keys(data.hashes).length)throw Error('Missing identity guards');
@@ -55,8 +63,8 @@ class Journal{
  present(file){try{fs.lstatSync(file);return true;}catch(e){if(e.code==='ENOENT')return false;throw e;}}
  checkArchiveDir(){const s=fs.lstatSync(this.archiveDir);if(!s.isDirectory()||s.isSymbolicLink())throw Error('Invalid journal archive directory');}
  digest(){return hash(JSON.stringify(this.rows));}
- save(rows){try{atomic(this.file,rows);this.rows=rows;}catch(e){this.failed=true;throw e;}}
- archive(expected){
+ save(rows,timing){try{atomic(this.file,rows,timing);this.rows=rows;}catch(e){this.failed=true;throw e;}}
+ archive(expected,timing){
   if(this.failed)throw Error('Journal storage failed; restart after diagnosis');
   if(expected!==undefined&&expected!==this.digest())throw Error('Journal changed; inspect before archiving');
   const completed=this.rows.filter(r=>r.state==='completed'),recent=new Set(completed.slice(-100).map(r=>r.id));
@@ -66,25 +74,25 @@ class Journal{
   try{
    try{fs.mkdirSync(this.archiveDir,0o700);}catch(e){if(e.code!=='EEXIST')throw e;}this.checkArchiveDir();
    if(this.present(destination)){if(!read(destination,262144).equals(bytes))throw Error('Journal archive conflict');}
-   else atomic(destination,this.rows);
+   else atomic(destination,this.rows,timing);
    // Commit the complete immutable archive before reducing the active file.
-   const parent=fs.openSync(path.dirname(this.archiveDir),'r');try{fs.fsyncSync(parent);}finally{fs.closeSync(parent);}
+   const parent=fs.openSync(path.dirname(this.archiveDir),'r');try{sync(parent,timing,'directory_sync');}finally{fs.closeSync(parent);}
    if(!read(destination,262144).equals(bytes))throw Error('Journal archive verification failed');
-   const removed=this.rows.length-retained.length;this.save(retained);
+   const removed=this.rows.length-retained.length;this.save(retained,timing);
    return {archived_entries:removed,retained_entries:retained.length,archive_sha256:digest,sha256:this.digest()};
   }catch(e){this.failed=true;throw e;}
  }
- begin(v){
+ begin(v,timing){
   validateRequest(v);if(this.failed)throw Error('Journal storage failed; restart after diagnosis');
   if(this.seen.has(v.id))throw Error('Request already submitted; inspect outcome, do not replay');
-  if(this.rows.length>=1000)this.archive();
+  if(this.rows.length>=1000)this.archive(undefined,timing);
   if(this.rows.length>=1000)throw Error('Command journal full of unfinished requests; inspect outcomes');
-  this.save(this.rows.concat([{id:v.id,sha256:hash(v.command),state:'submitted',at:Date.now()}]));this.seen.set(v.id,hash(v.command));
+  this.save(this.rows.concat([{id:v.id,sha256:hash(v.command),state:'submitted',at:Date.now()}]),timing);this.seen.set(v.id,hash(v.command));
  }
- finish(id,result){
+ finish(id,result,timing){
   if(this.failed)throw Error('Journal storage failed; restart after diagnosis');
   if(!this.rows.some(r=>r.id===id&&r.state==='submitted'))throw Error('Unknown pending request');
-  this.save(this.rows.map(r=>r.id===id?Object.assign({},r,{state:'completed',exit_code:result.exit_code,timed_out:result.timed_out}):r));
+  this.save(this.rows.map(r=>r.id===id?Object.assign({},r,{state:'completed',exit_code:result.exit_code,timed_out:result.timed_out}):r),timing);
  }
 }
 module.exports={read,atomic,hash,config,verifyFirmware,sdkRuntimeGuard,validateRequest,Journal};
@@ -106,7 +114,8 @@ function createBootLaunch(agent,enabled){
  let state=enabled?'waiting-agent':'disabled',busy=false,started=false;
  async function tick(){
   if(busy||!enabled||!['waiting-agent','waiting-foreground'].includes(state))return;
-  if(!agent.status().connected)return;
+  const readiness=agent.status();
+  if(!readiness.connected||readiness.worker_ready===false)return;
   busy=true;
   try{
    const r=await agent.execute(wire(script('inspect')),5000);

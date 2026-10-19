@@ -1,0 +1,387 @@
+{
+  "schema": 1,
+  "date": "2026-10-16",
+  "source_base_commit": "f1a63d2",
+  "package_version": "0.7.45",
+  "scope": "Read-only fsync timing interposer in disposable comparison processes; installed service unchanged",
+  "diagnostic_runtime": true,
+  "production_worker_modified": false,
+  "local": {
+    "focused_interposer_cases_passed": 1,
+    "node_passed": 414,
+    "node_skipped": 157,
+    "reproducible_interposer_builds": 2
+  },
+  "artifacts": {
+    "image": "sha256:8d04ca4a4d08ce5a17ffb904b6c5a7742f51e885506f2e3215b8e2db7659a3c4",
+    "timing_sha256": "1b280810ff46ee7e85024c966705b7dff449dbaddfb76df2239129fd73419cec",
+    "source_sha256": "7a143f3e73d95f41d01dc0cc54d8ca6b299ba6a7893ad4fdd73b392194d9820c",
+    "bench_sha256": "933ff1a5ef9d0dc0369213ffd936f82563cb1754cdefb81a8a6298e429ceae1b"
+  },
+  "devices": {
+    "qn90a": {
+      "ordinary_worker_sha256": "210f8fb0f19c3647eabfcb518ac63f9126a1c580ee68098bb245d348663a7f89",
+      "analysis": {
+        "job_samples": [
+          {
+            "round": 0,
+            "profile": "root",
+            "admission_ms": 167.106,
+            "observed_completion_ms": 259.414,
+            "admission_sync_ms": 162.875,
+            "through_terminal_sync_ms": 239.022,
+            "admission_sync_fraction": 0.975,
+            "completion_sync_fraction": 0.921,
+            "sync_ms": [
+              49.971,
+              35.789,
+              39.315,
+              37.8,
+              38.306,
+              37.841,
+              33.869
+            ]
+          },
+          {
+            "round": 0,
+            "profile": "app",
+            "admission_ms": 150.578,
+            "observed_completion_ms": 242.142,
+            "admission_sync_ms": 146.204,
+            "through_terminal_sync_ms": 220.718,
+            "admission_sync_fraction": 0.971,
+            "completion_sync_fraction": 0.912,
+            "sync_ms": [
+              37.719,
+              37.383,
+              34.902,
+              36.2,
+              37.419,
+              37.095,
+              39.562
+            ]
+          },
+          {
+            "round": 1,
+            "profile": "root",
+            "admission_ms": 162.457,
+            "observed_completion_ms": 252.346,
+            "admission_sync_ms": 157.736,
+            "through_terminal_sync_ms": 232.125,
+            "admission_sync_fraction": 0.971,
+            "completion_sync_fraction": 0.92,
+            "sync_ms": [
+              50.678,
+              34.514,
+              35.374,
+              37.17,
+              35.429,
+              38.96,
+              39.193
+            ]
+          },
+          {
+            "round": 1,
+            "profile": "app",
+            "admission_ms": 158.276,
+            "observed_completion_ms": 244.35,
+            "admission_sync_ms": 153.278,
+            "through_terminal_sync_ms": 222.18,
+            "admission_sync_fraction": 0.968,
+            "completion_sync_fraction": 0.909,
+            "sync_ms": [
+              35.787,
+              35.474,
+              38.606,
+              43.411,
+              34.104,
+              34.798,
+              39.422
+            ]
+          },
+          {
+            "round": 2,
+            "profile": "root",
+            "admission_ms": 168.059,
+            "observed_completion_ms": 257.49,
+            "admission_sync_ms": 162.692,
+            "through_terminal_sync_ms": 236.439,
+            "admission_sync_fraction": 0.968,
+            "completion_sync_fraction": 0.918,
+            "sync_ms": [
+              51.338,
+              33.077,
+              37.944,
+              40.333,
+              35.091,
+              38.656,
+              36.658
+            ]
+          },
+          {
+            "round": 2,
+            "profile": "app",
+            "admission_ms": 146.682,
+            "observed_completion_ms": 238.558,
+            "admission_sync_ms": 141.733,
+            "through_terminal_sync_ms": 215.973,
+            "admission_sync_fraction": 0.966,
+            "completion_sync_fraction": 0.905,
+            "sync_ms": [
+              36.826,
+              34.403,
+              35.067,
+              35.437,
+              36.285,
+              37.955,
+              38.02
+            ]
+          },
+          {
+            "round": 3,
+            "profile": "root",
+            "admission_ms": 164.48,
+            "observed_completion_ms": 251.568,
+            "admission_sync_ms": 158.435,
+            "through_terminal_sync_ms": 230.4,
+            "admission_sync_fraction": 0.963,
+            "completion_sync_fraction": 0.916,
+            "sync_ms": [
+              49.13,
+              32.657,
+              39.628,
+              37.02,
+              35.882,
+              36.083,
+              43.107
+            ]
+          },
+          {
+            "round": 3,
+            "profile": "app",
+            "admission_ms": 178.034,
+            "observed_completion_ms": 267.113,
+            "admission_sync_ms": 173.732,
+            "through_terminal_sync_ms": 245.509,
+            "admission_sync_fraction": 0.976,
+            "completion_sync_fraction": 0.919,
+            "sync_ms": [
+              36.501,
+              36.56,
+              33.491,
+              67.18,
+              34.343,
+              37.434,
+              36.665
+            ]
+          }
+        ],
+        "all_job_sync_calls": 56,
+        "median_admission_sync_fraction": 0.97,
+        "median_completion_sync_fraction": 0.917,
+        "maximum_job_sync_ms": 67.18
+      },
+      "preservation": {
+        "managed_worker_unchanged": true,
+        "history_unchanged": true,
+        "retained_jobs_preserved": true,
+        "same_boot": true,
+        "sdk_loopback": true,
+        "rescue_inactive": true,
+        "rescue_fired": false,
+        "scope_removed": true,
+        "helpers_released": true,
+        "enrollment_and_protected_hashes_preserved": true
+      },
+      "native_helper_runtime_and_freezer_absent": true
+    },
+    "s90d": {
+      "ordinary_worker_sha256": "210f8fb0f19c3647eabfcb518ac63f9126a1c580ee68098bb245d348663a7f89",
+      "analysis": {
+        "job_samples": [
+          {
+            "round": 0,
+            "profile": "root",
+            "admission_ms": 62.525,
+            "observed_completion_ms": 103.861,
+            "admission_sync_ms": 55.285,
+            "through_terminal_sync_ms": 76.718,
+            "admission_sync_fraction": 0.884,
+            "completion_sync_fraction": 0.739,
+            "sync_ms": [
+              22.25,
+              7.327,
+              12.486,
+              13.222,
+              12.622,
+              8.811,
+              11.102
+            ]
+          },
+          {
+            "round": 0,
+            "profile": "app",
+            "admission_ms": 53.627,
+            "observed_completion_ms": 100.524,
+            "admission_sync_ms": 44.572,
+            "through_terminal_sync_ms": 67.609,
+            "admission_sync_fraction": 0.831,
+            "completion_sync_fraction": 0.673,
+            "sync_ms": [
+              12.477,
+              9.056,
+              12.114,
+              10.925,
+              11.719,
+              11.318,
+              12.671
+            ]
+          },
+          {
+            "round": 1,
+            "profile": "root",
+            "admission_ms": 66.017,
+            "observed_completion_ms": 107.408,
+            "admission_sync_ms": 58.139,
+            "through_terminal_sync_ms": 80.617,
+            "admission_sync_fraction": 0.881,
+            "completion_sync_fraction": 0.751,
+            "sync_ms": [
+              26.077,
+              9.001,
+              11.948,
+              11.113,
+              11.163,
+              11.315,
+              10.973
+            ]
+          },
+          {
+            "round": 1,
+            "profile": "app",
+            "admission_ms": 53.367,
+            "observed_completion_ms": 102.749,
+            "admission_sync_ms": 44.765,
+            "through_terminal_sync_ms": 70.053,
+            "admission_sync_fraction": 0.839,
+            "completion_sync_fraction": 0.682,
+            "sync_ms": [
+              14.942,
+              11.2,
+              9.709,
+              8.914,
+              13.527,
+              11.761,
+              12.409
+            ]
+          },
+          {
+            "round": 2,
+            "profile": "root",
+            "admission_ms": 58.633,
+            "observed_completion_ms": 102.431,
+            "admission_sync_ms": 51.837,
+            "through_terminal_sync_ms": 75.625,
+            "admission_sync_fraction": 0.884,
+            "completion_sync_fraction": 0.738,
+            "sync_ms": [
+              21.498,
+              10.587,
+              10.02,
+              9.732,
+              11.566,
+              12.222,
+              11.975
+            ]
+          },
+          {
+            "round": 2,
+            "profile": "app",
+            "admission_ms": 48.526,
+            "observed_completion_ms": 91.033,
+            "admission_sync_ms": 40.499,
+            "through_terminal_sync_ms": 59.147,
+            "admission_sync_fraction": 0.835,
+            "completion_sync_fraction": 0.65,
+            "sync_ms": [
+              9.691,
+              6.891,
+              12.812,
+              11.105,
+              9.992,
+              8.656,
+              7.784
+            ]
+          },
+          {
+            "round": 3,
+            "profile": "root",
+            "admission_ms": 83.357,
+            "observed_completion_ms": 121.396,
+            "admission_sync_ms": 73.689,
+            "through_terminal_sync_ms": 90.637,
+            "admission_sync_fraction": 0.884,
+            "completion_sync_fraction": 0.747,
+            "sync_ms": [
+              39.418,
+              7.579,
+              11.868,
+              14.824,
+              9.436,
+              7.512,
+              11.116
+            ]
+          },
+          {
+            "round": 3,
+            "profile": "app",
+            "admission_ms": 52.716,
+            "observed_completion_ms": 104.794,
+            "admission_sync_ms": 44.442,
+            "through_terminal_sync_ms": 70.788,
+            "admission_sync_fraction": 0.843,
+            "completion_sync_fraction": 0.675,
+            "sync_ms": [
+              11.687,
+              9.886,
+              10.96,
+              11.909,
+              11.861,
+              14.485,
+              13.335
+            ]
+          }
+        ],
+        "all_job_sync_calls": 56,
+        "median_admission_sync_fraction": 0.862,
+        "median_completion_sync_fraction": 0.71,
+        "maximum_job_sync_ms": 39.418
+      },
+      "preservation": {
+        "managed_worker_unchanged": true,
+        "history_unchanged": true,
+        "retained_jobs_preserved": true,
+        "same_boot": true,
+        "sdk_loopback": true,
+        "rescue_inactive": true,
+        "rescue_fired": false,
+        "scope_removed": true,
+        "helpers_released": true,
+        "enrollment_and_protected_hashes_preserved": true
+      },
+      "native_helper_runtime_and_freezer_absent": true
+    }
+  },
+  "invariants": [
+    "The interposer calls the original fsync exactly once and returns its result with the original errno. It emits timing only for paths in the private .jobs scope.",
+    "The collector validates the ordered seven-call sequence per job: initial file+directory, running file+directory, terminal file+directory, forget directory. All 56 measured job sync calls per TV succeeded.",
+    "The same ordinary signed native worker bytes and installed managed DLL were used; the timing library was loaded only in disposable diagnostic process trees. No failure injection or persistence-policy change occurred."
+  ],
+  "limits": [
+    "Diagnostic preload and log writes perturb scheduling. These are attribution observations, not replacement ordinary-build performance numbers.",
+    "Eight jobs per TV cannot establish stable tails. The earlier ordinary S90D one-second sample remains evidence and cannot be discarded by a later pass.",
+    "The trace observes elapsed fsync duration but does not identify the storage or kernel mechanism responsible for that duration.",
+    "No sync was removed, no persistence guarantee changed, and no performance release gate is declared passed.",
+    "Full acquisition/public-path performance, continuous kernel/resource evidence, 24-hour endurance, power-lifecycle qualification and native-only entry remain open."
+  ]
+}

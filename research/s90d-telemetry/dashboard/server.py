@@ -62,7 +62,8 @@ def snapshot(seconds,identity='s90d'):
         charts={name:future.result() for name,future in futures.items()}
         overview=[dict(id=id,name=d['name'],latest=latest(d)) for id,d in inventory.items()]
         sample=next(d['latest'] for d in overview if d['id']==identity)
-        inspector=sample.get('inspector') if sample else None
+        # Device policy also hides snapshots saved by older receiver versions.
+        inspector=sample.get('inspector') if sample and identity != 'qn90a' else None
         for entry in overview:
             if entry['latest']:entry['latest'].pop('inspector',None)
         # Current values come from this exact snapshot, never a previous boot's history bucket.

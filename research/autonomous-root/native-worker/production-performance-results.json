@@ -1,0 +1,1063 @@
+{
+  "schema": 1,
+  "date": "2026-10-16",
+  "scope": "Bounded alternating warm-loopback worker comparisons using the ordinary installed native binary and managed DLL",
+  "source_base_commit": "ef5ca3e",
+  "benchmark_sha256": "933ff1a5ef9d0dc0369213ffd936f82563cb1754cdefb81a8a6298e429ceae1b",
+  "local": {
+    "focused_benchmark_cases_passed": 5,
+    "node_passed": 414,
+    "node_skipped": 157,
+    "reproducible_benchmark_builds": 2
+  },
+  "devices": {
+    "qn90a": {
+      "native_helper_runtime_and_freezer_absent": true,
+      "package_version": "0.7.45",
+      "ordinary_worker_sha256": "210f8fb0f19c3647eabfcb518ac63f9126a1c580ee68098bb245d348663a7f89",
+      "warmup_pairs": 2,
+      "measured_pairs": 4,
+      "sample_order": [
+        {
+          "kind": "native",
+          "round": -2
+        },
+        {
+          "kind": "dotnet",
+          "round": -2
+        },
+        {
+          "kind": "dotnet",
+          "round": -1
+        },
+        {
+          "kind": "native",
+          "round": -1
+        },
+        {
+          "kind": "native",
+          "round": 0
+        },
+        {
+          "kind": "dotnet",
+          "round": 0
+        },
+        {
+          "kind": "dotnet",
+          "round": 1
+        },
+        {
+          "kind": "native",
+          "round": 1
+        },
+        {
+          "kind": "native",
+          "round": 2
+        },
+        {
+          "kind": "dotnet",
+          "round": 2
+        },
+        {
+          "kind": "dotnet",
+          "round": 3
+        },
+        {
+          "kind": "native",
+          "round": 3
+        }
+      ],
+      "observations": {
+        "dotnet": {
+          "warmup_launch_ms": {
+            "n": 2,
+            "minimum": 473.341,
+            "median": 512.377,
+            "p95_nearest_rank": 551.413,
+            "maximum": 551.413
+          },
+          "warm_launch_ms": {
+            "n": 4,
+            "minimum": 456.696,
+            "median": 511.045,
+            "p95_nearest_rank": 535.5,
+            "maximum": 535.5
+          },
+          "idle_cpu_ms": {
+            "n": 4,
+            "minimum": 4.0,
+            "median": 10.0,
+            "p95_nearest_rank": 16.0,
+            "maximum": 16.0
+          },
+          "idle_elapsed_ms": {
+            "n": 4,
+            "minimum": 5000.904,
+            "median": 5000.951,
+            "p95_nearest_rank": 5001.163,
+            "maximum": 5001.163
+          },
+          "ready_tree_memory_kib": {
+            "rss_kib": {
+              "n": 4,
+              "minimum": 21856,
+              "median": 21862.0,
+              "p95_nearest_rank": 21872,
+              "maximum": 21872
+            },
+            "pss_kib": {
+              "n": 4,
+              "minimum": 8429,
+              "median": 8451.0,
+              "p95_nearest_rank": 8457,
+              "maximum": 8457
+            },
+            "private_kib": {
+              "n": 4,
+              "minimum": 5948,
+              "median": 5978.0,
+              "p95_nearest_rank": 6004,
+              "maximum": 6004
+            },
+            "swap_kib": {
+              "n": 4,
+              "minimum": 0,
+              "median": 0.0,
+              "p95_nearest_rank": 0,
+              "maximum": 0
+            },
+            "swap_pss_kib": {
+              "n": 4,
+              "minimum": 0,
+              "median": 0.0,
+              "p95_nearest_rank": 0,
+              "maximum": 0
+            }
+          },
+          "loaded_tree_memory_kib": {
+            "rss_kib": {
+              "n": 4,
+              "minimum": 22500,
+              "median": 23940.0,
+              "p95_nearest_rank": 25364,
+              "maximum": 25364
+            },
+            "pss_kib": {
+              "n": 4,
+              "minimum": 8502,
+              "median": 9925.0,
+              "p95_nearest_rank": 11365,
+              "maximum": 11365
+            },
+            "private_kib": {
+              "n": 4,
+              "minimum": 5872,
+              "median": 7276.0,
+              "p95_nearest_rank": 8732,
+              "maximum": 8732
+            },
+            "swap_kib": {
+              "n": 4,
+              "minimum": 0,
+              "median": 1182.0,
+              "p95_nearest_rank": 2388,
+              "maximum": 2388
+            },
+            "swap_pss_kib": {
+              "n": 4,
+              "minimum": 0,
+              "median": 1182.0,
+              "p95_nearest_rank": 2388,
+              "maximum": 2388
+            }
+          },
+          "settled_tree_memory_kib": {
+            "rss_kib": {
+              "n": 4,
+              "minimum": 17116,
+              "median": 19828.0,
+              "p95_nearest_rank": 22544,
+              "maximum": 22544
+            },
+            "pss_kib": {
+              "n": 4,
+              "minimum": 3117,
+              "median": 5821.5,
+              "p95_nearest_rank": 8529,
+              "maximum": 8529
+            },
+            "private_kib": {
+              "n": 4,
+              "minimum": 484,
+              "median": 3182.0,
+              "p95_nearest_rank": 5880,
+              "maximum": 5880
+            },
+            "swap_kib": {
+              "n": 4,
+              "minimum": 2360,
+              "median": 5058.0,
+              "p95_nearest_rank": 7760,
+              "maximum": 7760
+            },
+            "swap_pss_kib": {
+              "n": 4,
+              "minimum": 2360,
+              "median": 5058.0,
+              "p95_nearest_rank": 7760,
+              "maximum": 7760
+            }
+          },
+          "sampled_tree_descriptors": {
+            "n": 12,
+            "minimum": 51,
+            "median": 70.0,
+            "p95_nearest_rank": 72,
+            "maximum": 72
+          },
+          "sampled_tree_threads": {
+            "n": 12,
+            "minimum": 12,
+            "median": 15.0,
+            "p95_nearest_rank": 15,
+            "maximum": 15
+          },
+          "job_timing_ms": {
+            "root": {
+              "admission_ms": {
+                "n": 4,
+                "minimum": 101.925,
+                "median": 106.837,
+                "p95_nearest_rank": 108.669,
+                "maximum": 108.669
+              },
+              "observed_completion_ms": {
+                "n": 4,
+                "minimum": 137.341,
+                "median": 144.667,
+                "p95_nearest_rank": 153.641,
+                "maximum": 153.641
+              }
+            },
+            "app": {
+              "admission_ms": {
+                "n": 4,
+                "minimum": 53.735,
+                "median": 56.728,
+                "p95_nearest_rank": 59.818,
+                "maximum": 59.818
+              },
+              "observed_completion_ms": {
+                "n": 4,
+                "minimum": 67.896,
+                "median": 73.346,
+                "p95_nearest_rank": 98.161,
+                "maximum": 98.161
+              }
+            }
+          },
+          "first_transfer_mib_per_second": {
+            "upload": {
+              "n": 4,
+              "minimum": 4.299,
+              "median": 13.26,
+              "p95_nearest_rank": 13.683,
+              "maximum": 13.683
+            },
+            "download": {
+              "n": 4,
+              "minimum": 70.763,
+              "median": 87.471,
+              "p95_nearest_rank": 90.147,
+              "maximum": 90.147
+            }
+          },
+          "warm_transfer_mib_per_second": {
+            "upload": {
+              "n": 12,
+              "minimum": 4.363,
+              "median": 12.966,
+              "p95_nearest_rank": 13.929,
+              "maximum": 13.929
+            },
+            "download": {
+              "n": 12,
+              "minimum": 71.741,
+              "median": 90.806,
+              "p95_nearest_rank": 98.845,
+              "maximum": 98.845
+            }
+          }
+        },
+        "native": {
+          "warmup_launch_ms": {
+            "n": 2,
+            "minimum": 547.252,
+            "median": 1130.295,
+            "p95_nearest_rank": 1713.337,
+            "maximum": 1713.337
+          },
+          "warm_launch_ms": {
+            "n": 4,
+            "minimum": 535.815,
+            "median": 544.427,
+            "p95_nearest_rank": 545.925,
+            "maximum": 545.925
+          },
+          "idle_cpu_ms": {
+            "n": 4,
+            "minimum": 0.0,
+            "median": 4.0,
+            "p95_nearest_rank": 4.0,
+            "maximum": 4.0
+          },
+          "idle_elapsed_ms": {
+            "n": 4,
+            "minimum": 5001.167,
+            "median": 5001.189,
+            "p95_nearest_rank": 5001.421,
+            "maximum": 5001.421
+          },
+          "ready_tree_memory_kib": {
+            "rss_kib": {
+              "n": 4,
+              "minimum": 1864,
+              "median": 2092.0,
+              "p95_nearest_rank": 2092,
+              "maximum": 2092
+            },
+            "pss_kib": {
+              "n": 4,
+              "minimum": 448,
+              "median": 532.0,
+              "p95_nearest_rank": 532,
+              "maximum": 532
+            },
+            "private_kib": {
+              "n": 4,
+              "minimum": 232,
+              "median": 232.0,
+              "p95_nearest_rank": 292,
+              "maximum": 292
+            },
+            "swap_kib": {
+              "n": 4,
+              "minimum": 0,
+              "median": 0.0,
+              "p95_nearest_rank": 228,
+              "maximum": 228
+            },
+            "swap_pss_kib": {
+              "n": 4,
+              "minimum": 0,
+              "median": 0.0,
+              "p95_nearest_rank": 136,
+              "maximum": 136
+            }
+          },
+          "loaded_tree_memory_kib": {
+            "rss_kib": {
+              "n": 4,
+              "minimum": 1996,
+              "median": 2156.0,
+              "p95_nearest_rank": 2156,
+              "maximum": 2156
+            },
+            "pss_kib": {
+              "n": 4,
+              "minimum": 521,
+              "median": 549.0,
+              "p95_nearest_rank": 549,
+              "maximum": 549
+            },
+            "private_kib": {
+              "n": 4,
+              "minimum": 284,
+              "median": 284.0,
+              "p95_nearest_rank": 388,
+              "maximum": 388
+            },
+            "swap_kib": {
+              "n": 4,
+              "minimum": 64,
+              "median": 64.0,
+              "p95_nearest_rank": 224,
+              "maximum": 224
+            },
+            "swap_pss_kib": {
+              "n": 4,
+              "minimum": 64,
+              "median": 64.0,
+              "p95_nearest_rank": 136,
+              "maximum": 136
+            }
+          },
+          "settled_tree_memory_kib": {
+            "rss_kib": {
+              "n": 4,
+              "minimum": 1684,
+              "median": 2156.0,
+              "p95_nearest_rank": 2156,
+              "maximum": 2156
+            },
+            "pss_kib": {
+              "n": 4,
+              "minimum": 209,
+              "median": 549.0,
+              "p95_nearest_rank": 549,
+              "maximum": 549
+            },
+            "private_kib": {
+              "n": 4,
+              "minimum": 76,
+              "median": 284.0,
+              "p95_nearest_rank": 284,
+              "maximum": 284
+            },
+            "swap_kib": {
+              "n": 4,
+              "minimum": 64,
+              "median": 64.0,
+              "p95_nearest_rank": 504,
+              "maximum": 504
+            },
+            "swap_pss_kib": {
+              "n": 4,
+              "minimum": 64,
+              "median": 64.0,
+              "p95_nearest_rank": 380,
+              "maximum": 380
+            }
+          },
+          "sampled_tree_descriptors": {
+            "n": 12,
+            "minimum": 27,
+            "median": 27.0,
+            "p95_nearest_rank": 27,
+            "maximum": 27
+          },
+          "sampled_tree_threads": {
+            "n": 12,
+            "minimum": 4,
+            "median": 4.0,
+            "p95_nearest_rank": 4,
+            "maximum": 4
+          },
+          "job_timing_ms": {
+            "root": {
+              "admission_ms": {
+                "n": 4,
+                "minimum": 156.737,
+                "median": 168.47,
+                "p95_nearest_rank": 426.76,
+                "maximum": 426.76
+              },
+              "observed_completion_ms": {
+                "n": 4,
+                "minimum": 253.143,
+                "median": 263.838,
+                "p95_nearest_rank": 518.47,
+                "maximum": 518.47
+              }
+            },
+            "app": {
+              "admission_ms": {
+                "n": 4,
+                "minimum": 147.161,
+                "median": 149.049,
+                "p95_nearest_rank": 154.837,
+                "maximum": 154.837
+              },
+              "observed_completion_ms": {
+                "n": 4,
+                "minimum": 239.284,
+                "median": 242.298,
+                "p95_nearest_rank": 244.905,
+                "maximum": 244.905
+              }
+            }
+          },
+          "first_transfer_mib_per_second": {
+            "upload": {
+              "n": 4,
+              "minimum": 13.226,
+              "median": 13.621,
+              "p95_nearest_rank": 13.909,
+              "maximum": 13.909
+            },
+            "download": {
+              "n": 4,
+              "minimum": 85.191,
+              "median": 86.144,
+              "p95_nearest_rank": 88.192,
+              "maximum": 88.192
+            }
+          },
+          "warm_transfer_mib_per_second": {
+            "upload": {
+              "n": 12,
+              "minimum": 4.373,
+              "median": 13.668,
+              "p95_nearest_rank": 14.219,
+              "maximum": 14.219
+            },
+            "download": {
+              "n": 12,
+              "minimum": 71.83,
+              "median": 88.527,
+              "p95_nearest_rank": 95.901,
+              "maximum": 95.901
+            }
+          }
+        }
+      },
+      "preservation": {
+        "scope_removed": true,
+        "helpers_released": true,
+        "retained_jobs_preserved": true,
+        "managed_worker_unchanged": true,
+        "history_unchanged": true,
+        "same_boot": true,
+        "sdk_loopback": true,
+        "rescue_inactive": true,
+        "rescue_fired": false,
+        "enrollment_and_protected_hashes_preserved": true
+      }
+    },
+    "s90d": {
+      "native_helper_runtime_and_freezer_absent": true,
+      "package_version": "0.7.45",
+      "ordinary_worker_sha256": "210f8fb0f19c3647eabfcb518ac63f9126a1c580ee68098bb245d348663a7f89",
+      "warmup_pairs": 2,
+      "measured_pairs": 4,
+      "sample_order": [
+        {
+          "kind": "native",
+          "round": -2
+        },
+        {
+          "kind": "dotnet",
+          "round": -2
+        },
+        {
+          "kind": "dotnet",
+          "round": -1
+        },
+        {
+          "kind": "native",
+          "round": -1
+        },
+        {
+          "kind": "native",
+          "round": 0
+        },
+        {
+          "kind": "dotnet",
+          "round": 0
+        },
+        {
+          "kind": "dotnet",
+          "round": 1
+        },
+        {
+          "kind": "native",
+          "round": 1
+        },
+        {
+          "kind": "native",
+          "round": 2
+        },
+        {
+          "kind": "dotnet",
+          "round": 2
+        },
+        {
+          "kind": "dotnet",
+          "round": 3
+        },
+        {
+          "kind": "native",
+          "round": 3
+        }
+      ],
+      "observations": {
+        "dotnet": {
+          "warmup_launch_ms": {
+            "n": 2,
+            "minimum": 714.119,
+            "median": 717.317,
+            "p95_nearest_rank": 720.516,
+            "maximum": 720.516
+          },
+          "warm_launch_ms": {
+            "n": 4,
+            "minimum": 710.496,
+            "median": 799.505,
+            "p95_nearest_rank": 893.78,
+            "maximum": 893.78
+          },
+          "idle_cpu_ms": {
+            "n": 4,
+            "minimum": 888.0,
+            "median": 928.0,
+            "p95_nearest_rank": 1028.0,
+            "maximum": 1028.0
+          },
+          "idle_elapsed_ms": {
+            "n": 4,
+            "minimum": 5000.943,
+            "median": 5001.328,
+            "p95_nearest_rank": 5002.372,
+            "maximum": 5002.372
+          },
+          "ready_tree_memory_kib": {
+            "rss_kib": {
+              "n": 4,
+              "minimum": 22748,
+              "median": 22760.0,
+              "p95_nearest_rank": 22768,
+              "maximum": 22768
+            },
+            "pss_kib": {
+              "n": 4,
+              "minimum": 8674,
+              "median": 8790.5,
+              "p95_nearest_rank": 8908,
+              "maximum": 8908
+            },
+            "private_kib": {
+              "n": 4,
+              "minimum": 6912,
+              "median": 7150.0,
+              "p95_nearest_rank": 7388,
+              "maximum": 7388
+            },
+            "swap_kib": {
+              "n": 4,
+              "minimum": 0,
+              "median": 0.0,
+              "p95_nearest_rank": 0,
+              "maximum": 0
+            },
+            "swap_pss_kib": {
+              "n": 4,
+              "minimum": 0,
+              "median": 0.0,
+              "p95_nearest_rank": 0,
+              "maximum": 0
+            }
+          },
+          "loaded_tree_memory_kib": {
+            "rss_kib": {
+              "n": 4,
+              "minimum": 25380,
+              "median": 27124.0,
+              "p95_nearest_rank": 27208,
+              "maximum": 27208
+            },
+            "pss_kib": {
+              "n": 4,
+              "minimum": 10985,
+              "median": 12484.0,
+              "p95_nearest_rank": 12702,
+              "maximum": 12702
+            },
+            "private_kib": {
+              "n": 4,
+              "minimum": 9364,
+              "median": 10574.0,
+              "p95_nearest_rank": 11084,
+              "maximum": 11084
+            },
+            "swap_kib": {
+              "n": 4,
+              "minimum": 0,
+              "median": 0.0,
+              "p95_nearest_rank": 1044,
+              "maximum": 1044
+            },
+            "swap_pss_kib": {
+              "n": 4,
+              "minimum": 0,
+              "median": 0.0,
+              "p95_nearest_rank": 1044,
+              "maximum": 1044
+            }
+          },
+          "settled_tree_memory_kib": {
+            "rss_kib": {
+              "n": 4,
+              "minimum": 20236,
+              "median": 20750.0,
+              "p95_nearest_rank": 24828,
+              "maximum": 24828
+            },
+            "pss_kib": {
+              "n": 4,
+              "minimum": 5284,
+              "median": 5913.5,
+              "p95_nearest_rank": 10225,
+              "maximum": 10225
+            },
+            "private_kib": {
+              "n": 4,
+              "minimum": 3180,
+              "median": 4012.0,
+              "p95_nearest_rank": 8524,
+              "maximum": 8524
+            },
+            "swap_kib": {
+              "n": 4,
+              "minimum": 2876,
+              "median": 6420.0,
+              "p95_nearest_rank": 6940,
+              "maximum": 6940
+            },
+            "swap_pss_kib": {
+              "n": 4,
+              "minimum": 2876,
+              "median": 6420.0,
+              "p95_nearest_rank": 6940,
+              "maximum": 6940
+            }
+          },
+          "sampled_tree_descriptors": {
+            "n": 12,
+            "minimum": 49,
+            "median": 67.5,
+            "p95_nearest_rank": 69,
+            "maximum": 69
+          },
+          "sampled_tree_threads": {
+            "n": 12,
+            "minimum": 14,
+            "median": 16.0,
+            "p95_nearest_rank": 20,
+            "maximum": 20
+          },
+          "job_timing_ms": {
+            "root": {
+              "admission_ms": {
+                "n": 4,
+                "minimum": 69.262,
+                "median": 75.506,
+                "p95_nearest_rank": 90.568,
+                "maximum": 90.568
+              },
+              "observed_completion_ms": {
+                "n": 4,
+                "minimum": 89.514,
+                "median": 104.083,
+                "p95_nearest_rank": 128.182,
+                "maximum": 128.182
+              }
+            },
+            "app": {
+              "admission_ms": {
+                "n": 4,
+                "minimum": 21.065,
+                "median": 23.747,
+                "p95_nearest_rank": 25.152,
+                "maximum": 25.152
+              },
+              "observed_completion_ms": {
+                "n": 4,
+                "minimum": 47.537,
+                "median": 60.231,
+                "p95_nearest_rank": 81.651,
+                "maximum": 81.651
+              }
+            }
+          },
+          "first_transfer_mib_per_second": {
+            "upload": {
+              "n": 4,
+              "minimum": 4.668,
+              "median": 19.645,
+              "p95_nearest_rank": 20.725,
+              "maximum": 20.725
+            },
+            "download": {
+              "n": 4,
+              "minimum": 47.378,
+              "median": 65.7,
+              "p95_nearest_rank": 69.604,
+              "maximum": 69.604
+            }
+          },
+          "warm_transfer_mib_per_second": {
+            "upload": {
+              "n": 12,
+              "minimum": 4.673,
+              "median": 19.464,
+              "p95_nearest_rank": 21.364,
+              "maximum": 21.364
+            },
+            "download": {
+              "n": 12,
+              "minimum": 54.197,
+              "median": 66.415,
+              "p95_nearest_rank": 76.704,
+              "maximum": 76.704
+            }
+          }
+        },
+        "native": {
+          "warmup_launch_ms": {
+            "n": 2,
+            "minimum": 224.314,
+            "median": 779.692,
+            "p95_nearest_rank": 1335.07,
+            "maximum": 1335.07
+          },
+          "warm_launch_ms": {
+            "n": 4,
+            "minimum": 185.851,
+            "median": 193.315,
+            "p95_nearest_rank": 201.318,
+            "maximum": 201.318
+          },
+          "idle_cpu_ms": {
+            "n": 4,
+            "minimum": 4.0,
+            "median": 8.0,
+            "p95_nearest_rank": 8.0,
+            "maximum": 8.0
+          },
+          "idle_elapsed_ms": {
+            "n": 4,
+            "minimum": 5000.988,
+            "median": 5001.068,
+            "p95_nearest_rank": 5001.21,
+            "maximum": 5001.21
+          },
+          "ready_tree_memory_kib": {
+            "rss_kib": {
+              "n": 4,
+              "minimum": 2120,
+              "median": 2120.0,
+              "p95_nearest_rank": 2120,
+              "maximum": 2120
+            },
+            "pss_kib": {
+              "n": 4,
+              "minimum": 550,
+              "median": 550.0,
+              "p95_nearest_rank": 550,
+              "maximum": 550
+            },
+            "private_kib": {
+              "n": 4,
+              "minimum": 244,
+              "median": 244.0,
+              "p95_nearest_rank": 244,
+              "maximum": 244
+            },
+            "swap_kib": {
+              "n": 4,
+              "minimum": 0,
+              "median": 0.0,
+              "p95_nearest_rank": 0,
+              "maximum": 0
+            },
+            "swap_pss_kib": {
+              "n": 4,
+              "minimum": 0,
+              "median": 0.0,
+              "p95_nearest_rank": 0,
+              "maximum": 0
+            }
+          },
+          "loaded_tree_memory_kib": {
+            "rss_kib": {
+              "n": 4,
+              "minimum": 2156,
+              "median": 2166.0,
+              "p95_nearest_rank": 2252,
+              "maximum": 2252
+            },
+            "pss_kib": {
+              "n": 4,
+              "minimum": 547,
+              "median": 557.0,
+              "p95_nearest_rank": 643,
+              "maximum": 643
+            },
+            "private_kib": {
+              "n": 4,
+              "minimum": 272,
+              "median": 282.0,
+              "p95_nearest_rank": 368,
+              "maximum": 368
+            },
+            "swap_kib": {
+              "n": 4,
+              "minimum": 0,
+              "median": 74.0,
+              "p95_nearest_rank": 80,
+              "maximum": 80
+            },
+            "swap_pss_kib": {
+              "n": 4,
+              "minimum": 0,
+              "median": 74.0,
+              "p95_nearest_rank": 80,
+              "maximum": 80
+            }
+          },
+          "settled_tree_memory_kib": {
+            "rss_kib": {
+              "n": 4,
+              "minimum": 1952,
+              "median": 2060.0,
+              "p95_nearest_rank": 2160,
+              "maximum": 2160
+            },
+            "pss_kib": {
+              "n": 4,
+              "minimum": 343,
+              "median": 451.0,
+              "p95_nearest_rank": 551,
+              "maximum": 551
+            },
+            "private_kib": {
+              "n": 4,
+              "minimum": 68,
+              "median": 176.0,
+              "p95_nearest_rank": 276,
+              "maximum": 276
+            },
+            "swap_kib": {
+              "n": 4,
+              "minimum": 76,
+              "median": 168.0,
+              "p95_nearest_rank": 268,
+              "maximum": 268
+            },
+            "swap_pss_kib": {
+              "n": 4,
+              "minimum": 76,
+              "median": 168.0,
+              "p95_nearest_rank": 268,
+              "maximum": 268
+            }
+          },
+          "sampled_tree_descriptors": {
+            "n": 12,
+            "minimum": 23,
+            "median": 23.0,
+            "p95_nearest_rank": 23,
+            "maximum": 23
+          },
+          "sampled_tree_threads": {
+            "n": 12,
+            "minimum": 4,
+            "median": 4.0,
+            "p95_nearest_rank": 4,
+            "maximum": 4
+          },
+          "job_timing_ms": {
+            "root": {
+              "admission_ms": {
+                "n": 4,
+                "minimum": 56.591,
+                "median": 59.763,
+                "p95_nearest_rank": 61.145,
+                "maximum": 61.145
+              },
+              "observed_completion_ms": {
+                "n": 4,
+                "minimum": 93.119,
+                "median": 98.582,
+                "p95_nearest_rank": 202.999,
+                "maximum": 202.999
+              }
+            },
+            "app": {
+              "admission_ms": {
+                "n": 4,
+                "minimum": 47.499,
+                "median": 50.148,
+                "p95_nearest_rank": 1016.031,
+                "maximum": 1016.031
+              },
+              "observed_completion_ms": {
+                "n": 4,
+                "minimum": 85.402,
+                "median": 89.619,
+                "p95_nearest_rank": 1062.262,
+                "maximum": 1062.262
+              }
+            }
+          },
+          "first_transfer_mib_per_second": {
+            "upload": {
+              "n": 4,
+              "minimum": 4.843,
+              "median": 20.349,
+              "p95_nearest_rank": 21.892,
+              "maximum": 21.892
+            },
+            "download": {
+              "n": 4,
+              "minimum": 67.087,
+              "median": 76.588,
+              "p95_nearest_rank": 80.647,
+              "maximum": 80.647
+            }
+          },
+          "warm_transfer_mib_per_second": {
+            "upload": {
+              "n": 12,
+              "minimum": 4.45,
+              "median": 20.385,
+              "p95_nearest_rank": 22.776,
+              "maximum": 22.776
+            },
+            "download": {
+              "n": 12,
+              "minimum": 65.854,
+              "median": 77.785,
+              "p95_nearest_rank": 86.097,
+              "maximum": 86.097
+            }
+          }
+        }
+      },
+      "preservation": {
+        "scope_removed": true,
+        "helpers_released": true,
+        "retained_jobs_preserved": true,
+        "managed_worker_unchanged": true,
+        "history_unchanged": true,
+        "same_boot": true,
+        "sdk_loopback": true,
+        "rescue_inactive": true,
+        "rescue_fired": false,
+        "enrollment_and_protected_hashes_preserved": true
+      }
+    }
+  },
+  "source_sha256": {
+    "research/autonomous-root/native-worker/bench.c": "ca26b09eee0b07132a65d1ee8e050c146277c3e9959724b8edf1b526917e360d",
+    "research/autonomous-root/native-worker/bench-resources.h": "437b93510510b0c81701a86384b144f3532a07fe2572d8cddfea8f8f0b1ac812",
+    "tests/native_benchmark_test.py": "60e44c328af3a0c6899570536e2c94210e138bd3c2d7b38b3ce4a2868664a09c"
+  },
+  "performance_no_regression_gate": "unresolved",
+  "findings": [
+    "QN90A native root/app observed job completion medians exceed managed; native warm launch is also slightly slower.",
+    "S90D native app-job admission reached 1016.031 ms and observed completion 1062.262 ms; cause is not established.",
+    "Investigate job persistence/supervision/scheduling costs before the final endurance qualification; do not erase outliers by repeating trials."
+  ],
+  "limits": [
+    "Four measured pairs per TV are a bounded comparison; nearest-rank p95 equals the maximum at this sample count and does not establish a stable tail distribution.",
+    "Warm fork-to-authenticated-status excludes root acquisition, service scheduling, HTTPS, app launch and boot readiness.",
+    "Memory sums cover worker and native guardian at each phase. The selected managed fallback, controller and shared libraries remain present; shared mapping attribution affects PSS.",
+    "CPU excludes already exited command descendants. Idle observations span approximately five seconds. Per-thread context switches are retained privately but are not wakeup counts.",
+    "Descriptor/thread/mount counts are phase samples, not continuous peaks. wait4 peak RSS is not summed as a process-tree total.",
+    "Job completion includes ten-millisecond polling. Nonzero exit and output were checked before forgetting; all original retained records were preserved.",
+    "Kernel tails were captured around the trial, not continuously. These results do not close the full-run lifecycle evidence gate.",
+    "Full acquisition/public-path performance, exact idle wakeups, continuous resource observation, recovery timing tails, 24-hour mixed endurance and power-lifecycle qualification remain open.",
+    "No package update, native default switch, reboot, standby or global-policy change was performed. The .NET entry, worker fallback and independent rescue remain deployed."
+  ]
+}

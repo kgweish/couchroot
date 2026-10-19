@@ -1,0 +1,704 @@
+{
+  "schema": 1,
+  "date": "2026-10-16",
+  "scope": "Authenticated worker request phase timing; signed installation and one integrated acquisition/public HTTPS/managed-return round on each TV",
+  "package_version": "0.7.47",
+  "source_sha256": {
+    "research/autonomous-root/service/api.js": "933f281741a50a9f316d4dc68ab7bdce94f1ebac9e77ddde2b7c4eefd2315f41",
+    "tests/root-api-timing.test.cjs": "e1fa52e0f1e5134e2b6ba7861af48d61905a504b4c7b944fd27449c0cbac5579",
+    "tests/autonomous-root.test.cjs": "6dda47bab9dec38ee4551dc6d54d8fa55e7121309a7d9fe5e55c662c4f6056ad"
+  },
+  "ordinary_worker_sha256": "613c21fa9231097d51540f06873775a3f4d6f9173f48ec896c84e99432dd1f8e",
+  "observer_sha256": "a298920bf9530e1b413df958e3b83614708a55f8e8f3b5f4fde60853965c3c5d",
+  "local_tests": {
+    "focused_passed": 32,
+    "focused_skipped": 1,
+    "npm_passed": 418,
+    "npm_skipped": 157,
+    "rehearsal_passed": 6,
+    "restart_passed": 21,
+    "restart_skipped": 3
+  },
+  "devices": {
+    "qn90a": {
+      "timed_successful_requests": 147,
+      "all_expected_phases_present": true,
+      "handler_contains_phases": true,
+      "groups": {
+        "managed-public/exec": {
+          "count": 3,
+          "median_ms": {
+            "wire_elapsed": 102.476,
+            "journal_begin": 20.549,
+            "worker": 9.412,
+            "journal_finish": 23.787,
+            "handler": 65.46
+          },
+          "maximum_ms": {
+            "wire_elapsed": 219.169,
+            "journal_begin": 23.527,
+            "worker": 126.149,
+            "journal_finish": 35.698,
+            "handler": 188.963
+          }
+        },
+        "managed-public/job.forget": {
+          "count": 4,
+          "median_ms": {
+            "wire_elapsed": 105.561,
+            "journal_begin": 24.566,
+            "worker": 14.637,
+            "journal_finish": 26.654,
+            "handler": 73.072
+          },
+          "maximum_ms": {
+            "wire_elapsed": 114.413,
+            "journal_begin": 26.421,
+            "worker": 16.321,
+            "journal_finish": 26.846,
+            "handler": 79.055
+          }
+        },
+        "managed-public/job.start": {
+          "count": 4,
+          "median_ms": {
+            "wire_elapsed": 131.802,
+            "journal_begin": 24.772,
+            "worker": 29.823,
+            "journal_finish": 30.446,
+            "handler": 97.178
+          },
+          "maximum_ms": {
+            "wire_elapsed": 147.703,
+            "journal_begin": 25.22,
+            "worker": 32.483,
+            "journal_finish": 38.51,
+            "handler": 110.525
+          }
+        },
+        "native-public/exec": {
+          "count": 3,
+          "median_ms": {
+            "wire_elapsed": 109.578,
+            "journal_begin": 21.877,
+            "worker": 10.451,
+            "journal_finish": 23.565,
+            "handler": 73.091
+          },
+          "maximum_ms": {
+            "wire_elapsed": 236.426,
+            "journal_begin": 25.024,
+            "worker": 126.049,
+            "journal_finish": 47.587,
+            "handler": 204.301
+          }
+        },
+        "native-public/job.forget": {
+          "count": 4,
+          "median_ms": {
+            "wire_elapsed": 97.538,
+            "journal_begin": 22.056,
+            "worker": 12.698,
+            "journal_finish": 21.983,
+            "handler": 67.525
+          },
+          "maximum_ms": {
+            "wire_elapsed": 101.924,
+            "journal_begin": 23.406,
+            "worker": 14.146,
+            "journal_finish": 24.033,
+            "handler": 70.022
+          }
+        },
+        "native-public/job.start": {
+          "count": 4,
+          "median_ms": {
+            "wire_elapsed": 108.419,
+            "journal_begin": 21.456,
+            "worker": 18.697,
+            "journal_finish": 21.964,
+            "handler": 74.52
+          },
+          "maximum_ms": {
+            "wire_elapsed": 111.361,
+            "journal_begin": 25.158,
+            "worker": 22.169,
+            "journal_finish": 25.243,
+            "handler": 80.589
+          }
+        }
+      },
+      "public_jobs": [
+        {
+          "phase": "managed-public",
+          "operation": "job.start",
+          "wire_elapsed_ms": 147.703,
+          "metrics_ms": {
+            "journal_begin": 25.044,
+            "worker": 32.483,
+            "journal_finish": 38.51,
+            "handler": 110.525
+          },
+          "profile": "root"
+        },
+        {
+          "phase": "managed-public",
+          "operation": "job.start",
+          "wire_elapsed_ms": 127.253,
+          "metrics_ms": {
+            "journal_begin": 24.5,
+            "worker": 27.756,
+            "journal_finish": 30.212,
+            "handler": 91.582
+          },
+          "profile": "app"
+        },
+        {
+          "phase": "managed-public",
+          "operation": "job.start",
+          "wire_elapsed_ms": 136.351,
+          "metrics_ms": {
+            "journal_begin": 25.22,
+            "worker": 31.891,
+            "journal_finish": 30.545,
+            "handler": 102.775
+          },
+          "profile": "root"
+        },
+        {
+          "phase": "managed-public",
+          "operation": "job.start",
+          "wire_elapsed_ms": 120.779,
+          "metrics_ms": {
+            "journal_begin": 23.532,
+            "worker": 25.93,
+            "journal_finish": 30.347,
+            "handler": 90.567
+          },
+          "profile": "app"
+        },
+        {
+          "phase": "native-public",
+          "operation": "job.start",
+          "wire_elapsed_ms": 111.361,
+          "metrics_ms": {
+            "journal_begin": 20.938,
+            "worker": 18.887,
+            "journal_finish": 25.243,
+            "handler": 76.633
+          },
+          "profile": "root"
+        },
+        {
+          "phase": "native-public",
+          "operation": "job.start",
+          "wire_elapsed_ms": 108.283,
+          "metrics_ms": {
+            "journal_begin": 21.975,
+            "worker": 18.046,
+            "journal_finish": 21.845,
+            "handler": 72.407
+          },
+          "profile": "app"
+        },
+        {
+          "phase": "native-public",
+          "operation": "job.start",
+          "wire_elapsed_ms": 98.58,
+          "metrics_ms": {
+            "journal_begin": 20.461,
+            "worker": 18.506,
+            "journal_finish": 19.932,
+            "handler": 69.8
+          },
+          "profile": "root"
+        },
+        {
+          "phase": "native-public",
+          "operation": "job.start",
+          "wire_elapsed_ms": 108.556,
+          "metrics_ms": {
+            "journal_begin": 25.158,
+            "worker": 22.169,
+            "journal_finish": 22.083,
+            "handler": 80.589
+          },
+          "profile": "app"
+        }
+      ],
+      "preservation": {
+        "same_boot": true,
+        "same_coordinator": true,
+        "retained_jobs_preserved": true,
+        "sdk_loopback": true,
+        "rescue_inactive": true,
+        "enrollment_and_protected_hashes_preserved": true
+      },
+      "operation_counts": {
+        "managed-public/exec": 3,
+        "managed-public/file.begin": 1,
+        "managed-public/file.close": 1,
+        "managed-public/file.commit": 1,
+        "managed-public/file.open": 1,
+        "managed-public/file.read": 9,
+        "managed-public/file.write": 9,
+        "managed-public/job.forget": 4,
+        "managed-public/job.output": 4,
+        "managed-public/job.start": 4,
+        "managed-public/job.status": 4,
+        "native-public/exec": 3,
+        "native-public/file.begin": 1,
+        "native-public/file.close": 1,
+        "native-public/file.commit": 1,
+        "native-public/file.open": 1,
+        "native-public/file.read": 9,
+        "native-public/file.write": 9,
+        "native-public/job.forget": 4,
+        "native-public/job.output": 4,
+        "native-public/job.start": 4,
+        "native-public/job.status": 4
+      },
+      "slow_journal_or_public_job_requests": [
+        {
+          "phase": "preflight",
+          "operation": "exec",
+          "wire_elapsed_ms": 1307.403,
+          "metrics_ms": {
+            "journal_begin": 21.815,
+            "worker": 26.273,
+            "journal_finish": 1220.967,
+            "handler": 1278.471
+          }
+        },
+        {
+          "phase": "maintenance",
+          "operation": "exec",
+          "wire_elapsed_ms": 1256.663,
+          "metrics_ms": {
+            "journal_begin": 22.636,
+            "worker": 34.229,
+            "journal_finish": 1151.516,
+            "handler": 1220.956
+          }
+        }
+      ],
+      "package_diff": {
+        "changed_members": [
+          ".manifest.tmp",
+          "config.xml",
+          "signature1.xml",
+          "author-signature.xml",
+          "payload/manifest.json",
+          "payload/native-manifest.json",
+          "service/api.js"
+        ],
+        "native_manifest_changed_keys": [
+          "source"
+        ],
+        "unchanged_payload_members": 17,
+        "native_manifest_artifacts_unchanged": true,
+        "service_api_sha256": "933f281741a50a9f316d4dc68ab7bdce94f1ebac9e77ddde2b7c4eefd2315f41"
+      },
+      "installation": {
+        "installed_contents_verified": true,
+        "managed_ready": true,
+        "same_boot": true,
+        "owned_units_inactive": true,
+        "sdk_loopback": true,
+        "rescue_disarmed": true
+      },
+      "observer": {
+        "resource_samples": 41,
+        "max_sample_gap_ms": 1004.45,
+        "skipped_intervals": 0,
+        "kernel_records": 336,
+        "kernel_bytes": 30012,
+        "kernel_complete": true,
+        "native_identity_bound_samples": {
+          "guardian": {
+            "samples": 14,
+            "memory_detail_samples": 3
+          },
+          "worker": {
+            "samples": 13,
+            "memory_detail_samples": 3
+          }
+        }
+      },
+      "acquisition_ms": 1767.829,
+      "migration_ms": 5529.264,
+      "return_ms": 13126.09
+    },
+    "s90d": {
+      "timed_successful_requests": 147,
+      "all_expected_phases_present": true,
+      "handler_contains_phases": true,
+      "groups": {
+        "managed-public/exec": {
+          "count": 3,
+          "median_ms": {
+            "wire_elapsed": 111.056,
+            "journal_begin": 25.569,
+            "worker": 17.337,
+            "journal_finish": 29.614,
+            "handler": 81.933
+          },
+          "maximum_ms": {
+            "wire_elapsed": 316.19,
+            "journal_begin": 26.555,
+            "worker": 178.714,
+            "journal_finish": 44.692,
+            "handler": 258.205
+          }
+        },
+        "managed-public/job.forget": {
+          "count": 4,
+          "median_ms": {
+            "wire_elapsed": 136.508,
+            "journal_begin": 30.709,
+            "worker": 20.287,
+            "journal_finish": 31.234,
+            "handler": 97.567
+          },
+          "maximum_ms": {
+            "wire_elapsed": 1338.224,
+            "journal_begin": 193.771,
+            "worker": 34.308,
+            "journal_finish": 1061.122,
+            "handler": 1283.631
+          }
+        },
+        "managed-public/job.start": {
+          "count": 4,
+          "median_ms": {
+            "wire_elapsed": 142.744,
+            "journal_begin": 29.174,
+            "worker": 38.34,
+            "journal_finish": 29.514,
+            "handler": 104.382
+          },
+          "maximum_ms": {
+            "wire_elapsed": 151.967,
+            "journal_begin": 31.08,
+            "worker": 38.602,
+            "journal_finish": 35.818,
+            "handler": 112.101
+          }
+        },
+        "native-public/exec": {
+          "count": 3,
+          "median_ms": {
+            "wire_elapsed": 127.545,
+            "journal_begin": 29.304,
+            "worker": 17.275,
+            "journal_finish": 33.418,
+            "handler": 92.629
+          },
+          "maximum_ms": {
+            "wire_elapsed": 359.832,
+            "journal_begin": 29.536,
+            "worker": 184.085,
+            "journal_finish": 62.951,
+            "handler": 285.189
+          }
+        },
+        "native-public/job.forget": {
+          "count": 4,
+          "median_ms": {
+            "wire_elapsed": 125.756,
+            "journal_begin": 24.118,
+            "worker": 19.151,
+            "journal_finish": 30.447,
+            "handler": 88.252
+          },
+          "maximum_ms": {
+            "wire_elapsed": 138.852,
+            "journal_begin": 29.528,
+            "worker": 27.263,
+            "journal_finish": 40.097,
+            "handler": 103.46
+          }
+        },
+        "native-public/job.start": {
+          "count": 4,
+          "median_ms": {
+            "wire_elapsed": 134.053,
+            "journal_begin": 28.261,
+            "worker": 24.687,
+            "journal_finish": 29.532,
+            "handler": 97.401
+          },
+          "maximum_ms": {
+            "wire_elapsed": 143.497,
+            "journal_begin": 31.004,
+            "worker": 31.717,
+            "journal_finish": 37.561,
+            "handler": 98.914
+          }
+        }
+      },
+      "public_jobs": [
+        {
+          "phase": "managed-public",
+          "operation": "job.start",
+          "wire_elapsed_ms": 141.672,
+          "metrics_ms": {
+            "journal_begin": 26.866,
+            "worker": 38.602,
+            "journal_finish": 26.101,
+            "handler": 101.637
+          },
+          "profile": "root"
+        },
+        {
+          "phase": "managed-public",
+          "operation": "job.start",
+          "wire_elapsed_ms": 143.816,
+          "metrics_ms": {
+            "journal_begin": 30.23,
+            "worker": 38.532,
+            "journal_finish": 27.634,
+            "handler": 107.128
+          },
+          "profile": "app"
+        },
+        {
+          "phase": "managed-public",
+          "operation": "job.start",
+          "wire_elapsed_ms": 151.967,
+          "metrics_ms": {
+            "journal_begin": 31.08,
+            "worker": 38.148,
+            "journal_finish": 31.395,
+            "handler": 112.101
+          },
+          "profile": "root"
+        },
+        {
+          "phase": "managed-public",
+          "operation": "job.start",
+          "wire_elapsed_ms": 121.956,
+          "metrics_ms": {
+            "journal_begin": 28.117,
+            "worker": 21.546,
+            "journal_finish": 35.818,
+            "handler": 90.71
+          },
+          "profile": "app"
+        },
+        {
+          "phase": "native-public",
+          "operation": "job.start",
+          "wire_elapsed_ms": 143.497,
+          "metrics_ms": {
+            "journal_begin": 31.004,
+            "worker": 31.717,
+            "journal_finish": 23.027,
+            "handler": 98.914
+          },
+          "profile": "root"
+        },
+        {
+          "phase": "native-public",
+          "operation": "job.start",
+          "wire_elapsed_ms": 132.35,
+          "metrics_ms": {
+            "journal_begin": 19.635,
+            "worker": 26.831,
+            "journal_finish": 37.561,
+            "handler": 95.965
+          },
+          "profile": "app"
+        },
+        {
+          "phase": "native-public",
+          "operation": "job.start",
+          "wire_elapsed_ms": 135.756,
+          "metrics_ms": {
+            "journal_begin": 30.785,
+            "worker": 22.543,
+            "journal_finish": 30.612,
+            "handler": 98.837
+          },
+          "profile": "root"
+        },
+        {
+          "phase": "native-public",
+          "operation": "job.start",
+          "wire_elapsed_ms": 124.303,
+          "metrics_ms": {
+            "journal_begin": 25.738,
+            "worker": 22.462,
+            "journal_finish": 28.451,
+            "handler": 89.591
+          },
+          "profile": "app"
+        }
+      ],
+      "preservation": {
+        "same_boot": true,
+        "same_coordinator": true,
+        "retained_jobs_preserved": true,
+        "sdk_loopback": true,
+        "rescue_inactive": true,
+        "enrollment_and_protected_hashes_preserved": true
+      },
+      "operation_counts": {
+        "managed-public/exec": 3,
+        "managed-public/file.begin": 1,
+        "managed-public/file.close": 1,
+        "managed-public/file.commit": 1,
+        "managed-public/file.open": 1,
+        "managed-public/file.read": 9,
+        "managed-public/file.write": 9,
+        "managed-public/job.forget": 4,
+        "managed-public/job.output": 4,
+        "managed-public/job.start": 4,
+        "managed-public/job.status": 4,
+        "native-public/exec": 3,
+        "native-public/file.begin": 1,
+        "native-public/file.close": 1,
+        "native-public/file.commit": 1,
+        "native-public/file.open": 1,
+        "native-public/file.read": 9,
+        "native-public/file.write": 9,
+        "native-public/job.forget": 4,
+        "native-public/job.output": 4,
+        "native-public/job.start": 4,
+        "native-public/job.status": 4
+      },
+      "slow_journal_or_public_job_requests": [
+        {
+          "phase": "preflight",
+          "operation": "job.start",
+          "wire_elapsed_ms": 1531.382,
+          "metrics_ms": {
+            "journal_begin": 44.035,
+            "worker": 222.011,
+            "journal_finish": 1141.841,
+            "handler": 1423.942
+          },
+          "profile": "root"
+        },
+        {
+          "phase": "preflight",
+          "operation": "exec",
+          "wire_elapsed_ms": 1552.991,
+          "metrics_ms": {
+            "journal_begin": 1138.424,
+            "worker": 42.072,
+            "journal_finish": 219.576,
+            "handler": 1414.674
+          }
+        },
+        {
+          "phase": "managed-public",
+          "operation": "job.forget",
+          "wire_elapsed_ms": 1338.224,
+          "metrics_ms": {
+            "journal_begin": 193.771,
+            "worker": 20.394,
+            "journal_finish": 1061.122,
+            "handler": 1283.631
+          }
+        },
+        {
+          "phase": "native-public",
+          "operation": "file.write",
+          "wire_elapsed_ms": 1387.242,
+          "metrics_ms": {
+            "journal_begin": 1164.826,
+            "worker": 40.014,
+            "journal_finish": 27.695,
+            "handler": 1304.74
+          }
+        },
+        {
+          "phase": "maintenance",
+          "operation": "job.start",
+          "wire_elapsed_ms": 1263.781,
+          "metrics_ms": {
+            "journal_begin": 30.847,
+            "worker": 24.283,
+            "journal_finish": 1129.298,
+            "handler": 1197.255
+          },
+          "profile": "root"
+        },
+        {
+          "phase": "observer-stop",
+          "operation": "file.close",
+          "wire_elapsed_ms": 1461.88,
+          "metrics_ms": {
+            "journal_begin": 1319.948,
+            "worker": 7.951,
+            "journal_finish": 23.318,
+            "handler": 1357.311
+          }
+        }
+      ],
+      "package_diff": {
+        "changed_members": [
+          ".manifest.tmp",
+          "config.xml",
+          "signature1.xml",
+          "author-signature.xml",
+          "payload/manifest.json",
+          "payload/native-manifest.json",
+          "service/api.js"
+        ],
+        "native_manifest_changed_keys": [
+          "source"
+        ],
+        "unchanged_payload_members": 17,
+        "native_manifest_artifacts_unchanged": true,
+        "service_api_sha256": "933f281741a50a9f316d4dc68ab7bdce94f1ebac9e77ddde2b7c4eefd2315f41"
+      },
+      "installation": {
+        "installed_contents_verified": true,
+        "managed_ready": true,
+        "same_boot": true,
+        "owned_units_inactive": true,
+        "sdk_loopback": true,
+        "rescue_disarmed": true
+      },
+      "observer": {
+        "resource_samples": 51,
+        "max_sample_gap_ms": 1002.031,
+        "skipped_intervals": 0,
+        "kernel_records": 396,
+        "kernel_bytes": 38368,
+        "kernel_complete": true,
+        "native_identity_bound_samples": {
+          "guardian": {
+            "samples": 13,
+            "memory_detail_samples": 4
+          },
+          "worker": {
+            "samples": 13,
+            "memory_detail_samples": 4
+          }
+        }
+      },
+      "acquisition_ms": 2702.376,
+      "migration_ms": 9469.468,
+      "return_ms": 19408.89
+    }
+  },
+  "findings": [
+    "S90D also reproduced a slow native root admission for the additional retained fixture: 1263.781 ms HTTPS, journal_begin 30.847 ms, worker 24.283 ms, journal_finish 1129.298 ms, handler 1197.255 ms. It is separate from the four fixed public admission samples; its request binds to the saved native-job intent and verified native selection.",
+    "S90D reproduced a slow public managed job.forget: 1338.224 ms over HTTPS, with journal_begin 193.771 ms, worker 20.394 ms, journal_finish 1061.122 ms and handler 1283.631 ms. Most of this request elapsed in the two service journal phases.",
+    "QN90A had two successful maintenance exec requests dominated by journal_finish: 1220.967 ms of a 1307.403 ms HTTPS request, and 1151.516 ms of a 1256.663 ms request. Worker phases were 26.273 and 34.229 ms. These observations locate these two delays in service result publication, not worker execution or surrounding local harness writes.",
+    "Journal.finish performs a durable file publication with file sync, rename and parent-directory sync. Its phase also includes serialization and scheduling. The measurements do not isolate an individual syscall or prove a storage/writeback mechanism, and do not retroactively attribute older outliers.",
+    "All executable/native/managed payload members are byte-identical to 0.7.46. The native manifest source list includes previously committed diagnostic source changes; its artifact entries are unchanged. Service api.js, version/signatures and manifest metadata changed."
+  ],
+  "limits": [
+    "Each implementation has four public job-admission and four forget samples per TV; medians and maxima are descriptive, not stable tail distributions. Historical latency outliers and the performance no-regression gate remain open.",
+    "The service handler interval contains the measured phases and includes body receipt/validation/response preparation. It excludes earlier TLS setup and later response transmission; the remainder of host elapsed time is not pure network time.",
+    "Only attempted phases are reported. Read-only calls omit journal metrics. Timed failures retain their original rejection/uncertainty semantics; outcomes and replay protection come from the durable journal, never timing headers.",
+    "The reduced observer still has nonzero overhead and sparse mapping samples. Short-lived processes and peaks may be missed; this is not complete process-tree or endurance coverage.",
+    "QN90A deployment acceptance disarmed the 300-second rescue about 26.948 seconds after its restore-intent file was written. Later extra cleanup found all deployment units unloaded/inactive, so a surviving service start counter was unavailable. S90D checks its zero start counter before disarming. Both integrated rounds independently verify their rescue start counters as zero.",
+    "The first QN90A extra cleanup refused an already-unloaded timer. Read-only reconciliation proved every deployment timer/service absent and inactive before the check was updated to skip already-inactive timers. No install or uncertain worker request was replayed.",
+    "No deliberate reboot/standby, global policy, persistent capability or SMACK change occurred. The managed acquisition bridge, worker fallback and independent .NET SDK rescue remain available. Native-only entry, broader lifecycle/resource/24-hour endurance and native-default observation remain unfinished."
+  ]
+}

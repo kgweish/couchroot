@@ -1,0 +1,226 @@
+{
+  "schema": 1,
+  "date": "2026-10-15",
+  "version": "0.7.41",
+  "source_base_commit": "78a91c4",
+  "scope": "Execution deadlines after durable launch preparation and backoff after slow failed persistence",
+  "local": {
+    "focused_cases": 4,
+    "execution_budget_bug_reproduced_on_previous_binary": true,
+    "slow_failure_retry_starvation_reproduced_before_backoff_fix": true,
+    "python_passed": 60,
+    "python_skipped": 12,
+    "node_passed": 404,
+    "node_skipped": 143,
+    "fresh_rehearsal_cases": 6,
+    "fresh_restart_cases": 19
+  },
+  "devices": {
+    "qn90a": {
+      "ordinary_worker_sha256": "4b6f19a3badd74734fe254258b5c80f0af43e1766338f69f69f922e38b108f4a",
+      "checks": [
+        {
+          "check": "startup_one_slot_short_refuses_without_consuming_token_or_creating_state",
+          "passed": true
+        },
+        {
+          "check": "guardian_zero_descriptor_shutdown_preserves_known_outcome_then_reconciles",
+          "passed": true
+        },
+        {
+          "check": "guardian_zero_descriptor_fault_retains_then_reconciles_without_replay",
+          "passed": true
+        },
+        {
+          "check": "production_zero_descriptor_idle_and_partial_frame_deadline",
+          "passed": true
+        },
+        {
+          "check": "enospc_terminal_result_retried_without_command_replay",
+          "passed": true
+        },
+        {
+          "check": "enospc_intent_not_published_or_executed_then_retry",
+          "passed": true
+        },
+        {
+          "check": "readonly_intent_not_published_or_executed_then_app_retry",
+          "passed": true
+        },
+        {
+          "check": "enospc_crash_cleans_resources_retains_journal_then_reconciles",
+          "passed": true
+        },
+        {
+          "check": "saved_retention_limit_preserves_records_and_app_capacity_recovers",
+          "passed": true
+        },
+        {
+          "check": "operation_descriptor_admission_without_abort",
+          "passed": true
+        },
+        {
+          "check": "descriptor_exhaustion_no_launch_then_app_execution_and_reconciliation",
+          "passed": true
+        },
+        {
+          "check": "bounded_original_command_fault_history_preserves_actual_exit_and_resets",
+          "passed": true
+        },
+        {
+          "check": "json_upload_chunk_limit_and_binary_interoperability",
+          "passed": true
+        },
+        {
+          "check": "production_resource_shutdown_and_cleanup",
+          "passed": true
+        }
+      ],
+      "controller_exit_code": 0,
+      "production_mode": true,
+      "managed_selected_ready": true,
+      "managed_fallback_dlls_unchanged": 3,
+      "retained_jobs_preserved_across_update": true,
+      "history_entries": 28,
+      "committed_entries": 22,
+      "rolled_back_entries": 6,
+      "pending_setup": false,
+      "settled": true,
+      "installed_members_verified": 82,
+      "reproducible_builds": 2,
+      "command_fault_observation_ms": {
+        "samples": 70,
+        "median": 225.0885,
+        "maximum": 1376.187,
+        "maximum_start_response": 638.641,
+        "job_timeout_ms": 2000,
+        "observation_timeout_ms": 3000,
+        "scope": "Start request through terminal status observation, including persistence; not guardian-only latency"
+      },
+      "scope_removed": true,
+      "helpers_released": true,
+      "retained_jobs_preserved": true,
+      "managed_worker_unchanged": true,
+      "history_unchanged": true,
+      "same_boot": true,
+      "sdk_loopback": true,
+      "rescue_inactive": true,
+      "enrollment_and_protected_hashes_preserved": true
+    },
+    "s90d": {
+      "ordinary_worker_sha256": "4b6f19a3badd74734fe254258b5c80f0af43e1766338f69f69f922e38b108f4a",
+      "checks": [
+        {
+          "check": "startup_one_slot_short_refuses_without_consuming_token_or_creating_state",
+          "passed": true
+        },
+        {
+          "check": "guardian_zero_descriptor_shutdown_preserves_known_outcome_then_reconciles",
+          "passed": true
+        },
+        {
+          "check": "guardian_zero_descriptor_fault_retains_then_reconciles_without_replay",
+          "passed": true
+        },
+        {
+          "check": "production_zero_descriptor_idle_and_partial_frame_deadline",
+          "passed": true
+        },
+        {
+          "check": "enospc_terminal_result_retried_without_command_replay",
+          "passed": true
+        },
+        {
+          "check": "enospc_intent_not_published_or_executed_then_retry",
+          "passed": true
+        },
+        {
+          "check": "readonly_intent_not_published_or_executed_then_app_retry",
+          "passed": true
+        },
+        {
+          "check": "enospc_crash_cleans_resources_retains_journal_then_reconciles",
+          "passed": true
+        },
+        {
+          "check": "saved_retention_limit_preserves_records_and_app_capacity_recovers",
+          "passed": true
+        },
+        {
+          "check": "operation_descriptor_admission_without_abort",
+          "passed": true
+        },
+        {
+          "check": "descriptor_exhaustion_no_launch_then_app_execution_and_reconciliation",
+          "passed": true
+        },
+        {
+          "check": "bounded_original_command_fault_history_preserves_actual_exit_and_resets",
+          "passed": true
+        },
+        {
+          "check": "json_upload_chunk_limit_and_binary_interoperability",
+          "passed": true
+        },
+        {
+          "check": "production_resource_shutdown_and_cleanup",
+          "passed": true
+        }
+      ],
+      "controller_exit_code": 0,
+      "production_mode": true,
+      "managed_selected_ready": true,
+      "managed_fallback_dlls_unchanged": 3,
+      "retained_jobs_preserved_across_update": true,
+      "history_entries": 29,
+      "committed_entries": 22,
+      "rolled_back_entries": 7,
+      "pending_setup": false,
+      "settled": true,
+      "installed_members_verified": 82,
+      "reproducible_builds": 2,
+      "command_fault_observation_ms": {
+        "samples": 70,
+        "median": 86.019,
+        "maximum": 2326.195,
+        "maximum_start_response": 2291.947,
+        "job_timeout_ms": 2000,
+        "observation_timeout_ms": 3000,
+        "scope": "Start request through terminal status observation, including persistence; not guardian-only latency"
+      },
+      "scope_removed": true,
+      "helpers_released": true,
+      "retained_jobs_preserved": true,
+      "managed_worker_unchanged": true,
+      "history_unchanged": true,
+      "same_boot": true,
+      "sdk_loopback": true,
+      "rescue_inactive": true,
+      "enrollment_and_protected_hashes_preserved": true
+    }
+  },
+  "source_sha256": {
+    "research/autonomous-root/native-worker/jobs.h": "54a0eee4e97e940cb63f2f5f86c74342e0a206066d55d80478467c747d7ff800",
+    "tests/native_job_start_timing_test.py": "f1ea79f1d775cf36216b5dc024cebe2a5031e5f440c73907a0a3f36f1eb6767f",
+    "tests/native-io/delay.c": "7fc39348436ef7f7ba3b9c8674d92c7fae6ac274b0d5df1eb7f60a859ea04c03"
+  },
+  "controller": {
+    "instrumented": true,
+    "checks_and_deadlines_unchanged": true,
+    "artifact_sha256": "d82109114d7106a8f70d17cf42bb27c25fc1aaf45df24147eeebd09e2d82c8ef",
+    "diagnostic_header_sha256": "491bf5ecf5d68e366a5f80b8652d1c9b21825ed4069b7bbf8168345e8d1a7743"
+  },
+  "qualification": [
+    "The native job execution deadline is armed after the running record and directory entry have been persisted, immediately before writing the one-byte command release gate. The job mutex excludes the monitor throughout preparation. No command is released on failed identity or persistence.",
+    "A host-only fsync interposer delays running and terminal record saves for two seconds. On the previous worker, a 500ms command budget expired before execution; the corrected worker completes an exit-7 command, persists it and preserves it across restart without replay. A genuinely over-budget command still times out and cannot execute its final witness.",
+    "A two-second failed running-record save keeps the command gate closed and its intent reserved. Slow terminal save failures previously scheduled retries from before the call, allowing an overdue retry to repeatedly occupy the mutex and time out a status request. Retry deadlines now start one second after the call returns. Status completes, a duplicate start is refused, and ordinary shutdown/restart reconciles without execution.",
+    "With fsync blocked for forty seconds in only the protocol worker, the existing progress watchdog terminates it before the command can execute. Same-boot reconciliation preserves interruption without replay; independent guardian recovery I/O is not delayed in this fixture.",
+    "Both installed ordinary production binaries passed the existing fourteen resource groups, including seventy command-fault jobs each. The private controller retains the original 2000ms job and 3000ms observation limits, with per-iteration timing. No interposer or test hook was packaged or used on either TV."
+  ],
+  "limits": [
+    "The initial 0.7.40 QN90A command-fault timeout lacked phase timing. The locally reproduced premature-budget bug is consistent with observed long admission latency, but does not prove the cause of that historical timeout.",
+    "Two-second fsync delay and EIO are simulated locally only. These on-TV runs qualify the updated ordinary binary under the existing bounded resource conditions, not forced slow storage or TV-wide pressure.",
+    "The existing progress watchdog bounds stalled preparation. This change does not remove shared-mutex latency under slow storage or establish a strict command deadline under concurrent persistence stalls. Broader pressure/lifecycle, endurance and performance qualification remain open.",
+    "Native-only entry remains unqualified. The .NET entry bridge, worker fallback and independent 300-second rescue remain deployed. No reboot, standby, global policy, persistent file-capability or SMACK-rule change occurred."
+  ]
+}

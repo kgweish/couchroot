@@ -1,11 +1,13 @@
 from pathlib import Path
 import contextlib
+import errno
 import fcntl
 import hashlib
 import json
 import os
 import re
 import subprocess
+import sys
 import tempfile
 
 REPO = Path(__file__).resolve().parents[1]
@@ -71,10 +73,17 @@ def run(argv, timeout=180, supervise=False, **kwargs):
     own_group=not grouped
     with subprocess.Popen([str(x) for x in argv], start_new_session=own_group,
                           stdout=subprocess.PIPE, stderr=subprocess.STDOUT, **kwargs) as child:
-        def stop(sig):
+        def stop_group(sig):
             with contextlib.suppress(ProcessLookupError):
-                if own_group:os.killpg(child.pid,sig)
-                else:child.send_signal(sig)
+                try:os.killpg(child.pid,sig)
+                except PermissionError as error:
+                    # Darwin reports EPERM for a group containing only zombies.
+                    if sys.platform != 'darwin' or error.errno != errno.EPERM:raise
+        def stop(sig):
+            if child.returncode is not None:return
+            if own_group:stop_group(sig)
+            else:
+                with contextlib.suppress(ProcessLookupError):child.send_signal(sig)
         try:
             try:output,_=child.communicate(timeout=timeout)
             except subprocess.TimeoutExpired:
@@ -94,8 +103,8 @@ def run(argv, timeout=180, supervise=False, **kwargs):
                 raise error
             return text
         finally:
-            # A failed observer may have orphaned nested compilers/SDK helpers.
-            if supervise and own_group:stop(signal.SIGKILL)
+            # Helpers can outlive a reaped leader; their group ID stays reserved.
+            if supervise and own_group:stop_group(signal.SIGKILL)
 
 
 def safe_id(value):

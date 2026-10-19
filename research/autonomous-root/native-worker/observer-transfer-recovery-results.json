@@ -1,0 +1,82 @@
+{
+  "schema": 1,
+  "observed_at_utc": "2026-10-16T13:39:18.440714+00:00",
+  "scope": "Consecutive endurance transfers, stopped-run reconciliation and S90D recovery; no 24-hour acceptance",
+  "package_version": "0.7.48",
+  "installed_package_changed": false,
+  "source_sha256": {
+    "research/autonomous-root/native-worker/observer-transfer.py": "0fa325446d01bbf884158f890e58713238b207bdb24323f3cd3eb27997d801de",
+    "tests/native_observer_transfer_test.py": "a64176acb94c6a88b1690124647b8ca561f105c22bc1796335fac73f1b89e18e"
+  },
+  "local_tests": {
+    "observer_tests_passed": 61,
+    "linux_observer_skipped": 13,
+    "transfer_tests_passed": 6,
+    "npm_passed": 423,
+    "npm_skipped": 157
+  },
+  "stopped_qn90a_trial": {
+    "duration_minutes": 60.909,
+    "completed_windows_before_stop": 22,
+    "reason": "Second hourly transfer reused an existing local download filename",
+    "reconciled_to_managed": true,
+    "pending_collector_verified_and_cleaned": true,
+    "owned_transfer_removed_after_hash_check": true,
+    "quiet_job_cancelled_preserved_across_return_then_forgotten": true,
+    "retained_jobs_and_enrollment_preserved": true,
+    "sdk_loopback_restored": true,
+    "endurance_accepted": false
+  },
+  "qn90a_consecutive_transfer_qualification": {
+    "count": 2,
+    "bytes_each": 1048576,
+    "distinct_downloads": true,
+    "native_round_trip": true,
+    "managed_return_ready": true,
+    "retained_jobs_and_enrollment_preserved": true,
+    "rescue_retired_unfired": true
+  },
+  "s90d_recovery": {
+    "enrollment_and_protected_hashes_preserved": true,
+    "host_assisted_sdk_restoration": true,
+    "managed_ready": true,
+    "native_reboot_qualified": false,
+    "new_boot": true,
+    "rescue_retired_unfired": true,
+    "root_acquisition": "native-managed-entry",
+    "sdk_loopback": true,
+    "selection_and_retained_jobs_preserved": true
+  },
+  "s90d_retained_exit_probe": {
+    "active_zero_status_observed": true,
+    "capture_complete": true,
+    "exit_wait_seconds": 5.1334481672383845,
+    "observations": 11,
+    "owned_scope_cleaned": true,
+    "rescue_retired_without_firing": true,
+    "retained_exit_success_observed": true,
+    "same_boot": true,
+    "same_managed_worker": true
+  },
+  "fresh_endurance": {
+    "devices": [
+      "qn90a",
+      "s90d"
+    ],
+    "planned_seconds": 86460,
+    "planned_windows_each": 540,
+    "quiet_job_timeout_seconds": 86400,
+    "independent_rescue_seconds": 300,
+    "unique_download_helper_used": true,
+    "source_snapshots_pinned": true,
+    "initial_state": "running; completion not accepted"
+  },
+  "remaining_gates": [
+    "full-duration endurance and resource analysis on both TVs",
+    "comparative performance",
+    "native-only capability entry",
+    "native cross-boot reconciliation and authorized power lifecycle",
+    "native-default observation",
+    "separately approved .NET retirement"
+  ]
+}

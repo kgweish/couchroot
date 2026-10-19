@@ -3,8 +3,13 @@
 A separate signed web service reacquires a temporary namespace root context over
 loopback SDB and keeps an authenticated worker alive. This is autonomous
 reacquisition, not a firmware root patch. It is prepared for the existing QN90A
-(.NET Core 3.1) and S90D (.NET 6) profiles. **Both TVs have verified reboot startup,
-local root acquisition, worker recovery and registered-service process recovery.**
+(.NET Core 3.1) and S90D (.NET 6) profiles. The experimental native worker retains
+its small .NET entry bridge and managed fallback. Earlier managed releases passed
+reboot and service recovery trials; those results do not qualify the current
+native candidate's complete lifecycle. Both TVs ran native-selected 0.7.52 in
+bounded trials; clean boot, standby/power interruption and full endurance remain
+open. See the [current release scope](../../docs/project/release-readiness.md) and
+[dated qualification snapshot](native-worker/MIGRATION.md#current-qualification-snapshot).
 Signed-package success is not proof of on-boot entitlement, Node
 runtime support, SDK admission, SMACK access or full privileged API coverage.
 
@@ -97,6 +102,44 @@ installed and protected-file hashes matched, and both TVs had fresh telemetry
 and authenticated root connections at final verification. Physical AC-power
 removal was not tested.
 
+## Service restart during maintenance
+
+Use [restart-service.sh](restart-service.sh) through the existing admitted SDK
+transport, with the per-device setup lock, pending-run check and independent SDK
+rescue already in place. On S90D the app-user launcher cannot read the WRT
+process identity; do not relax its permissions to run this check.
+
+Before opening SDK maintenance, bind the **HTTPS listener's WRT PID and start
+ticks** through the authenticated root connection, and record the boot ID,
+selection, enrollment and retained-job hashes in the private operation journal.
+The PID printed by `app_launcher -k` belongs to the registered service wrapper
+and is not sufficient to identify the JavaScript host.
+
+Run the exact reviewed script with `BOOT_ID WRT_PID START_TICKS` as its three
+arguments. It stops the registered service once, waits up to 120 seconds for the
+bound WRT host to disappear, confirms the wrapper is stopped, then submits one
+launch. It refuses changed identities, unreadable process state, timeout and
+unexpected application status. Keep the SDK window long enough for this wait
+and arrange guarded restoration of loopback before native acquisition; preserve
+the independent rescue until acceptance. A failed or lost response requires
+inspection, not another invocation.
+
+`SERVICE_START_SUBMITTED` is only a launch acknowledgment. Acceptance requires a
+different WRT host and ready native worker on the same boot, unchanged selection
+and protected state, and continued readiness after owned helper cleanup and
+rescue retirement. Keep the signed fallback and original journals. This procedure
+does not qualify reboot, standby or unattended recovery.
+
+The local regression uses a real Linux process whose exit lags behind the
+wrapper's stopped status. Run it with `python3 -m unittest discover -s tests -p
+service_restart_test.py` on Linux; it also covers stale identities, a host that
+does not exit, and unexpected application status.
+
+S90D passed this procedure on unchanged signed 0.7.52: stop, host-exit wait and
+launch took about 115 seconds. A different WRT host and native worker remained
+ready before and after helper cleanup. See the
+[restart evidence](native-worker/s90d-service-restart-fix-results.json).
+
 ## Local preparation and tests
 
 From the repository root:
@@ -118,6 +161,47 @@ in one year; renewal requires deliberate re-enrollment, not bypassing TLS checks
 The request journal admits at most 1,000 unique operations before maintenance is
 required. It stores pending intents across restarts, not command output. An
 uncertain operation requires inspection; a new request ID is not a safe retry.
+
+## Request phase timing
+
+Authenticated, validated worker requests (`/v1/exec`, `/v1/op` and the binary
+file endpoints) return a `Server-Timing` header. Fixed metric names report
+milliseconds from the service's monotonic clock:
+
+- `journal_begin`: durable intent publication, including automatic archive work
+  if needed. A thrown publication is timed too.
+- `worker`: dispatch through the resolved/rejected worker response, including
+  worker persistence, transport and scheduling delays.
+- `journal_finish`: attempted durable result publication, including confirmed
+  worker refusal handling. Uncertain operations do not acquire a completion just
+  to supply this metric.
+- `handler`: request-handler entry through header preparation. It includes body
+  receipt, validation and response preparation, and contains the phase intervals.
+
+Journal phases also contain `journal_begin_file_sync`,
+`journal_begin_directory_sync`, `journal_finish_file_sync` and
+`journal_finish_directory_sync` metrics when those barriers were attempted.
+Their `dur` is the aggregate elapsed time in the corresponding synchronous sync
+calls; `desc` gives the call count. Automatic archive work aggregates its file,
+archive-parent and active-journal syncs into the begin phase. A failed sync counts
+as an attempted call. These are nested measurements: do not add them to their
+containing journal phase when calculating a total. They include descheduling and
+runtime overhead, so they are not CPU time or proof of flash latency. The journal
+JSON and archive formats remain unchanged for existing recovery packages.
+
+Only attempted phases appear. Read-only operations omit journal metrics, and
+pre-dispatch journal failure omits worker/result metrics. Values reset for each
+keep-alive request. Headers contain no commands, paths or request identities.
+Enrollment and browser restrictions apply before timing is enabled. Status and
+asynchronous native-administration routes do not report these worker phases.
+The [Server Timing format](https://www.w3.org/TR/server-timing/) carries durations;
+clients must not treat them as outcomes, clock synchronization or safe-retry
+receipts. Journal semantics and sync barriers are unchanged.
+
+`handler` excludes TLS setup before handler entry and response transmission after
+header preparation. Its difference from client-observed request time is not a
+pure network measurement. These intervals can locate a delay but cannot by
+themselves distinguish storage latency from descheduling or prove causality.
 
 ## Required device acceptance, in order
 

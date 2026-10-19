@@ -1,0 +1,86 @@
+{
+  "schema": 1,
+  "date": "2026-10-16",
+  "scope": "Exact firmware static analysis following read-only capture; no new native entry execution",
+  "installed_package_version": "0.7.45",
+  "native_only_entry_qualified": false,
+  "devices": {
+    "qn90a": {
+      "security_library": {
+        "path": "/usr/lib/libsecurity-manager-client.so.3.0.0",
+        "sha256": "37e9d6ba1b63d2807720cedc9f90aa026d736fe70cdcd3a92d4712594a340a2b",
+        "evidence_ids": [
+          "ev_62a5525ed290fb2832177215473c00404cffde6e957532ee0f354fe155a8343a",
+          "ev_06d1a2f342cf91abcb33fb88f976c12e9a807a8bd6ce1deb8fa2c2292c182cce"
+        ],
+        "finding": "Observed app-preparation path reaches thread synchronization that creates an empty cap_init object and applies it with cap_set_proc."
+      },
+      "starter": {
+        "path": "/usr/bin/launchpad-starter",
+        "sha256": "a24f6dde06fb9b4b3110afc6b9f7a22bd3666833869e4d31d5f89078aa3dad03",
+        "evidence_ids": [
+          "ev_7f475b078d19b4733f37dafbba4e85cf3094357266ef12fe9d0ee7811a2dae1d"
+        ],
+        "finding": "Fixed launchpad-process-pool execution and shared Launchpad state; unsuitable for an isolated caller-code trial.",
+        "invoked": false
+      },
+      "analyst_assisted_callbacks": {
+        "provider": "Ghidra 12.1, separate disposable projects",
+        "method": "Thumb entries derived from low-bit callback pointers; analysis listing corrected, source binary unchanged",
+        "receiver_entry": "0x42b32dbc",
+        "receiver_analysis_sha256": "4f3f9527487add4d28e5bcace3e338d6aaceb460f19516f3d58a376966b0ac72",
+        "security_entry": "0x44cbe1f8",
+        "security_analysis_sha256": "6cc44b33ebaed0ce0533c9b94f63f1bdf461731b3a5e9c01c36c8b85254a732e",
+        "finding": "Receiver prepares app security before the app callback; the recovered security callback reaches the empty-capability helper.",
+        "provenance": "Private analyst-assisted logs, distinct from REA evidence records."
+      }
+    },
+    "s90d": {
+      "security_library": {
+        "path": "/usr/lib/libsecurity-manager-client.so.3.0.0",
+        "sha256": "93d46d2c7d1b8a717411b541553b12d5bde03f5e45ea0dc853c92a80197e7164",
+        "evidence_ids": [
+          "ev_b294ffc94e93a13325f3ca9f86cf9c26ee1c615c5d01d89ef90ed8cdf2bdc44d",
+          "ev_51879ec34cfe620bfb0b3b3368f917cb4553139c4c3ac66201738f1727477661"
+        ],
+        "finding": "Observed app-preparation path reaches thread synchronization that creates an empty cap_init object and applies it with cap_set_proc."
+      },
+      "starter": {
+        "path": "/usr/bin/launchpad-starter",
+        "sha256": "0013350ccd1646b3662056f112a77a758c1bac4830be6534dabf1843b9f082d1",
+        "evidence_ids": [
+          "ev_1907b3d604da28eb5d63f2d97b19adc3fda88c3d62759fe7b1cc87e9a9b03b12"
+        ],
+        "finding": "Fixed launchpad-process-pool execution and shared Launchpad state; unsuitable for an isolated caller-code trial.",
+        "invoked": false
+      },
+      "library_mount": {
+        "library_sha256": "fa12fe5488946f4fdf787fe271bcd2d210e36db76320df1742c0a96a00e2c307",
+        "evidence_ids": [
+          "ev_6df0addb8934ff71598e29248c3212186840f35f5d5cc05866b109bab4e1a239",
+          "ev_e3d9a1c991c348bd57547e46b6cb7cde52a03bf7c93577e4385b9ecf12b1a908"
+        ],
+        "finding": "MountGadgetAndLibrary dispatches to a helper constructing lowerdir options and calling mount with overlay type and MS_RDONLY."
+      },
+      "launch_order": {
+        "library_sha256": "01f976b7fc3111ec629825e07b6a354861c01a6c4714091c8d7b68352532deb0",
+        "evidence_ids": [
+          "ev_104a847c3dbb78d6be7e288e179365fd1a48f4224b993e0c0d3c9a2fed8d33b7",
+          "ev_7aa5cc2105ab57c683b5e32dfa00ef8b12fed6d0300a7935e8aaef126919dbe8",
+          "ev_2fe3fa48d4a78e02f10e5422839fc611269a756e58d0432eab7d29c79d7f4b98",
+          "ev_3cf879c90fc43ab197927225805deed44b19c7fadb21e1c76cc69543abb3cda4",
+          "ev_cd62ed95f7940ed5232732ad1d786520d83d9f9c1890010312dce7bd35c71075"
+        ],
+        "finding": "The later request preparation mounts resources, then prepares app security; the original Create callback occurs before the Launchpad connection."
+      }
+    }
+  },
+  "limits": [
+    "Static paths do not establish runtime success, namespace isolation or every capability state.",
+    "Some reconstructed QN90A indirect calls remain unresolved; no equivalent read-only overlay path was established.",
+    "Source snapshots corroborate intent but are not asserted to be the exact firmware source.",
+    "The file-capability inventory is not an exhaustive investigation of all capable executables.",
+    "The later app pipeline and launchpad-starter do not qualify a replacement entry. An earlier isolated mapping mechanism remains unresolved.",
+    "No new loader or starter execution, registration, package update, global policy, file-capability or SMACK change occurred. Managed entry, worker fallback and independent rescue remain available."
+  ]
+}
