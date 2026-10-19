@@ -36,13 +36,25 @@ provides catalogs and simulated app discovery, launch and audio APIs. UI tests u
 for stable assertions. Sound starts off in the workbench; enabling it can play
 the app's normal local Web Audio tones.
 
-**Design · tvOS apps & inputs** (`/?scenario=tvos-concept`) previews the S89C
-Home design using simulated apps. It shows five columns with a clock, local service
+**Design · Gallery apps & inputs** (`/?scenario=tvos-concept`) previews the S89C
+Home design using simulated apps. Gallery shows five columns with a clock, local service
 logos and labels below each tile. A greeting and date follow the browser's local
 time: morning starts at 05:00, afternoon at 12:00 and evening at 17:00.
-Landscape photos load directly from Unsplash and crossfade once a minute;
-reduced motion removes the fade. Rotation pauses while the page is hidden.
+Fifteen landscape photos load directly from Unsplash and crossfade once a minute;
+the sequence repeats after about fifteen minutes while Home stays visible.
+Reduced motion removes the fade. Rotation pauses while the page is hidden.
 Failed downloads keep the last photo, or the gradient before any photo loads.
+Settings → **Background photos** turns downloads and rotation on or off. Off
+shows the gradient and cancels a photo still loading; the choice survives reloads.
+Settings → **Tile layout** cycles through **Gallery**, **Comfortable**, and
+**Compact**. Gallery is the current five-column design with logos, captions and
+the greeting/date. Comfortable and Compact use the earlier card designs with up
+to three or four columns. Each choice updates the arrow and move navigation,
+with a matching Settings preview. The photo toggle works across these layouts.
+S89C saves this choice under `minimal-hub.design.v1`, preserving the older
+`minimal-hub.layout.v1` values: the former S89C Compact choice becomes Gallery;
+a saved Comfortable choice stays Comfortable. Other TV profiles retain their
+existing layout choices. Photo preferences use `minimal-hub.photos.v1`.
 Its Live TV, HDMI 1 and HDMI 3 entries are
 sample fixtures; they do not report connected devices or switch real inputs.
 The design uses `web/tvos.js`, `web/tvos.css` and the shared remote navigation.
@@ -62,10 +74,26 @@ with Spotify as an extra music option. Extra services start off Home. Open
 Picker rows and the artwork preview use the same local logo files as Home.
 The catalog is simulated; on a TV, install through Samsung's Apps store before
 adding its discovered shortcut. Region and model determine store availability.
-The landscapes are [Blanca Lake by Yoshi Takekawa](https://unsplash.com/photos/4qKVQYOluDk),
-[an alpine landscape by Diggity Dog](https://unsplash.com/photos/WaceUPhYJYk), and
-[a mountain lake by Sergi Kabrera](https://unsplash.com/photos/G1a8v-UJ-0w),
-published under the [Unsplash License](https://unsplash.com/license).
+The rotation uses these photos under the [Unsplash License](https://unsplash.com/license):
+
+| Landscape | Photographer |
+| --- | --- |
+| [Blanca Lake](https://unsplash.com/photos/landscape-photography-of-mountain-surrounded-by-pine-trees-and-body-of-water-4qKVQYOluDk) | Yoshi Takekawa |
+| [Alpine landscape](https://unsplash.com/photos/WaceUPhYJYk) | Diggity Dog |
+| [Mountain lake](https://unsplash.com/photos/G1a8v-UJ-0w) | Sergi Kabrera |
+| [Rocky coast](https://unsplash.com/photos/coastal-landscape-with-ocean-and-rocky-cliffs-5XWwlkEnscA) | Kellen Riggin |
+| [Forest waterfall](https://unsplash.com/photos/landscape-photography-of-waterfalls-oRIFpNILJOU) | Gabe Hobbs |
+| [White Sands](https://unsplash.com/photos/soft-white-sand-dunes-under-a-pale-sky-bsWh6w4nQio) | Royce Fonseca |
+| [Pine forest](https://unsplash.com/photos/landscape-photography-of-green-plants-under-tall-trees-in-forest-kC4fGR7rZVY) | Handy Wicaksono |
+| [Diablo Lake](https://unsplash.com/photos/body-of-water-between-mountains-ZNkvxIPPVeE) | Sergei A |
+| [Pyramid Lake](https://unsplash.com/photos/a-lake-with-mountains-in-the-background-qmg0MidYviw) | Dennis_TM |
+| [Snowdonia](https://unsplash.com/photos/mountain-landscape-with-a-lake-and-clear-blue-sky-aJzQJ_oP-tY) | fabian jones |
+| [Lake Minnewanka](https://unsplash.com/photos/stunning-mountain-landscape-with-lake-and-rocky-foreground-GDbwG7ziHYM) | Rafael Peier |
+| [Lake Geneva](https://unsplash.com/photos/vast-lake-surrounded-by-mountains-under-a-cloudy-sky-aKUV3Hm4CqQ) | Mikheil Kuzmidi |
+| [Swiss Alps](https://unsplash.com/photos/mountains-tower-over-a-serene-lake-JzlFykB6YBQ) | Pascal Debrunner |
+| [California dunes](https://unsplash.com/photos/the-sun-is-shining-over-the-sand-dunes-9G8K_nycv7s) | Zetong Li |
+| [Thar Desert](https://unsplash.com/photos/sand-dunes-at-desert-under-grey-cloudy-sky-mZDOfgiQeE4) | Sharad Bhat |
+
 The active photo's credit appears below the controls. The concept requests only
 these curated images from `images.unsplash.com`, with no API key or referrer.
 

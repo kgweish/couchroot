@@ -156,18 +156,21 @@ test('tvOS design navigation follows the visible rows and stays scoped to its sc
   }
 });
 
-test('design respects the existing layout setting and Move grid geometry', async () => {
+test('Gallery date stays above apps with the clock off and earlier layouts keep Move geometry', async () => {
   const page = await conceptPage({ viewport: { width: 1920, height: 1080 } });
   await page.goto(url + '/hub?scenario=tvos-concept&reset=1&static=1');
   await page.locator('.design-caption').nth(14).waitFor();
   await page.locator('#settings').click();
-  await page.locator('#setting-layout').click();
   await page.locator('#setting-clock').click();
   await page.locator('#setting-clock').click();
   await page.keyboard.press('Escape');
   assert.equal(await page.locator('#home-clock').isVisible(), false);
   const header = await page.locator('#design-date').boundingBox();
   assert.ok((await page.locator('#favorites > button').first().boundingBox()).y > header.y + header.height, 'Date stays above apps with the clock off');
+  await page.locator('#settings').click();
+  await page.locator('#setting-layout').click();
+  await page.keyboard.press('Escape');
+  assert.equal(await page.locator('#design-date').isVisible(), false);
   await page.locator('#favorites > button').first().focus();
   await page.keyboard.press('ArrowDown');
   assert.equal(await page.locator(':focus').getAttribute('data-id'), 'org.tizen.primevideo');
@@ -332,6 +335,144 @@ test('concept greeting and date follow local noon and midnight without reloading
   await page.close();
 });
 
+test('S89C layout choices render Gallery, Comfortable and Compact with matching arrows', async () => {
+  const page = await conceptPage({ viewport: { width: 1920, height: 1080 } });
+  await page.goto(url + '/hub?scenario=tvos-concept&reset=1&static=1');
+  await page.locator('#settings').click();
+  assert.equal(await page.locator('#layout-value').textContent(), 'Gallery');
+  for (const [name, columns, cells] of [['Gallery', 5, 10], ['Comfortable', 3, 6], ['Compact', 4, 8]]) {
+    await page.locator('#setting-layout').focus();
+    assert.equal(await page.locator('#layout-value').textContent(), name);
+    assert.equal(await page.locator('#setting-visual > span').count(), cells);
+    await page.keyboard.press('Escape');
+    const tiles = page.locator('#favorites > button');
+    const ids = await tiles.evaluateAll(items => items.map(item => item.dataset.id));
+    assert.equal(await page.locator('#favorites').evaluate(grid => getComputedStyle(grid).gridTemplateColumns.split(' ').length), columns);
+    assert.equal(await page.locator('.design-caption').count(), name === 'Gallery' ? ids.length : 0);
+    await tiles.first().focus(); await page.keyboard.press('ArrowDown');
+    assert.equal(await page.locator(':focus').getAttribute('data-id'), ids[columns]);
+    await page.locator('#settings').click(); await page.locator('#setting-layout').click();
+  }
+  assert.equal(await page.locator('#layout-value').textContent(), 'Gallery');
+  await page.reload(); await page.locator('#settings').click();
+  assert.equal(await page.locator('#layout-value').textContent(), 'Gallery');
+  assert.equal(await page.evaluate(() => localStorage.getItem('minimal-hub.design.v1')), 'gallery');
+  await page.close();
+});
+
+test('S89C layout choices persist, handle failed saves and retain legacy layout preferences', async () => {
+  const page = await conceptPage();
+  await page.goto(url + '/hub?scenario=tvos-concept&reset=1&static=1');
+  await page.locator('#settings').click(); await page.locator('#setting-layout').click();
+  await page.reload(); await page.locator('#settings').click();
+  assert.equal(await page.locator('#layout-value').textContent(), 'Comfortable');
+  await page.locator('#setting-layout').click();
+  await page.reload(); await page.locator('#settings').click();
+  assert.equal(await page.locator('#layout-value').textContent(), 'Compact');
+  await page.evaluate(() => { Storage.prototype.setItem = () => { throw new Error('QuotaExceeded'); }; });
+  await page.locator('#setting-layout').click();
+  assert.match(await page.locator('#settings-status').textContent(), /Could not save/);
+  assert.equal(await page.locator('#layout-value').textContent(), 'Compact');
+  await page.reload();
+  await page.evaluate(() => {
+    localStorage.removeItem('minimal-hub.design.v1');
+    localStorage.setItem('minimal-hub.layout.v1', 'comfortable');
+  });
+  await page.reload(); await page.locator('#settings').click();
+  assert.equal(await page.locator('#layout-value').textContent(), 'Comfortable');
+  await page.evaluate(() => {
+    localStorage.setItem('minimal-hub.layout.v1', 'compact');
+    localStorage.setItem('minimal-hub.design.v1', 'invalid');
+  });
+  await page.reload(); await page.locator('#settings').click();
+  assert.equal(await page.locator('#layout-value').textContent(), 'Gallery');
+  await page.goto(url + '/hub?scenario=compact&reset=1&static=1');
+  await page.locator('#settings').click();
+  assert.equal(await page.locator('#layout-value').textContent(), 'Compact');
+  assert.equal(await page.locator('#setting-photos').isVisible(), false);
+  await page.close();
+});
+
+test('S89C move mode follows the selected layout and preserves the focused tile', async () => {
+  for (const [layout, columns] of [['gallery', 5], ['comfortable', 3], ['compact', 4]]) {
+    const page = await conceptPage();
+    await page.goto(url + '/hub?scenario=tvos-concept&reset=1&static=1');
+    await page.evaluate(layout => localStorage.setItem('minimal-hub.design.v1', layout), layout);
+    await page.reload();
+    await page.locator('#edit-apps').click();
+    await page.locator('#editor-list button').first().click();
+    await page.locator('#editor-list button').first().click();
+    await page.locator(':focus').evaluate(tile => { window.movingTile = tile; });
+    await page.keyboard.press('ArrowDown');
+    assert.equal(await page.locator('#move-position').textContent(), `Position ${columns + 1} of 15`);
+    assert.equal(await page.locator(':focus').evaluate(tile => tile === window.movingTile), true);
+    await page.keyboard.press('Enter');
+    const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('minimal-hub.shortcuts.v1')).apps);
+    assert.equal(saved[columns].id, 'kIciSQlYEM.plex');
+    await page.close();
+  }
+});
+
+test('photo setting stops downloads and persists across reloads', async () => {
+  const page = await conceptPage();
+  let requests = 0;
+  await page.route('https://images.unsplash.com/**', route => {
+    requests++;
+    return route.fulfill({ contentType: 'image/png', body: landscapePixel });
+  });
+  await page.clock.install();
+  await page.goto(url + '/hub?scenario=tvos-concept&reset=1&static=1');
+  await page.locator('.design-landscape.is-active').waitFor();
+  await page.locator('#settings').click();
+  const setting = page.locator('#setting-photos');
+  await setting.focus({ timeout: 2000 });
+  await page.keyboard.press('Enter');
+  assert.equal(await page.locator('#photos-value').textContent(), 'Off');
+  assert.equal(await setting.getAttribute('aria-pressed'), 'false');
+  assert.equal(await page.locator(':focus').getAttribute('id'), 'setting-photos');
+  assert.equal(await page.locator('.design-landscape.is-active').count(), 0);
+  assert.equal(await page.locator('#design-photo-credit').textContent(), '');
+  assert.equal(await page.evaluate(() => localStorage.getItem('minimal-hub.photos.v1')), 'off');
+  const count = requests;
+  await page.clock.fastForward(180_000);
+  assert.equal(requests, count);
+  await page.reload();
+  await page.locator('#settings').click();
+  assert.equal(await page.locator('#photos-value').textContent(), 'Off');
+  assert.equal(requests, count);
+  await setting.focus(); await page.keyboard.press('Enter');
+  await page.locator('.design-landscape.is-active').waitFor();
+  assert.equal(await page.locator('#photos-value').textContent(), 'On');
+  assert.equal(requests, count + 1);
+  await page.close();
+});
+
+test('photo setting handles failed saves and cancels a photo still loading', async () => {
+  const page = await conceptPage();
+  let pending;
+  await page.route('https://images.unsplash.com/**', route => { pending = route; });
+  await page.goto(url + '/hub?scenario=tvos-concept&reset=1&static=1', { waitUntil: 'domcontentloaded' });
+  await page.locator('#settings').click();
+  await page.evaluate(() => {
+    const write = Storage.prototype.setItem;
+    Storage.prototype.setItem = function (key, value) {
+      if (key === 'minimal-hub.photos.v1') throw new Error('QuotaExceeded');
+      return write.call(this, key, value);
+    };
+    window.restorePhotoStorage = () => { Storage.prototype.setItem = write; };
+  });
+  await page.locator('#setting-photos').click({ timeout: 2000 });
+  assert.match(await page.locator('#settings-status').textContent(), /Could not save/);
+  assert.equal(await page.locator('#photos-value').textContent(), 'On');
+  await page.evaluate(() => window.restorePhotoStorage());
+  await page.locator('#setting-photos').click();
+  await pending.fulfill({ contentType: 'image/png', body: landscapePixel });
+  assert.equal(await page.locator('.design-landscape.is-active').count(), 0);
+  assert.equal(await page.locator('#design-photo-credit').textContent(), '');
+  assert.equal(await page.locator('#photos-value').textContent(), 'Off');
+  await page.close();
+});
+
 test('landscapes rotate with two frames, preserve focus and retain the last image on failure', async () => {
   const page = await conceptPage({ reducedMotion: 'reduce' });
   let fail = false;
@@ -373,6 +514,28 @@ test('landscapes rotate with two frames, preserve focus and retain the last imag
     document.dispatchEvent(new Event('visibilitychange'));
   });
   await resumed;
+  await page.close();
+});
+
+test('landscapes show fifteen different photos before repeating', async () => {
+  const page = await conceptPage();
+  await page.clock.install();
+  await page.goto(url + '/hub?scenario=tvos-concept&reset=1&static=1');
+  const active = page.locator('.design-landscape.is-active');
+  await active.waitFor();
+  const first = await active.getAttribute('src');
+  const seen = new Set([first]);
+  for (let i = 1; i < 15; i++) {
+    const previous = await active.getAttribute('src');
+    await page.clock.fastForward(60_100);
+    await page.waitForFunction(previous => document.querySelector('.design-landscape.is-active').src !== previous, previous);
+    const current = await active.getAttribute('src');
+    assert.ok(!seen.has(current), `Photo repeated after ${i} minutes`);
+    seen.add(current);
+  }
+  await page.clock.fastForward(60_100);
+  await page.waitForFunction(first => document.querySelector('.design-landscape.is-active').src === first, first);
+  assert.equal(await page.locator('.design-landscape').count(), 2);
   await page.close();
 });
 

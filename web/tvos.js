@@ -3,7 +3,6 @@
   'use strict';
   if (document.body.getAttribute('data-design') !== 'tvos') return;
   document.addEventListener('DOMContentLoaded', function () {
-    document.body.classList.add('design-tvos');
     var main = document.querySelector('main'), clock = document.getElementById('home-clock');
     var title = document.createElement('h1'); title.id = 'design-title';
     var date = document.createElement('time'); date.id = 'design-date';
@@ -22,7 +21,19 @@
     var landscapes = [
       { image: 'photo-1476041178066-aa562074def7', credit: 'Blanca Lake · Yoshi Takekawa / Unsplash' },
       { image: 'photo-1762212702272-ff305c168c80', credit: 'Alpine landscape · Diggity Dog / Unsplash' },
-      { image: 'photo-1777479641988-ef604050084d', credit: 'Mountain lake · Sergi Kabrera / Unsplash' }
+      { image: 'photo-1777479641988-ef604050084d', credit: 'Mountain lake · Sergi Kabrera / Unsplash' },
+      { image: 'photo-1775755288625-c5fae11142f1', credit: 'Rocky coast · Kellen Riggin / Unsplash' },
+      { image: 'photo-1466547409737-7314062bcb5a', credit: 'Forest waterfall · Gabe Hobbs / Unsplash' },
+      { image: 'photo-1765498069015-aaf7e6bc1759', credit: 'White Sands · Royce Fonseca / Unsplash' },
+      { image: 'photo-1545994111-2c7705641ae3', credit: 'Pine forest · Handy Wicaksono / Unsplash' },
+      { image: 'photo-1445217143695-467124038776', credit: 'Diablo Lake · Sergei A / Unsplash' },
+      { image: 'photo-1686854010079-455de3e8db41', credit: 'Pyramid Lake · Dennis_TM / Unsplash' },
+      { image: 'photo-1748499429963-85c58cb2b95e', credit: 'Snowdonia · fabian jones / Unsplash' },
+      { image: 'photo-1781211901640-eebb5676995a', credit: 'Lake Minnewanka · Rafael Peier / Unsplash' },
+      { image: 'photo-1779111717252-0d8f0b7fd6e2', credit: 'Lake Geneva · Mikheil Kuzmidi / Unsplash' },
+      { image: 'photo-1750155680590-328cdc01709e', credit: 'Swiss Alps · Pascal Debrunner / Unsplash' },
+      { image: 'photo-1680761060530-87f01f1f1803', credit: 'California dunes · Zetong Li / Unsplash' },
+      { image: 'photo-1544900961-5d1924f3b3aa', credit: 'Thar Desert · Sharad Bhat / Unsplash' }
     ];
     var ambient = document.querySelector('.ambient'), frames = [], active = -1, next = 0, loading = false;
     var credit = document.createElement('p'); credit.id = 'design-photo-credit'; main.appendChild(credit);
@@ -31,11 +42,11 @@
       image.referrerPolicy = 'no-referrer'; ambient.appendChild(image); frames.push(image);
     }
     function scheduleLandscape() {
-      if (!document.hidden) landscapeTimer = setTimeout(loadLandscape, 60000);
+      if (!document.hidden && !document.body.classList.contains('photos-off')) landscapeTimer = setTimeout(loadLandscape, 60000);
     }
     function loadLandscape() {
       clearTimeout(landscapeTimer);
-      if (document.hidden || loading) return;
+      if (document.hidden || loading || document.body.classList.contains('photos-off')) return;
       loading = true;
       var photo = landscapes[next], incoming = active === 0 ? 1 : 0;
       next = (next + 1) % landscapes.length;
@@ -56,12 +67,21 @@
       frames[incoming].src = 'https://images.unsplash.com/' + photo.image + '?auto=format&fit=crop&w=1920&q=80';
     }
     loadLandscape();
+    document.addEventListener('hub-photos-change', function () {
+      clearTimeout(landscapeTimer); clearTimeout(landscapeDeadline); loading = false;
+      frames.forEach(function (image) {
+        image.onload = image.onerror = null; image.removeAttribute('src'); image.classList.remove('is-active');
+      });
+      active = -1; credit.textContent = '';
+      loadLandscape();
+    });
     document.addEventListener('visibilitychange', function () {
       clearTimeout(landscapeTimer); updateGreeting();
       if (!document.hidden) loadLandscape();
     });
     var grid = document.getElementById('favorites');
     function addLogo(tile, name, row) {
+      if (!document.body.classList.contains('design-tvos')) return;
       if (tile.querySelector('.design-brand-logo, .design-row-logo')) return;
       var service = HubStreamingArtwork.filter(function (app) {
         return app.name === name || (app.aliases || []).indexOf(name) >= 0;
@@ -81,7 +101,9 @@
       if (row) tile.insertBefore(image, tile.querySelector('.row-name')); else tile.appendChild(image);
     }
     function decorate() {
-      document.body.classList.toggle('design-moving', grid.classList.contains('reordering'));
+      var gallery = document.body.classList.contains('design-tvos');
+      document.body.classList.toggle('design-moving', gallery && grid.classList.contains('reordering'));
+      if (!gallery) return;
       Array.prototype.forEach.call(grid.children, function (tile) {
         if (tile.querySelector('.design-caption')) return;
         var label = document.createElement('span'); label.className = 'design-caption';

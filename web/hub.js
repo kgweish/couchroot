@@ -22,8 +22,19 @@
   var loaded = model.load(storage), favorites = loaded.apps;
   bootMark('model-loaded');
   var tvos = document.body.getAttribute('data-design') === 'tvos';
-  var layoutKey = 'minimal-hub.layout.v1', compact = tvos;
-  try { var savedLayout = storage.getItem(layoutKey); if (savedLayout !== null) compact = savedLayout === 'compact'; } catch (_) { /* Default layout. */ }
+  var layoutKey = 'minimal-hub.layout.v1', designKey = 'minimal-hub.design.v1', compact = false, gallery = tvos;
+  try {
+    var savedLayout = storage.getItem(layoutKey); compact = savedLayout === 'compact';
+    if (tvos) {
+      var savedDesign = storage.getItem(designKey);
+      if (['gallery', 'comfortable', 'compact'].indexOf(savedDesign) >= 0) { gallery = savedDesign === 'gallery'; compact = savedDesign === 'compact'; }
+      else { gallery = savedLayout !== 'comfortable'; compact = false; }
+    }
+  } catch (_) { /* Default layout. */ }
+  document.body.classList.toggle('design-tvos', gallery);
+  var photosKey = 'minimal-hub.photos.v1', photosOn = true;
+  try { photosOn = storage.getItem(photosKey) !== 'off'; } catch (_) { /* Keep the existing background. */ }
+  document.body.classList.toggle('photos-off', tvos && !photosOn);
   var fadeKey = 'minimal-hub.fade.v1', clockKey = 'minimal-hub.clock.v1', idleFade = true, clockFormat = tvos ? '12h' : 'off';
   try { idleFade = storage.getItem(fadeKey) !== 'off'; var savedClock = storage.getItem(clockKey); if (savedClock === 'off' || savedClock === '12h' || savedClock === '24h') { clockFormat = savedClock; } } catch (_) { /* Default appearance. */ }
   var idleTimer, clockTimer;
@@ -52,12 +63,15 @@
   var launchCancel = document.getElementById('launch-cancel'), launchRetry = document.getElementById('launch-retry'), launchHome = document.getElementById('launch-home');
   var settingsDone = document.getElementById('settings-done'), soundSetting = document.getElementById('setting-sound');
   var layoutSetting = document.getElementById('setting-layout'), resetSetting = document.getElementById('setting-reset');
+  var photosSetting = document.getElementById('setting-photos');
   var fadeSetting = document.getElementById('setting-fade'), clockSetting = document.getElementById('setting-clock');
   var startSetting = document.getElementById('setting-start'), settingsOptions = document.getElementById('settings-options');
   var holdSetting = document.getElementById('setting-hold'), undoRemove = document.getElementById('undo-remove');
   var moveBanner = document.getElementById('move-banner'), moveControls = document.getElementById('move-controls');
   var moveCancel = document.getElementById('move-cancel'), moveSave = document.getElementById('move-save');
   var settingsRows = [[settingsDone], [soundSetting], [layoutSetting], [fadeSetting], [clockSetting], [startSetting], [resetSetting], [holdSetting]];
+  photosSetting.hidden = !tvos;
+  if (tvos) { settingsRows.splice(3, 0, [photosSetting]); }
   var scrollBoxes = [grid, list, settingsOptions];
   function saveSelection() {
     clearTimeout(selectionTimer);
@@ -106,7 +120,7 @@
   }
   // Instant scroll that keeps the 12px focus-ring gutter; scrollIntoView would clip the ring.
   function cardBounds(button) {
-    var rect = button.getBoundingClientRect(), caption = tvos && button.querySelector('.design-caption');
+    var rect = button.getBoundingClientRect(), caption = gallery && button.querySelector('.design-caption');
     return { top: rect.top, bottom: caption && !grid.classList.contains('reordering') ? Math.max(rect.bottom, caption.getBoundingClientRect().bottom) : rect.bottom };
   }
   function reveal(button) {
@@ -309,7 +323,7 @@
     launchDialog.hidden = true; failedApp = null;
     resetLaunchMotion(); mode = forMove ? 'move' : 'home'; editor.hidden = true; settingsDialog.hidden = true; resetDialog.hidden = true;
     var apps = forMove ? moving : favorites;
-    var signature = JSON.stringify([compact, !!forMove, apps.map(function (saved) { var app = find(saved.id); return [saved.id, app ? app.name : saved.name, app && app.icon, discovered && !app]; })]);
+    var signature = JSON.stringify([gallery, compact, !!forMove, apps.map(function (saved) { var app = find(saved.id); return [saved.id, app ? app.name : saved.name, app && app.icon, discovered && !app]; })]);
     if (signature !== homeSignature) {
       grid.textContent = ''; homeSignature = signature;
       apps.forEach(function (saved) {
@@ -324,8 +338,8 @@
       });
     }
     var tiles = Array.prototype.slice.call(grid.children);
-    var columns = Math.min(apps.length || 2, compact ? (tvos ? 5 : 4) : 3), rows = [];
-    grid.classList.toggle('many', columns >= 3); grid.classList.toggle('compact', compact && (tvos || columns === 4)); grid.classList.toggle('single', favorites.length === 1);
+    var columns = Math.min(apps.length || 2, gallery ? 5 : compact ? 4 : 3), rows = [];
+    grid.classList.toggle('many', columns >= 3); grid.classList.toggle('compact', gallery || (compact && columns === 4)); grid.classList.toggle('single', favorites.length === 1);
     grid.classList.toggle('reordering', !!forMove);
     for (var i = 0; i < tiles.length; i += columns) { rows.push(tiles.slice(i, i + columns)); }
     if (!tiles.length) { rows.push([emptyAdd]); }
@@ -484,11 +498,16 @@
       detail = 'Any remote press restores the menu immediately. Focused controls and messages always stay visible.';
       visual.classList.toggle('dim-preview', idleFade);
       ['Edit apps', 'Samsung Home', '⚙'].forEach(function (label) { var pill = document.createElement('span'); pill.textContent = label; visual.appendChild(pill); });
+    } else if (which === 'setting-photos') {
+      name = photosOn ? 'Landscape backgrounds' : 'Gradient background';
+      detail = photosOn ? 'Online landscapes change every minute.' : 'Home uses the gradient. Photo downloads and rotation stop.';
+      visual.textContent = photosOn ? 'Landscapes' : 'Gradient';
     } else if (which === 'setting-layout') {
-      name = compact ? 'More apps at a glance' : 'A little more breathing room';
-      detail = tvos ? (compact ? 'Five tiles in each row.' : 'Up to three tiles in each row.') : compact ? 'Up to four tiles in each row.' : 'Up to three tiles in each row.';
+      name = gallery ? 'Gallery' : compact ? 'More apps at a glance' : 'A little more breathing room';
+      detail = gallery ? 'Five columns with logos and labels below each tile.' : compact ? 'Up to four tiles in each row.' : 'Up to three tiles in each row.';
       visual.classList.toggle('dense', compact);
-      for (var i = 0; i < (compact ? 8 : 6); i++) { var cell = document.createElement('span'); visual.appendChild(cell); }
+      visual.classList.toggle('gallery', gallery);
+      for (var i = 0; i < (gallery ? 10 : compact ? 8 : 6); i++) { var cell = document.createElement('span'); visual.appendChild(cell); }
     } else if (which === 'setting-reset') {
       name = 'A fresh start'; detail = 'Restore Plex and YouTube. You’ll confirm before anything changes.';
       var pair = document.createElement('span'); pair.className = 'reset-pair'; pair.textContent = 'Plex  +  YouTube'; visual.appendChild(pair);
@@ -501,13 +520,15 @@
     document.getElementById('setting-preview-title').textContent = name;
     document.getElementById('setting-preview-detail').textContent = detail;
   }
-  [soundSetting, layoutSetting, fadeSetting, clockSetting, startSetting, resetSetting, holdSetting].forEach(function (b) { b.addEventListener('focus', function () { settingPreview(b.id); }); });
+  [soundSetting, layoutSetting, photosSetting, fadeSetting, clockSetting, startSetting, resetSetting, holdSetting].forEach(function (b) { b.addEventListener('focus', function () { settingPreview(b.id); }); });
   function openSettings(target) {
     cancelHold(); cancelLaunch();
     mode = 'settings'; editor.hidden = true; resetDialog.hidden = true; settingsDialog.hidden = false;
     document.getElementById('sound-value').textContent = feedback.enabled() ? 'On' : 'Off';
     soundSetting.setAttribute('aria-pressed', String(feedback.enabled()));
-    document.getElementById('layout-value').textContent = compact ? 'Compact' : 'Comfortable';
+    document.getElementById('layout-value').textContent = gallery ? 'Gallery' : compact ? 'Compact' : 'Comfortable';
+    document.getElementById('photos-value').textContent = photosOn ? 'On' : 'Off';
+    photosSetting.setAttribute('aria-pressed', String(photosOn));
     document.getElementById('fade-value').textContent = idleFade ? 'Auto-dim' : 'Always visible';
     fadeSetting.setAttribute('aria-pressed', String(idleFade));
     document.getElementById('clock-value').textContent = clockFormat === 'off' ? 'Off' : clockFormat === '12h' ? '12-hour' : '24-hour';
@@ -524,8 +545,19 @@
     catch (_) { message('Could not save the sound preference. Your setting is unchanged.', true); }
   });
   layoutSetting.addEventListener('click', function () {
-    try { storage.setItem(layoutKey, compact ? 'comfortable' : 'compact'); compact = !compact; openSettings(layoutSetting); }
+    var next = gallery ? 'comfortable' : compact ? (tvos ? 'gallery' : 'comfortable') : 'compact';
+    try {
+      storage.setItem(tvos ? designKey : layoutKey, next); gallery = next === 'gallery'; compact = next === 'compact';
+      document.body.classList.toggle('design-tvos', gallery); openSettings(layoutSetting);
+    }
     catch (_) { message('Could not save the layout. Your setting is unchanged.', true); }
+  });
+  photosSetting.addEventListener('click', function () {
+    try {
+      storage.setItem(photosKey, photosOn ? 'off' : 'on'); photosOn = !photosOn;
+      document.body.classList.toggle('photos-off', !photosOn);
+      document.dispatchEvent(new Event('hub-photos-change')); openSettings(photosSetting);
+    } catch (_) { message('Could not save the photo preference. Your setting is unchanged.', true); }
   });
   fadeSetting.addEventListener('click', function () {
     try { storage.setItem(fadeKey, idleFade ? 'off' : 'on'); idleFade = !idleFade; openSettings(fadeSetting); wakeMenu(); }
@@ -591,7 +623,7 @@
     cancelHold();
     if (mode === 'move' && grid.contains(document.activeElement) && /^Arrow/.test(key)) {
       event.preventDefault();
-      var columns = Math.min(moving.length, compact ? (tvos ? 5 : 4) : 3), lengths = [];
+      var columns = Math.min(moving.length, gallery ? 5 : compact ? 4 : 3), lengths = [];
       for (var offset = 0; offset < moving.length; offset += columns) { lengths.push(Math.min(columns, moving.length - offset)); }
       var currentRow = Math.floor(moveIndex / columns);
       if (key === 'ArrowDown' && currentRow === lengths.length - 1) { focus(moveCancel); feedback.play('MOVE'); return; }

@@ -4,7 +4,11 @@
 .design-tvos .orbital { display: none; }
 .design-landscape { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.4s ease; }
 .design-landscape.is-active { opacity: 1; }
-.design-tvos .ambient::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; left: 0; background: linear-gradient(180deg, #070b166b, #070b1600 40%, #070b1699), #03071194; }
+.photos-off .design-landscape, .photos-off #design-photo-credit { display: none; }
+[data-design="tvos"] #setting-visual.setting-photos { color: #eef0f5; font-size: 2.4vw; background: radial-gradient(ellipse at 5% 90%, #14344e99, transparent 66%), #101522; }
+[data-design="tvos"] .ambient::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; left: 0; background: linear-gradient(180deg, #070b166b, #070b1600 40%, #070b1699), #03071194; }
+[data-design="tvos"]:not(.design-tvos) #design-title, [data-design="tvos"]:not(.design-tvos) #design-date { display: none; }
+.design-tvos #setting-visual.setting-layout.gallery { grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(2, 3.3vw); align-content: center; padding: 2.2vw; }
 .design-tvos main, .design-tvos main.clock-on { padding-top: 12vh; }
 .design-tvos.design-moving main { padding-top: 4vh; }
 #design-title { position: absolute; left: 6.25vw; top: 3.8vh; margin: 0; font-size: 1.85vw; font-weight: 500; letter-spacing: -.03em; }
