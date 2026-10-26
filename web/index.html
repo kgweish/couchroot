@@ -19,6 +19,8 @@
   <div class="ambient" aria-hidden="true"><div class="orbital orbital-one"></div><div class="orbital orbital-two"></div><div class="orbital orbital-three"></div></div>
   <main>
     <time id="home-clock" hidden aria-label="Current time"></time>
+    <section id="cinema-hero" aria-hidden="true" hidden><img id="cinema-logo" alt="" hidden><h2 id="cinema-name"></h2><p id="cinema-prompt"></p></section>
+    <h2 id="cinema-library-title" hidden>Apps &amp; inputs</h2>
     <div id="move-banner" hidden><h2 id="move-title"></h2><p id="move-position" role="status" aria-live="polite"></p></div>
     <div class="app-stage">
     <nav id="favorites" class="apps" aria-label="Your apps" data-scroll-cue="home-scroll">
@@ -43,7 +45,8 @@
     <footer>
       <button id="edit-apps" class="system">Edit apps</button>
       <button class="system" data-app="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5M5.5 9v11h5v-6h3v6h5V9"/></svg><span>Samsung Home</span></button>
-      <button id="settings" class="system settings-button" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9.4 3-.6 2.3-2 .9L4.7 5.5 2.5 9.3 4.2 11v2l-1.7 1.7 2.2 3.8 2.1-.7 2 .9.6 2.3h5.2l.6-2.3 2-.9 2.1.7 2.2-3.8-1.7-1.7v-2l1.7-1.7-2.2-3.8-2.1.7-2-.9-.6-2.3Z"/><circle cx="12" cy="12" r="3.2"/></svg></button>
+      <button id="settings" class="system settings-button" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9.4 3-.6 2.3-2 .9L4.7 5.5 2.5 9.3 4.2 11v2l-1.7 1.7 2.2 3.8 2.1-.7 2 .9.6 2.3h5.2l.6-2.3 2-.9 2.1.7 2.2-3.8-1.7-1.7v-2l1.7-1.7-2.2-3.8-2.1.7-2-.9-.6-2.3Z"/><circle cx="12" cy="12" r="3.2"/></svg><span class="cinema-settings-label">Settings</span></button>
+      <button id="cinema-library-toggle" class="system" hidden>All apps &amp; inputs</button>
       <button id="undo-remove" class="system" hidden>Undo remove</button>
       <p id="status" class="status-line" role="status" aria-live="polite"></p>
       <div id="home-hint" class="hint"><span><kbd>← → ↑ ↓</kbd>Move</span><span><kbd>OK</kbd>Open</span></div>

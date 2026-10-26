@@ -8,12 +8,19 @@
   if (scenario.design) {
     // Sample connectors for visual review; these do not describe the owner's TV.
     apps = apps.concat([
-      { id: 'DemoInput1.tv', name: 'Live TV', show: true },
-      { id: 'DemoInput1.hdmi1', name: 'HDMI 1', show: true },
-      { id: 'DemoInput1.hdmi3', name: 'HDMI 3', show: true }
+      { id: 'HubInput.TV.0', name: 'Live TV · via Home', show: true },
+      { id: 'HubInput.HDMI.1', name: 'HDMI 1 · via Home', show: true },
+      { id: 'HubInput.HDMI.3', name: 'HDMI 3 · via Home', show: true }
     ]);
   }
   if (scenario.missingArtwork) apps[apps.length - 1].iconPath = '/missing-preview-icon.png';
+  if (name === 'cinema' || name === 'shelf') {
+    var rail = name === 'shelf' ? ['Netflix', 'Disney+', 'Plex', 'Prime Video', 'YouTube', 'Spotify', 'Tubi', 'HBO Max', 'Peacock', 'Sling TV'] : ['Netflix', 'Disney+', 'Plex', 'Spotify', 'Tubi'];
+    if (name === 'shelf') {
+      apps = apps.concat(HubStreamingApps.filter(function (app) { return rail.indexOf(app.name) >= 0 && !apps.some(function (existing) { return existing.id === app.id; }); }).map(function (app) { return {id:app.id,name:app.name,show:true}; }));
+    }
+    apps = rail.map(function (title) { return apps.filter(function (app) { return app.name === title; })[0]; }).concat(apps.filter(function (app) { return rail.indexOf(app.name) < 0; }));
+  }
   var marker = 'hub-preview.scenario';
   if (localStorage.getItem(marker) !== name || url.searchParams.has('reset')) {
     Object.keys(localStorage).filter(function (key) {
@@ -36,6 +43,11 @@
   }
   // The first saved shortcut stays on Home while its app leaves the simulated TV.
   HubFixtures.install(Object.assign({ launchHandoff: true }, scenario, { apps: scenario.unavailable ? apps.slice(1) : apps }));
+  if (scenario.design) {
+    window.tizen.systeminfo = { getPropertyValue: function (property, success) {
+      success({ connected: [{type:'TV',number:0},{type:'HDMI',number:1},{type:'HDMI',number:3}], disconnected: [] });
+    } };
+  }
   window.addEventListener('hub-preview-launch', function (event) {
     if (parent !== window) parent.postMessage({ type: 'hub-preview-launch', id: event.detail, failed: window.launchFail }, location.origin);
   });

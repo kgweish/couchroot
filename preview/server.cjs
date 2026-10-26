@@ -36,7 +36,7 @@ function createServer() {
         body = fs.readFileSync(file, 'utf8').replace('<head>', '<head>\n  <base href="/web/">\n  <script src="/preview/fixtures.js"></script>\n  <script src="/preview/scenarios.js"></script>\n  <script src="/preview/runtime.js"></script>');
         // Allow loopback reload polling and the asset base only in the injected preview.
         body = body.replace("connect-src 'none'", "connect-src 'self'").replace("base-uri 'none'", "base-uri 'self'");
-        if (new URL(req.url, 'http://localhost').searchParams.get('scenario') === 'tvos-concept') {
+        if (['tvos-concept', 'cinema', 'shelf'].includes(new URL(req.url, 'http://localhost').searchParams.get('scenario'))) {
           body = body.replace('<script src="/preview/runtime.js"></script>', '<script src="/preview/streaming-apps.js"></script>\n  <script src="/preview/runtime.js"></script>');
           body = body.replace("img-src 'self' data: file:;", "img-src 'self' data: file: https://images.unsplash.com;");
           body = body.replace('<body>', '<body data-design="tvos">');

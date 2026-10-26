@@ -22,16 +22,18 @@
   var loaded = model.load(storage), favorites = loaded.apps;
   bootMark('model-loaded');
   var tvos = document.body.getAttribute('data-design') === 'tvos';
-  var layoutKey = 'minimal-hub.layout.v1', designKey = 'minimal-hub.design.v1', compact = false, gallery = tvos;
+  var layoutKey = 'minimal-hub.layout.v1', designKey = 'minimal-hub.design.v1', compact = false, gallery = tvos, cinema = false, shelf = false;
   try {
     var savedLayout = storage.getItem(layoutKey); compact = savedLayout === 'compact';
     if (tvos) {
       var savedDesign = storage.getItem(designKey);
-      if (['gallery', 'comfortable', 'compact'].indexOf(savedDesign) >= 0) { gallery = savedDesign === 'gallery'; compact = savedDesign === 'compact'; }
+      if (['gallery', 'cinema', 'shelf', 'comfortable', 'compact'].indexOf(savedDesign) >= 0) { shelf = savedDesign === 'shelf'; cinema = savedDesign === 'cinema'; gallery = shelf || cinema || savedDesign === 'gallery'; compact = savedDesign === 'compact'; }
       else { gallery = savedLayout !== 'comfortable'; compact = false; }
     }
   } catch (_) { /* Default layout. */ }
   document.body.classList.toggle('design-tvos', gallery);
+  document.body.classList.toggle('design-cinema', cinema);
+  document.body.classList.toggle('design-shelf', shelf);
   var photosKey = 'minimal-hub.photos.v1', photosOn = true;
   try { photosOn = storage.getItem(photosKey) !== 'off'; } catch (_) { /* Keep the existing background. */ }
   document.body.classList.toggle('photos-off', tvos && !photosOn);
@@ -51,13 +53,18 @@
   try { holdToEdit = storage.getItem(holdKey) === 'on'; } catch (_) { /* Keep the immediate OK behavior. */ }
   var optionsOrigin = 'edit', removedShortcut = null;
   var nav = [];
+  var cinemaStartup = cinema && startOnLast && favorites.length ? lastHome : '';
+  var libraryOpen = !!cinemaStartup && !favorites.slice(0, 5).some(function (app) { return app.id === cinemaStartup; });
+  var railSelection = favorites[0] ? favorites[0].id : '';
   var grid = document.getElementById('favorites');
+  var stage = grid.parentElement, main = document.querySelector('main'), homeFooter = menu.querySelector('footer');
   var templates = {};
   Array.prototype.forEach.call(grid.children, function (node) { templates[HubBridge.apps[node.dataset.app].id] = node.cloneNode(true); });
   var editor = document.getElementById('editor'), list = document.getElementById('editor-list');
   var actions = document.getElementById('editor-actions'), title = document.getElementById('editor-title'), hint = document.getElementById('editor-hint');
   var edit = document.getElementById('edit-apps'), home = document.querySelector('[data-app="home"]'), emptyAdd = document.getElementById('empty-add');
   var settings = document.getElementById('settings'), settingsDialog = document.getElementById('settings-dialog');
+  var libraryToggle = document.getElementById('cinema-library-toggle'), libraryTitle = document.getElementById('cinema-library-title');
   var resetDialog = document.getElementById('reset-dialog'), resetCancel = document.getElementById('reset-cancel'), resetConfirm = document.getElementById('reset-confirm');
   var launchDialog = document.getElementById('launch-error-dialog'), failedApp = null;
   var launchCancel = document.getElementById('launch-cancel'), launchRetry = document.getElementById('launch-retry'), launchHome = document.getElementById('launch-home');
@@ -84,6 +91,7 @@
     }
   }
   function rememberSelection(id) {
+    if (cinemaStartup && !discovered) { return; }
     lastHome = id; clearTimeout(selectionTimer);
     // Keep storage writes out of rapid arrow navigation; flush before leaving Hub.
     if (lastHome !== savedSelection) { selectionTimer = setTimeout(saveSelection, 250); }
@@ -111,30 +119,51 @@
     clockTimer = setTimeout(updateClock, 60000 - Date.now() % 60000);
   }
   document.addEventListener('focusin', wakeMenu);
-  document.addEventListener('pointerdown', wakeMenu, true);
+  document.addEventListener('pointerdown', function () { cinemaStartup = ''; wakeMenu(); }, true);
 
   function find(id) { return catalogById[id]; }
-  function focus(button) {
+  function columnsFor(count) { return Math.min(count || 2, shelf ? 10 : gallery ? 5 : compact ? 4 : 3); }
+  function focus(button, animate) {
     if (!button || button === document.activeElement) { return; }
-    button.focus({ preventScroll: true }); reveal(button);
+    button.focus({ preventScroll: true }); reveal(button, animate);
   }
-  // Instant scroll that keeps the 12px focus-ring gutter; scrollIntoView would clip the ring.
+  // Include captions in the focus gutter; scrollIntoView would clip the ring.
   function cardBounds(button) {
     var rect = button.getBoundingClientRect(), caption = gallery && button.querySelector('.design-caption');
     return { top: rect.top, bottom: caption && !grid.classList.contains('reordering') ? Math.max(rect.bottom, caption.getBoundingClientRect().bottom) : rect.bottom };
   }
-  function reveal(button) {
-    var box = button.closest('.apps, .editor-list, .settings-options');
+  function reveal(button, animate) {
+    if (cinema && !libraryOpen && mode === 'home' && stage.contains(button)) { return; }
+    var box = gallery && !shelf && !grid.classList.contains('reordering') && stage.contains(button) ? stage : button.closest('.apps, .editor-list, .settings-options');
     if (!box || box.scrollHeight <= box.clientHeight) { return; }
-    var frame = box.getBoundingClientRect(), item = cardBounds(button);
-    if (item.top < frame.top + 12) { box.scrollTop -= frame.top + 12 - item.top; }
-    else if (item.bottom > frame.bottom - 12) { box.scrollTop += item.bottom - frame.bottom + 12; }
+    var current = box.scrollTop, target = current;
+    var frame = box.getBoundingClientRect(), item = cardBounds(button), gutter = box === stage ? window.innerWidth / 80 : 12;
+    if (box === stage && (button === home || (!libraryOpen && button.parentElement === grid && Array.prototype.indexOf.call(grid.children, button) < 5))) {
+      target = 0;
+    } else if (box === stage && button.parentElement === grid) {
+      target += item.bottom - frame.bottom + gutter;
+    }
+    if (shelf && box === grid && mode === 'home') {
+      var index = Array.prototype.indexOf.call(grid.children, button), columns = columnsFor(grid.children.length);
+      target = grid.children[Math.floor(index / columns) * columns].offsetTop - grid.firstElementChild.offsetTop;
+    }
+    // Check the focus gutter at the destination before starting the scroll.
+    var shift = current - target;
+    if (!(shelf && box === grid && mode === 'home')) {
+      if (item.top + shift < frame.top + gutter) { target -= frame.top + gutter - item.top - shift; }
+      else if (item.bottom + shift > frame.bottom - gutter) { target += item.bottom + shift - frame.bottom + gutter; }
+    }
+    var smooth = animate && (box === stage || (shelf && box === grid)) && mode === 'home' && !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    if (typeof box.scrollTo === 'function') { box.scrollTo({ top: target, behavior: smooth ? 'smooth' : 'auto' }); }
+    else { box.scrollTop = target; }
     // The scroll event updates edge markers only when the viewport actually moves.
   }
   // Measure only the list ends, then update cues. Trailing padding is not more content.
   function edges(box) {
     var cue = document.getElementById(box.dataset.scrollCue);
-    var frame = box.getBoundingClientRect(), first = box.firstElementChild, last = box.lastElementChild;
+    if (box === grid && cinema && !libraryOpen && mode === 'home') { cue.hidden = true; return; }
+    var dock = box === grid && gallery && !shelf && !grid.classList.contains('reordering');
+    var frame = (dock ? stage : box).getBoundingClientRect(), first = dock ? home : box.firstElementChild, last = dock ? menu : box.lastElementChild;
     var up = !!(frame.height && first && first.getBoundingClientRect().top < frame.top - 1);
     var down = !!(frame.height && last && cardBounds(last).bottom > frame.bottom + 1);
     cue.hidden = !(up || down);
@@ -186,7 +215,9 @@
           } catch (_) { discoveryError = 'Could not save the initial app list. Your shortcuts are still available.'; }
         }
       }
-      if (after) { after(); }
+      // An editor or picker request can finish after the owner opens the library.
+      if (cinema && libraryOpen && mode === 'home') { refreshedHome(); }
+      else if (after) { after(); }
       bootMark('discovery-render-done');
     }
     bridge.discover(function (apps) {
@@ -205,22 +236,25 @@
   }
   function animateLaunch(id) {
     resetLaunchMotion();
+    if (document.body.classList.contains('design-shelf')) { return; }
     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) { return; }
     var selected = Array.prototype.filter.call(grid.children, function (tile) { return tile.dataset.id === id; })[0];
     if (!selected) { return; }
     var viewport = grid.getBoundingClientRect(), stage = grid.parentElement.getBoundingClientRect(), box = selected.getBoundingClientRect();
     var scrolling = grid.scrollHeight > grid.clientHeight + 1;
     var area = scrolling ? viewport : { left: stage.left + 12, right: stage.right - 12, top: stage.top + 12, bottom: stage.bottom - 12, width: stage.width - 24, height: stage.height - 24 };
-    grid.classList.toggle('launch-contained', scrolling);
+    var tiles = Array.prototype.map.call(grid.children, function (tile) { return { tile: tile, bounds: tile === selected ? box : tile.getBoundingClientRect() }; });
     var scale = Math.max(1, Math.min(1.12, (area.width - 16) / box.width, (area.height - 16) / box.height));
     var dx = box.width * (scale - 1) / 2, dy = box.height * (scale - 1) / 2;
     var x = Math.max(area.left + 8 - (box.left - dx), Math.min(0, area.right - 8 - (box.right + dx)));
     var y = Math.max(area.top + 8 - (box.top - dy), Math.min(0, area.bottom - 8 - (box.bottom + dy)));
+    grid.classList.toggle('launch-contained', scrolling);
     grid.classList.add('launch-motion'); selected.classList.add('launch-selected');
     selected.style.zIndex = '2'; selected.style.transform = 'translate(' + x + 'px,' + y + 'px) scale(' + scale + ')';
-    Array.prototype.forEach.call(grid.children, function (tile) {
+    tiles.forEach(function (item) {
+      var tile = item.tile;
       if (tile === selected) { return; }
-      var other = tile.getBoundingClientRect(), sameRow = Math.abs(other.top - box.top) < box.height / 2;
+      var other = item.bounds, sameRow = Math.abs(other.top - box.top) < box.height / 2;
       tile.style.transform = sameRow ? 'translateX(' + ((other.left < box.left ? -1 : 1) * (dx + Math.abs(x) + 16)) + 'px)' : 'translateY(' + ((other.top < box.top ? -1 : 1) * (dy + Math.abs(y) + 12)) + 'px)';
       tile.style.opacity = '.45';
     });
@@ -323,30 +357,66 @@
     launchDialog.hidden = true; failedApp = null;
     resetLaunchMotion(); mode = forMove ? 'move' : 'home'; editor.hidden = true; settingsDialog.hidden = true; resetDialog.hidden = true;
     var apps = forMove ? moving : favorites;
-    var signature = JSON.stringify([gallery, compact, !!forMove, apps.map(function (saved) { var app = find(saved.id); return [saved.id, app ? app.name : saved.name, app && app.icon, discovered && !app]; })]);
+    if (cinema && !forMove) {
+      apps = libraryOpen ? favorites.concat(catalog) : favorites.slice(0, 5);
+      if (libraryOpen) {
+        var seen = Object.create(null);
+        apps = apps.filter(function (app) { if (seen[app.id]) { return false; } seen[app.id] = true; return true; });
+        apps = apps.filter(function (app) { return !isInput(app); }).concat(apps.filter(isInput));
+      }
+    }
+    document.body.classList.toggle('cinema-library-open', cinema && libraryOpen && !forMove);
+    libraryTitle.hidden = !cinema || !libraryOpen || !!forMove;
+    libraryToggle.hidden = !cinema;
+    libraryToggle.textContent = libraryOpen ? 'Back to favorites' : 'All apps & inputs';
+    var signature = JSON.stringify([gallery, compact, cinema, shelf, libraryOpen, !!forMove, apps.map(function (saved) { var app = find(saved.id); return [saved.id, app ? app.name : saved.name, app && app.icon, discovered && !app]; })]);
     if (signature !== homeSignature) {
       grid.textContent = ''; homeSignature = signature;
       apps.forEach(function (saved) {
       var installed = find(saved.id), app = installed || saved, b;
       b = appTile(app);
+      if (cinema && libraryOpen && !forMove && isInput(app)) { b.classList.add('cinema-source'); }
       b.dataset.id = saved.id; b.setAttribute('aria-label', (forMove ? 'Move ' : 'Open ') + app.name);
       if (discovered && !installed) {
         b.classList.add('unavailable'); var label = document.createElement('span'); label.className = 'unavailable-label'; label.textContent = 'Unavailable · Edit apps to remove'; b.appendChild(label);
       }
-      b.addEventListener('focus', function () { if (mode === 'home') { rememberSelection(saved.id); } });
+      b.addEventListener('focus', function () { if (mode === 'home') { rememberSelection(saved.id); if (cinema && !libraryOpen) { railSelection = saved.id; } } });
       b.addEventListener('click', function () { if (mode === 'move') { if (saved.id === chosen) { finishMove(); } } else { launch(find(saved.id) || saved); } }); grid.appendChild(b);
       });
     }
     var tiles = Array.prototype.slice.call(grid.children);
-    var columns = Math.min(apps.length || 2, gallery ? 5 : compact ? 4 : 3), rows = [];
+    var columns = columnsFor(apps.length), rows = [];
     grid.classList.toggle('many', columns >= 3); grid.classList.toggle('compact', gallery || (compact && columns === 4)); grid.classList.toggle('single', favorites.length === 1);
     grid.classList.toggle('reordering', !!forMove);
-    for (var i = 0; i < tiles.length; i += columns) { rows.push(tiles.slice(i, i + columns)); }
+    document.body.classList.toggle('design-moving', gallery && !!forMove);
+    if (tvos) {
+      // Move the existing controls so visual order and the scroll viewport agree.
+      if (gallery && !shelf) {
+        if (home.parentElement !== stage) { stage.insertBefore(home, grid); }
+        if (menu.parentElement !== stage) { stage.appendChild(menu); }
+      } else {
+        var nextControl = shelf ? edit : settings;
+        if (home.parentElement !== homeFooter || home.nextElementSibling !== nextControl) { homeFooter.insertBefore(home, nextControl); }
+        if (menu.parentElement !== main) { main.insertBefore(menu, document.getElementById('preview')); }
+      }
+      home.hidden = gallery && !!forMove;
+    }
+    var sources = cinema && libraryOpen && !forMove ? apps.filter(function (app) { return !isInput(app); }).length : tiles.length;
+    for (var i = 0; i < tiles.length;) {
+      if (i === sources && i < tiles.length) { tiles[i].classList.add('cinema-source-start'); }
+      var end = Math.min(i + columns, i < sources ? sources : tiles.length);
+      rows.push(tiles.slice(i, end)); i = end;
+    }
     if (!tiles.length) { rows.push([emptyAdd]); }
     undoRemove.hidden = !removedShortcut;
-    rows.push(removedShortcut ? [edit, home, settings, undoRemove] : [edit, home, settings]);
+    if (gallery && !shelf) { rows.unshift([home]); }
+    var utilities = shelf ? [home, edit, settings] : gallery ? [edit, settings] : [edit, home, settings];
+    if (cinema) { utilities.push(libraryToggle); }
+    if (removedShortcut) { utilities.push(undoRemove); }
+    rows.push(utilities);
     menu.hidden = !!forMove; moveBanner.hidden = !forMove; moveControls.hidden = !forMove;
     keys(document.getElementById('home-hint'), holdToEdit ? [['↑ ↓ ← →', 'Choose'], ['OK', 'Open'], ['Hold OK', 'Edit']] : [['↑ ↓ ← →', 'Choose'], ['OK', 'Open']]);
+    if (cinema && !forMove) { keys(document.getElementById('home-hint'), libraryOpen ? [['↑ ↓ ← →', 'Choose'], ['OK', 'Open'], ['Back', 'Favorites']] : [['← →', 'Choose'], ['OK', 'Open'], ['↓', 'All apps']]); }
     grid.hidden = !tiles.length; document.getElementById('empty-home').hidden = !!tiles.length;
     var selected = tiles.filter(function (b) { return b.dataset.id === target; })[0];
     if (forMove) {
@@ -356,10 +426,21 @@
       document.getElementById('move-title').textContent = 'Move ' + moving[moveIndex].name;
       updateMovePosition(); setNav([[selected], [moveCancel, moveSave]], selected);
     } else {
-      setNav(rows, target === 'edit' ? edit : target === 'settings' ? settings : target === 'home' ? home : target === 'undo' && removedShortcut ? undoRemove : selected);
+      setNav(rows, target === 'library' && cinema ? libraryToggle : target === 'edit' ? edit : target === 'settings' ? settings : target === 'home' ? home : target === 'undo' && removedShortcut ? undoRemove : selected || tiles[0] || emptyAdd);
     }
     wakeMenu(); updateClock();
+    document.dispatchEvent(new Event('hub-layout-change'));
   }
+  function isInput(app) { return /^HubInput\./.test(app.id) || /^(Live TV|HDMI [0-9]+)( · via Home)?$/.test(app.name); }
+  function toggleLibrary() {
+    cancelLaunch(); libraryOpen = !libraryOpen;
+    renderHome(railSelection);
+    if (libraryOpen && !discovered) {
+      message(discoveryError || 'Checking installed apps…', !!discoveryError);
+      refresh(function () { if (mode === 'home') { refreshedHome(); message(discoveryError, !!discoveryError); } });
+    }
+  }
+  libraryToggle.addEventListener('click', toggleLibrary);
   function editorFrame(name, help) {
     editor.hidden = false; editor.dataset.mode = mode; title.textContent = name; keys(hint, help);
     document.getElementById('editor-count').textContent = mode !== 'picker' ? favorites.length + (favorites.length === 1 ? ' shortcut on Home' : ' shortcuts on Home') :
@@ -503,11 +584,13 @@
       detail = photosOn ? 'Online landscapes change every minute.' : 'Home uses the gradient. Photo downloads and rotation stop.';
       visual.textContent = photosOn ? 'Landscapes' : 'Gradient';
     } else if (which === 'setting-layout') {
-      name = gallery ? 'Gallery' : compact ? 'More apps at a glance' : 'A little more breathing room';
-      detail = gallery ? 'Five columns with logos and labels below each tile.' : compact ? 'Up to four tiles in each row.' : 'Up to three tiles in each row.';
+      name = shelf ? 'Home Shelf' : cinema ? 'Cinema' : gallery ? 'Gallery' : compact ? 'More apps at a glance' : 'A little more breathing room';
+      detail = shelf ? 'Your saved apps as service spines on a warm wooden shelf. Ten cases per row.' : cinema ? 'Your first five shortcuts on a rail. Down opens all apps and inputs; Back returns to favorites.' : gallery ? 'Five columns with logos and labels below each tile.' : compact ? 'Up to four tiles in each row.' : 'Up to three tiles in each row.';
       visual.classList.toggle('dense', compact);
       visual.classList.toggle('gallery', gallery);
-      for (var i = 0; i < (gallery ? 10 : compact ? 8 : 6); i++) { var cell = document.createElement('span'); visual.appendChild(cell); }
+      visual.classList.toggle('cinema', cinema);
+      visual.classList.toggle('shelf', shelf);
+      for (var i = 0; i < (cinema ? 5 : gallery ? 10 : compact ? 8 : 6); i++) { var cell = document.createElement('span'); visual.appendChild(cell); }
     } else if (which === 'setting-reset') {
       name = 'A fresh start'; detail = 'Restore Plex and YouTube. You’ll confirm before anything changes.';
       var pair = document.createElement('span'); pair.className = 'reset-pair'; pair.textContent = 'Plex  +  YouTube'; visual.appendChild(pair);
@@ -526,7 +609,7 @@
     mode = 'settings'; editor.hidden = true; resetDialog.hidden = true; settingsDialog.hidden = false;
     document.getElementById('sound-value').textContent = feedback.enabled() ? 'On' : 'Off';
     soundSetting.setAttribute('aria-pressed', String(feedback.enabled()));
-    document.getElementById('layout-value').textContent = gallery ? 'Gallery' : compact ? 'Compact' : 'Comfortable';
+    document.getElementById('layout-value').textContent = shelf ? 'Home Shelf' : cinema ? 'Cinema' : gallery ? 'Gallery' : compact ? 'Compact' : 'Comfortable';
     document.getElementById('photos-value').textContent = photosOn ? 'On' : 'Off';
     photosSetting.setAttribute('aria-pressed', String(photosOn));
     document.getElementById('fade-value').textContent = idleFade ? 'Auto-dim' : 'Always visible';
@@ -545,10 +628,10 @@
     catch (_) { message('Could not save the sound preference. Your setting is unchanged.', true); }
   });
   layoutSetting.addEventListener('click', function () {
-    var next = gallery ? 'comfortable' : compact ? (tvos ? 'gallery' : 'comfortable') : 'compact';
+    var next = shelf ? 'gallery' : cinema ? 'shelf' : gallery ? 'comfortable' : compact ? (tvos ? 'cinema' : 'comfortable') : 'compact';
     try {
-      storage.setItem(tvos ? designKey : layoutKey, next); gallery = next === 'gallery'; compact = next === 'compact';
-      document.body.classList.toggle('design-tvos', gallery); openSettings(layoutSetting);
+      storage.setItem(tvos ? designKey : layoutKey, next); shelf = next === 'shelf'; cinema = next === 'cinema'; gallery = shelf || cinema || next === 'gallery'; compact = next === 'compact'; libraryOpen = false;
+      document.body.classList.toggle('design-tvos', gallery); document.body.classList.toggle('design-cinema', cinema); document.body.classList.toggle('design-shelf', shelf); openSettings(layoutSetting);
     }
     catch (_) { message('Could not save the layout. Your setting is unchanged.', true); }
   });
@@ -590,6 +673,7 @@
     else if (mode === 'picker') { renderEdit(); }
     else if (mode === 'edit') { renderHome('edit'); }
     else if (mode === 'home' && busy) { cancelLaunch(); }
+    else if (mode === 'home' && cinema && libraryOpen) { toggleLibrary(); }
     // Back on Home never requests exit.
   }
   function cancelHold() { clearTimeout(holdTimer); if (heldButton) { heldButton.classList.remove('pressed'); } heldButton = null; }
@@ -601,9 +685,11 @@
   edit.addEventListener('click', openEditor);
   emptyAdd.addEventListener('click', openPicker);
   scrollBoxes.forEach(function (box) { box.addEventListener('scroll', function () { edges(box); }); });
-  window.addEventListener('resize', function () { scrollBoxes.forEach(edges); });
+  stage.addEventListener('scroll', function () { if (gallery) { edges(grid); } });
+  window.addEventListener('resize', function () { if (gallery && mode === 'home') { reveal(document.activeElement); } scrollBoxes.forEach(edges); });
   home.addEventListener('click', function () { launch(HubBridge.apps.home); });
   document.addEventListener('keydown', function (event) {
+    cinemaStartup = '';
     wakeMenu();
     var key = event.key || ({ 37: 'ArrowLeft', 38: 'ArrowUp', 39: 'ArrowRight', 40: 'ArrowDown', 13: 'Enter' })[event.keyCode];
     if (event.keyCode === 10009 || key === 'Escape' || key === 'Back' || key === 'GoBack') { cancelHold(); event.preventDefault(); event.stopImmediatePropagation(); if (!event.repeat) { back(); feedback.play('BACK'); } return; }
@@ -611,7 +697,7 @@
       event.preventDefault();
       if (event.repeat || heldButton || document.activeElement.tagName !== 'BUTTON') { return; }
       var activated = document.activeElement;
-      if (holdToEdit && mode === 'home' && grid.contains(activated) && !busy) {
+      if (holdToEdit && mode === 'home' && grid.contains(activated) && favorites.some(function (app) { return app.id === activated.dataset.id; }) && !busy) {
         heldButton = activated; heldButton.classList.add('pressed');
         holdTimer = setTimeout(function () {
           if (heldButton !== activated || document.activeElement !== activated || document.hidden || mode !== 'home') { cancelHold(); return; }
@@ -621,9 +707,13 @@
       return;
     }
     cancelHold();
+    if (cinema && mode === 'home' && grid.contains(document.activeElement)) {
+      if (key === 'ArrowDown' && !libraryOpen) { event.preventDefault(); toggleLibrary(); feedback.play('MOVE'); return; }
+      if (key === 'ArrowUp' && libraryOpen && nav[1] && nav[1].indexOf(document.activeElement) >= 0) { event.preventDefault(); toggleLibrary(); feedback.play('MOVE'); return; }
+    }
     if (mode === 'move' && grid.contains(document.activeElement) && /^Arrow/.test(key)) {
       event.preventDefault();
-      var columns = Math.min(moving.length, gallery ? 5 : compact ? 4 : 3), lengths = [];
+      var columns = columnsFor(moving.length), lengths = [];
       for (var offset = 0; offset < moving.length; offset += columns) { lengths.push(Math.min(columns, moving.length - offset)); }
       var currentRow = Math.floor(moveIndex / columns);
       if (key === 'ArrowDown' && currentRow === lengths.length - 1) { focus(moveCancel); feedback.play('MOVE'); return; }
@@ -640,12 +730,12 @@
     // ponytail: options were once a horizontal row; left/right remain aliases for up/down.
     if (mode === 'options') { key = key === 'ArrowRight' ? 'ArrowDown' : key === 'ArrowLeft' ? 'ArrowUp' : key; }
     var flat = [].concat.apply([], nav);
-    if (key === 'Tab') { event.preventDefault(); var index = flat.indexOf(document.activeElement); focus(flat[(index + (event.shiftKey ? -1 : 1) + flat.length) % flat.length]); return; }
+    if (key === 'Tab') { event.preventDefault(); var index = flat.indexOf(document.activeElement); focus(flat[(index + (event.shiftKey ? -1 : 1) + flat.length) % flat.length], true); return; }
     if (!/^Arrow/.test(key)) { return; }
     event.preventDefault(); var row = 0, col = 0;
     nav.forEach(function (r, i) { var j = r.indexOf(document.activeElement); if (j >= 0) { row = i; col = j; } });
     var position = model.navigate(nav.map(function (r) { return r.length; }), row, col, key); var target = nav[position[0]][position[1]];
-    if (target !== document.activeElement) { focus(target); feedback.play('MOVE'); }
+    if (target !== document.activeElement) { focus(target, true); feedback.play('MOVE'); }
   });
   // Consume release as well so repeated remote Back events never request exit.
   document.addEventListener('keyup', function (event) {
@@ -667,7 +757,9 @@
   function refreshedHome() {
     if (mode !== 'home' || busy || heldButton) { return; }
     var active = document.activeElement;
-    renderHome(active === edit ? 'edit' : active === settings ? 'settings' : active === home ? 'home' : active === undoRemove ? 'undo' : lastHome);
+    var target = cinemaStartup && find(cinemaStartup) ? cinemaStartup : lastHome; cinemaStartup = '';
+    renderHome(active === libraryToggle ? 'library' : active === edit ? 'edit' : active === settings ? 'settings' : active === home ? 'home' : active === undoRemove ? 'undo' : target);
+    if (cinema && libraryOpen && (discoveryError || document.getElementById('status').textContent === 'Checking installed apps…')) { message(discoveryError, !!discoveryError); }
   }
   bootMark('handlers-attached');
   document.getElementById('preview').hidden = !bridge.preview; renderHome(startOnLast ? lastHome : ''); message(loaded.warning, true);

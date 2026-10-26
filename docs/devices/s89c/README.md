@@ -177,3 +177,90 @@ standard `deploy-ui` targets remain S90D and QN90A until S89C has that adapter.
 
 Standby/wake and full reboot checks remain pending. The owner plans to exercise
 those behaviors over the next day.
+
+## Local 0.4.4 dock and return trial
+
+On 2026-10-19, the local `codex/tvos-hig-design` branch was signed and installed
+as 0.4.4 through the guarded direct SDK update adapter. It includes the approved
+Horizon Dock. Landscape rotation resumes the current photo's remaining display
+time after returning from another app. Launch animations measure tile geometry
+before changing styles, and artwork decoration requests a resize only after
+adding captions.
+
+Both signatures passed verification. The installed version and 39 tracked file
+hashes matched the signed package. Typed Home/startup settings and autostart `1`
+stayed unchanged; app-data and Local Storage directory identities also matched
+the pre-update snapshot. Foreground readback confirmed `MiniHub001.Hub` after
+launch. The signed 0.4.3 package remains available for recovery.
+
+Local checks passed 468 tests with 178 platform-dependent skips. The owner
+confirmed that saved shortcuts and physical Home return work on 0.4.4.
+Performance measurements remain pending for this build, alongside standby and
+reboot checks. The branch and performance changes remain local.
+
+## Local 0.4.5 motion and artwork trial
+
+On 2026-10-19, signed 0.4.5 was installed from the local
+`codex/tvos-hig-design` branch through the guarded SDK update adapter. Gallery
+remote navigation now uses native smooth scrolling with consistent library row
+positions. Direction changes retarget the movement. Reduced motion retains
+instant scrolling. Artwork recognizes the full Spotify and Tubi titles reported
+by this TV, and HBO Max and Sling use official transparent wordmarks.
+
+Both signatures passed verification, and the installed version and 39 tracked
+file hashes matched the signed package. The retired HBO/Sling JPG files were
+absent. Home/startup settings and autostart `1` stayed unchanged; app-data and
+Local Storage directory identities matched the pre-update snapshot. Foreground
+readback confirmed `MiniHub001.Hub`. The signed 0.4.4 package remains available
+for recovery.
+
+The local suite passed 475 tests with 178 platform-dependent skips. The owner
+confirmed that row motion and the updated logos look good on the S89C with
+0.4.5. Hardware performance measurements, standby and reboot checks remain
+separate. GitHub publication is pending.
+
+## Local Home Shelf design
+
+On 2026-10-20, Home Shelf was added to Settings → Tile layout on
+`codex/tvos-hig-design`. Gallery remains the default; Cinema is also available.
+Home Shelf shows ten saved service spines per row, with shared app discovery,
+editing and Samsung Home fallback. Its walnut room and case texture ship as
+local PNG assets. Background photos keep the existing preference.
+
+The browser suite and unsigned package checks covered this option before its
+first TV trial. The 1990s Video Club alternative remains a design render.
+
+## Local 0.4.6 Shelf and Cinema trial
+
+On 2026-10-20, signed 0.4.6 was installed from the local
+`codex/tvos-hig-design` branch through the guarded SDK update adapter. It includes
+Cinema and the refined Home Shelf, with textured cases that recede along a shared
+ledge. Both layouts remain available under Settings → Tile layout, alongside
+Gallery and the existing choices. Saved layout preferences were preserved.
+
+Both signatures passed verification. The installed version and all 41 tracked
+file hashes matched the signed package. Typed Home/startup settings and autostart
+`1` stayed unchanged; app-data and Local Storage directory identities matched
+the pre-update snapshot. The signed 0.4.5 package remains available for recovery.
+
+The launch API accepted the request. Its first foreground read still named
+Screen Mirroring; a later read-only check confirmed `MiniHub001.Hub` in front.
+The launch was issued once. The shared journal records the package update as
+complete, and activation evidence records the subsequent foreground confirmation.
+
+The deployment's local suite passed 503 tests with 178 platform-dependent skips.
+Owner confirmation of the new Shelf and saved shortcuts remains pending.
+Physical remote feel and rendering cost need a TV trial, alongside standby and
+reboot checks for this version. GitHub publication is pending.
+
+
+## UI source release — 2026-10-26
+
+The owner fork's UI release adds Cinema and the final rigid-case Home Shelf,
+with smoother Gallery row movement and transparent Disney+, HBO Max and Sling
+artwork. The layouts share saved shortcuts and appearance preferences. The
+latest Shelf refinement has passed local browser review; hardware rendering and
+performance remain pending. The last recorded S89C installation is still 0.4.6.
+
+Private device records and signing material remain outside this release. The
+upstream S89C-support PR keeps its existing branch and revision.

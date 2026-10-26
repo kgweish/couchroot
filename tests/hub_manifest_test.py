@@ -35,7 +35,7 @@ def fake_sign(argv, **kwargs):
         for path in stage.rglob('*'):
             if path.is_file() and path!=out:archive.write(path,path.relative_to(stage))
 
-ASSETS = {'index.html','style.css','tvos.css','icon.png','config.xml','logos/spotify.svg'} | {
+ASSETS = {'index.html','style.css','tvos.css','icon.png','config.xml','shelf-room.png','shelf-case.png','shelf-face.png','shelf-rim.png','logos/spotify.svg'} | {
     'logos/'+name for name in re.findall(r"logo: '([^']+)'",(REPO/'web/streaming-artwork.js').read_text())}
 
 class ManifestTests(unittest.TestCase):

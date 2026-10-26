@@ -37,17 +37,26 @@ for stable assertions. Sound starts off in the workbench; enabling it can play
 the app's normal local Web Audio tones.
 
 **Design · Gallery apps & inputs** (`/?scenario=tvos-concept`) previews the S89C
-Home design using simulated apps. Gallery shows five columns with a clock, local service
-logos and labels below each tile. A greeting and date follow the browser's local
+Home design using simulated apps. Gallery uses five columns of 5:3 service icons.
+A glass dock surrounds the first row; its focused app shows its name below the
+artwork. Later rows retain their captions. Samsung Home sits above the dock at
+the left. The same scroll viewport contains the app rows and the separate
+Edit apps and Settings controls after the final row. Up from the first app row
+reaches Samsung Home. Remote row navigation uses native smooth scrolling, with
+each library row returning to the same vertical position in either direction.
+Returning to the first row restores the scenic dock view through the same smooth
+scroll. Further arrows retarget the current movement. Reduced motion and browsers
+without `scrollTo` use instant navigation. A greeting and date follow the browser's local
 time: morning starts at 05:00, afternoon at 12:00 and evening at 17:00.
 Fifteen landscape photos load directly from Unsplash and crossfade once a minute;
 the sequence repeats after about fifteen minutes while Home stays visible.
-Reduced motion removes the fade. Rotation pauses while the page is hidden.
+Reduced motion removes the fade. Rotation pauses while the page is hidden and
+resumes the current photo's remaining display time when Home returns.
 Failed downloads keep the last photo, or the gradient before any photo loads.
 Settings → **Background photos** turns downloads and rotation on or off. Off
 shows the gradient and cancels a photo still loading; the choice survives reloads.
 Settings → **Tile layout** cycles through **Gallery**, **Comfortable**, and
-**Compact**. Gallery is the current five-column design with logos, captions and
+**Compact**, **Cinema**, then **Home Shelf**. Gallery is the default five-column design with logos, captions and
 the greeting/date. Comfortable and Compact use the earlier card designs with up
 to three or four columns. Each choice updates the arrow and move navigation,
 with a matching Settings preview. The photo toggle works across these layouts.
@@ -57,11 +66,67 @@ a saved Comfortable choice stays Comfortable. Other TV profiles retain their
 existing layout choices. Photo preferences use `minimal-hub.photos.v1`.
 Its Live TV, HDMI 1 and HDMI 3 entries are
 sample fixtures; they do not report connected devices or switch real inputs.
+The clock is a passive display in a glass capsule. Focus adds a small lift and
+light edge; reduced motion retains the static highlight. Utility pages share
+the cooler palette and rounded controls, with opaque content panels for readable
+text. The dock uses a bounded backdrop blur when supported and a translucent
+fallback otherwise. Increased contrast or reduced transparency uses solid
+surfaces. Tizen rendering cost still needs an S89C check.
 The design uses `web/tvos.js`, `web/tvos.css` and the shared remote navigation.
 S89C staging enables it through the body’s `data-design` attribute. Other TV
 profiles retain their current layout. The existing Compact scenario remains
 available for comparison. Logo sources are recorded in
 [the artwork notes](../../web/logos/README.md).
+
+**Design · Cinema favorites & library** (`/?scenario=cinema`) selects the optional
+Cinema layout. The first five saved shortcuts form its rail. Their existing order
+stays intact; Edit apps controls which shortcuts reach that rail. Down opens a
+five-column drawer containing saved shortcuts and the installed catalog, with
+TV/HDMI sources on a separate final row. Back restores the rail's selected app;
+Up from the drawer's first row also closes it. The All apps & inputs button
+provides the same action. Edit apps and Settings remain separate controls below
+the rail. Empty Home still offers Add apps and access to the library.
+
+Cinema's hero uses bundled service artwork after focus settles for 160 ms,
+with readable app names when artwork is unavailable. Reduced motion updates it
+immediately and removes the drawer entrance animation. Photo rotation, greeting,
+date and clock reuse Gallery's settings. Selection does not fetch a landscape.
+The library retains its selected app on return; Last selected can reopen it at
+startup after discovery. Gallery remains available in the same layout cycle.
+Cinema does not change the shortcut list when switching layouts or browsing the
+catalog. Its browser fixtures simulate source discovery through the same API as
+the S89C; input selection continues through Samsung Home.
+
+**Design · Home Shelf** (`/?scenario=shelf`) places saved shortcuts on a walnut
+shelf as ten service spines per row, with heights receding toward the right.
+Every case turns slightly to expose its right side. Neighboring cases meet
+along contact seams, keeping the wall behind the row covered. The focused case
+pulls forward with a small lift and scale, exposing a broad side while the
+following cases on its row slide over to make room. Move uses the resting
+angle so neighboring labels remain readable.
+Smaller main logos and a matching mark near each base
+follow the physical packaging reference. Down and Up smoothly exchange rows in
+the same shelf position. Reduced motion and browsers without `scrollTo` use
+instant movement while preserving the static angle. The selected service name and launch prompt sit below the
+shelf; Samsung Home, Edit apps and Settings remain in the footer. Move uses ten
+columns and retains Save/Cancel behavior. Empty Home still offers Add apps.
+
+The room is bundled as `web/shelf-room.png`. The rigid case uses a front plane
+and a perpendicular side with fixed depth. Its yaw changes from 8° to 20° when
+pulled out. `web/shelf-face.png` supplies grain blended with the service color;
+`web/shelf-rim.png` supplies the raised rim with normal alpha compositing.
+Dark fronts strengthen the grain on their flat material plane; their case
+parent retains its unfiltered 3D context. Both surfaces have an opaque backing. The three-pixel hinge overlap covers
+rounding seams while neighboring positions animate. Reduced motion shows the
+same selected pose instantly. Netflix has a red side matching the approved
+render. Shelf skips the shared 2D launch animation, preserving the case angle
+and existing progress/error feedback. `web/shelf-case.png` remains the small
+Settings preview material. Service logos use the existing local artwork registry;
+unknown apps keep a readable name. A transparent upper area exposes the shared
+rotating landscape, greeting and clock. Turning Background photos off leaves
+the local shelf materials over the gradient. Switching layouts preserves saved
+shortcuts and their order. The 1990s front-facing Video Club concept remains a
+render awaiting design approval.
 
 On the S89C, discovery supplies installed app IDs and connected TV/HDMI sources.
 Input captions say **via Home**: they open Samsung Home to select the source.
@@ -132,11 +197,17 @@ npm run package
 ```
 
 Screenshot capture starts its own temporary server and writes 1920×1080 PNGs
-for every scenario to `test-results/screenshots/`. It uses fresh browser contexts,
-a fixed clock and reduced motion, and blocks online photos to capture the
+for every scenario to `test-results/screenshots/`, plus Gallery's scrolled footer,
+Settings and editor, Cinema's library, inputs, Settings and editor, and Home
+Shelf's second row, Settings and editor. It uses fresh browser contexts, a fixed clock and reduced
+motion, and blocks online photos to capture the
 concept's gradient fallback consistently. Inspect the images; these are not golden-image
 tests. The older-browser checks exercise selected fallbacks in modern Chromium,
 not a Tizen emulator.
+
+For review with the live landscape, run `npm run screenshots -- --photos`.
+It waits for Gallery's first photo and writes to `test-results/screenshots-photos/`.
+This capture needs network access; the default capture stays offline.
 
 Packaging writes `dist/MinimalHub-<device>-unsigned.wgt` and `dist/manifest-<device>.json`.
 For an authorized update to an already configured TV, follow

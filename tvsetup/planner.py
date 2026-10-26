@@ -71,11 +71,11 @@ class Plan:
 
 def hub_sources(device, *, device_id=None):
     """Exact Hub inputs; None preserves the unconfigured native WebView source."""
-    names = ('index.html','style.css','bridge.js','presentation.js','model.js','feedback.js','hub.js','icon.png','config.xml','tvos.js','tvos.css','streaming-artwork.js')
+    names = ('index.html','style.css','bridge.js','presentation.js','model.js','feedback.js','hub.js','icon.png','config.xml','tvos.js','tvos.css','streaming-artwork.js','shelf-room.png','shelf-case.png','shelf-face.png','shelf-rim.png')
     result = {name:(REPO/'web'/name).read_bytes() for name in names}
-    logos = ('amc.jpg','appletv.jpg','crunchyroll.jpg','directv.jpg','discovery.jpg','disney.jpg',
-             'espn.png','fubo.jpg','hbomax.jpg','hulu.svg','netflix.png','paramount.jpg','pbs.jpg',
-             'peacock.png','plex.svg','pluto.jpg','prime.png','roku.png','sling.jpg','spotify.svg',
+    logos = ('amc.jpg','appletv.jpg','crunchyroll.jpg','directv.jpg','discovery.jpg','disney.png',
+             'espn.png','fubo.jpg','hbomax.svg','hulu.svg','netflix.png','paramount.jpg','pbs.jpg',
+             'peacock.png','plex.svg','pluto.jpg','prime.png','roku.png','sling.png','spotify.svg',
              'starz.jpg','tubi.png','tvplus.svg','vix.jpg','youtube.svg','youtubetv.jpg')
     result.update({'logos/'+name:(REPO/'web/logos'/name).read_bytes() for name in logos})
     if device is None:return result

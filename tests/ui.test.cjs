@@ -220,6 +220,34 @@ test('launch expands selected tile and moves neighbors without delaying launch; 
  await p.evaluate(()=>window.launchFail=false);await p.emulateMedia({reducedMotion:'reduce'});await key(p,'Escape','ArrowRight','Enter');assert.equal(await p.locator('.launch-motion').count(),0);assert.equal((await p.evaluate(()=>launches)).at(-1),'9Ur5IzDKqV.TizenYouTube');await p.close();
 });
 
+test('launch measures tiles before applying animation styles',async()=>{
+ const p=await setup();
+ const reads=await p.evaluate(()=>{
+  const grid=document.getElementById('favorites'),read=Element.prototype.getBoundingClientRect,reads=[];
+  Element.prototype.getBoundingClientRect=function(){
+   if(this.parentElement===grid)reads.push({id:this.dataset.id,afterAnimation:grid.classList.contains('launch-motion')});
+   return read.call(this);
+  };
+  try{grid.firstElementChild.click();}finally{Element.prototype.getBoundingClientRect=read;}
+  return reads;
+ });
+ assert.deepEqual(reads.map(read=>read.id),['kIciSQlYEM.plex','9Ur5IzDKqV.TizenYouTube']);
+ assert.ok(reads.every(read=>!read.afterAnimation),'Geometry reads must finish before animation changes');
+ assert.deepEqual(await p.evaluate(()=>launches),['kIciSQlYEM.plex']);
+ await p.close();
+});
+
+test('Gallery launch effects avoid resize passes',async()=>{
+ const p=await setup({tvos:true});
+ await p.evaluate(()=>{window.launchResizes=0;window.addEventListener('resize',()=>window.launchResizes++);});
+ await key(p,'Enter');
+ assert.equal(await p.evaluate(()=>launchResizes),0,'Launch classes must not trigger caption layout work');
+ await key(p,'Escape');
+ assert.equal(await p.evaluate(()=>launchResizes),0,'Clearing launch classes must not trigger caption layout work');
+ assert.equal(await p.locator('.design-caption').count(),(await ids(p)).length);
+ await p.close();
+});
+
 test('core Settings skips monitoring and keeps reset and hold controls reachable',async()=>{
  const p=await setup();
  assert.equal(await p.evaluate(()=>typeof window.HubTelemetry),'undefined');
@@ -474,4 +502,199 @@ test('a second move without arrows has only its own moving tile and badge',async
   assert.equal(await p.locator('#favorites .moving').getAttribute('aria-disabled'),null);
   await key(p,'Enter');assert.equal(await p.locator('#move-banner').isVisible(),false);
  } finally {await p.close();}
+});
+
+test('Cinema is optional, preserves shortcuts and restores Gallery after a full layout cycle',async()=>{
+ const p=await setup({tvos:true});
+ await p.waitForFunction(()=>document.querySelectorAll('#favorites button').length===16);
+ const before=await ids(p),saved=await p.evaluate(()=>localStorage.getItem('minimal-hub.shortcuts.v1'));
+ await p.locator('#settings').click();
+ for(let i=0;i<3;i++)await p.locator('#setting-layout').click();
+ assert.equal(await p.locator('#layout-value').textContent(),'Cinema');
+ await key(p,'Escape');assert.deepEqual(await ids(p),before.slice(0,5));
+ assert.equal(await p.evaluate(()=>localStorage.getItem('minimal-hub.shortcuts.v1')),saved);
+ await p.locator('#favorites button').first().focus();
+ await p.reload();await p.waitForTimeout(100);
+ assert.deepEqual(await ids(p),before.slice(0,5));
+ await p.locator('#settings').click();await p.locator('#setting-layout').click();await p.locator('#setting-layout').click();await key(p,'Escape');
+ assert.deepEqual(await ids(p),before);assert.equal(await p.locator('#cinema-hero').isVisible(),false);
+ await p.close();
+});
+
+test('Cinema library includes installed apps outside favorites and restores rail focus on Back',async()=>{
+ const p=await setup({tvos:true});
+ await p.evaluate(()=>{
+  localStorage.setItem('minimal-hub.design.v1','cinema');
+  localStorage.setItem('minimal-hub.shortcuts.v1',JSON.stringify({version:1,apps:[{id:'kIciSQlYEM.plex',name:'Plex'},{id:'9Ur5IzDKqV.TizenYouTube',name:'YouTube'}]}));
+ });
+ await p.reload();await p.waitForTimeout(100);
+ await key(p,'ArrowRight','ArrowDown');
+ assert.equal((await ids(p)).length,16);
+ assert.ok((await ids(p)).includes('Store00001.app11'));
+ await key(p,'Escape');assert.deepEqual(await ids(p),['kIciSQlYEM.plex','9Ur5IzDKqV.TizenYouTube']);
+ assert.equal(await p.locator(':focus').getAttribute('data-id'),'9Ur5IzDKqV.TizenYouTube');
+ await key(p,'ArrowDown');
+ await p.locator('[data-id="HubInput.HDMI.2"]').click();
+ assert.deepEqual(await p.evaluate(()=>launches),['com.samsung.tv.csfs']);await key(p,'Escape');
+ await key(p,'Escape','ArrowDown');
+ await p.locator('[data-id="Store00001.app11"]').focus();await key(p,'Enter');
+ assert.equal((await p.evaluate(()=>launches)).at(-1),'Store00001.app11');
+ await p.evaluate(()=>document.dispatchEvent(new Event('visibilitychange')));await p.waitForTimeout(200);
+ assert.equal(await p.locator(':focus').getAttribute('data-id'),'Store00001.app11');
+ assert.equal(await p.evaluate(()=>JSON.parse(localStorage.getItem('minimal-hub.shortcuts.v1')).apps.length),2);
+ await p.close();
+});
+
+test('Cinema restores a library selection after restart and keeps an empty favorites rail editable',async()=>{
+ const p=await setup({tvos:true});
+ await p.evaluate(()=>{
+  window.dispatchEvent(new Event('pagehide'));
+  localStorage.setItem('minimal-hub.design.v1','cinema');
+  localStorage.setItem('minimal-hub.shortcuts.v1',JSON.stringify({version:1,apps:[{id:'kIciSQlYEM.plex',name:'Plex'}]}));
+  localStorage.setItem('minimal-hub.selection.v1','Store00001.app11');
+ });
+ await p.reload();await p.waitForTimeout(100);
+ assert.equal(await p.locator(':focus').getAttribute('data-id'),'Store00001.app11');
+ await key(p,'Escape');assert.equal(await p.locator(':focus').getAttribute('data-id'),'kIciSQlYEM.plex');
+ await p.evaluate(()=>localStorage.setItem('minimal-hub.shortcuts.v1',JSON.stringify({version:1,apps:[]})));
+ await p.reload();await p.waitForTimeout(100);
+ assert.equal(await p.locator('#empty-add').isVisible(),true);
+ await key(p,'ArrowDown','ArrowRight','ArrowRight','Enter');
+ assert.ok((await ids(p)).includes('Store00001.app11'));
+ assert.equal(await p.evaluate(()=>JSON.parse(localStorage.getItem('minimal-hub.shortcuts.v1')).apps.length),0);
+ await key(p,'Escape');await p.locator('#edit-apps').click();
+ assert.equal(await p.locator('#editor').isVisible(),true);await p.close();
+});
+
+test('Cinema clears a completed library discovery message without interrupting Settings',async()=>{
+ const p=await setup({tvos:true,discoveryDelay:300});
+ await p.evaluate(()=>localStorage.setItem('minimal-hub.design.v1','cinema'));
+ await p.reload();await p.waitForTimeout(50);await key(p,'ArrowDown');
+ assert.match(await p.locator('#status').textContent(),/Checking installed apps/);
+ await p.waitForTimeout(350);assert.equal(await p.locator('#status').textContent(),'');
+ await p.close();
+});
+
+test('Cinema refreshes its library when an editor-owned discovery finishes on Home',async()=>{
+ const p=await setup({tvos:true,discoveryDelay:300});
+ await p.evaluate(()=>localStorage.setItem('minimal-hub.design.v1','cinema'));
+ await p.reload();await p.waitForTimeout(350);
+ await p.evaluate(()=>testApps.push({id:'Store00001.new',name:'New app',show:true}));
+ await p.locator('#edit-apps').click();await key(p,'Escape');
+ await p.locator('#favorites button').first().focus();await key(p,'ArrowDown');
+ await p.waitForTimeout(350);assert.ok((await ids(p)).includes('Store00001.new'));
+ await p.close();
+});
+
+test('Cinema Up from Inputs follows the partial app row above it',async()=>{
+ const p=await setup({tvos:true});
+ await p.evaluate(()=>{
+  localStorage.setItem('minimal-hub.design.v1','cinema');
+  testApps.splice(2);
+  localStorage.setItem('minimal-hub.shortcuts.v1',JSON.stringify({version:1,apps:testApps}));
+  document.dispatchEvent(new Event('visibilitychange'));
+ });
+ // Reload restores the fixture catalog, so refresh the in-session sparse catalog.
+ await p.locator('#settings').click();
+ for(let i=0;i<3;i++)await p.locator('#setting-layout').click();
+ await key(p,'Escape');await p.waitForTimeout(200);
+ await p.locator('#favorites button').first().focus();await key(p,'ArrowDown','ArrowDown');
+ assert.equal(await p.locator(':focus').getAttribute('data-id'),'HubInput.TV.0');
+ await key(p,'ArrowUp');assert.equal(await p.locator('body').evaluate(b=>b.classList.contains('cinema-library-open')),true);
+ assert.equal(await p.locator(':focus').getAttribute('data-id'),'kIciSQlYEM.plex');await p.close();
+});
+
+test('Cinema library keeps installed apps and inputs when Home has 256 unavailable shortcuts',async()=>{
+ const p=await setup({tvos:true});
+ await p.evaluate(()=>{
+  localStorage.setItem('minimal-hub.design.v1','cinema');
+  localStorage.setItem('minimal-hub.shortcuts.v1',JSON.stringify({version:1,apps:Array.from({length:256},(_,i)=>({id:'Removed000.app'+i,name:'Removed '+i}))}));
+ });
+ await p.reload();await p.waitForTimeout(100);await key(p,'ArrowDown');
+ const library=await ids(p);assert.ok(library.includes('Store00001.app11'));assert.ok(library.includes('HubInput.HDMI.2'));
+ assert.equal(await p.evaluate(()=>JSON.parse(localStorage.getItem('minimal-hub.shortcuts.v1')).apps.length),256);
+ await p.close();
+});
+
+test('Cinema clears its hero after the final favorite is removed',async()=>{
+ const p=await setup({tvos:true});
+ await p.evaluate(()=>{
+  localStorage.setItem('minimal-hub.design.v1','cinema');
+  localStorage.setItem('minimal-hub.shortcuts.v1',JSON.stringify({version:1,apps:[{id:'kIciSQlYEM.plex',name:'Plex'}]}));
+ });
+ await p.reload();await p.waitForFunction(()=>document.getElementById('cinema-name').textContent==='Plex');
+ await p.locator('#edit-apps').click();await p.locator('#editor-list button').first().click();await p.locator('#editor-list button').nth(1).click();await key(p,'Escape');
+ assert.equal(await p.locator('#cinema-logo').isVisible(),false);
+ assert.match(await p.locator('#cinema-prompt').textContent(),/Add favorites/);await p.close();
+});
+
+test('Home Shelf is optional, keeps saved ordering and navigates ten spines per row',async()=>{
+ const p=await setup({tvos:true});await p.waitForFunction(()=>document.querySelectorAll('#favorites button').length===16);
+ const before=await ids(p),saved=await p.evaluate(()=>localStorage.getItem('minimal-hub.shortcuts.v1'));
+ await p.locator('#settings').click();for(let i=0;i<4;i++)await p.locator('#setting-layout').click();
+ assert.equal(await p.locator('#layout-value').textContent(),'Home Shelf');
+ await key(p,'Escape');assert.deepEqual(await ids(p),before);
+ await p.locator('#favorites button').first().focus();await key(p,'ArrowDown');
+ assert.equal(await p.locator(':focus').getAttribute('data-id'),before[10]);
+ await key(p,'ArrowDown');assert.equal(await p.locator(':focus').getAttribute('data-app'),'home');
+ await key(p,'ArrowRight');assert.equal(await p.locator(':focus').getAttribute('id'),'edit-apps');
+ await key(p,'ArrowRight','Enter');assert.equal(await p.locator('#layout-value').textContent(),'Home Shelf');
+ await key(p,'Escape');await p.reload();await p.waitForTimeout(100);
+ assert.equal(await p.locator('body').evaluate(b=>b.classList.contains('design-shelf')),true);
+ assert.equal(await p.evaluate(()=>localStorage.getItem('minimal-hub.shortcuts.v1')),saved);
+ await p.locator('#settings').click();await p.locator('#setting-layout').click();await key(p,'Escape');
+ assert.equal(await p.locator('#favorites').evaluate(g=>getComputedStyle(g).gridTemplateColumns.split(' ').length),5);
+ await p.close();
+});
+
+test('Home Shelf Move uses its visible columns and cancelling preserves the saved list',async()=>{
+ const p=await setup({tvos:true});await p.evaluate(()=>localStorage.setItem('minimal-hub.design.v1','shelf'));
+ await p.reload();await p.waitForTimeout(100);const before=await ids(p);
+ await p.locator('#edit-apps').click();await key(p,'ArrowDown','Enter','Enter');
+ const rest=await p.locator('#favorites button').nth(1).evaluate(el=>new DOMMatrix(getComputedStyle(el).transform).m13);
+ const selected=await p.locator('#favorites button:focus').evaluate(el=>new DOMMatrix(getComputedStyle(el).transform).m13);
+ assert.ok(Math.abs(selected-rest)<.001,'Move keeps the resting case angle so its neighbor stays readable');
+ await key(p,'ArrowDown');
+ assert.equal((await ids(p))[10],before[0]);
+ await key(p,'Escape','Escape');assert.deepEqual(await ids(p),before);await p.close();
+});
+
+test('Home Shelf keeps its rigid case pose while an app launch is pending',async()=>{
+ const p=await setup({tvos:true});
+ await p.evaluate(()=>localStorage.setItem('minimal-hub.design.v1','shelf'));await p.reload();await p.waitForTimeout(100);
+ await p.evaluate(()=>{tizen.application.launch=id=>launches.push(id);});
+ const tile=p.locator('#favorites button').first();await tile.focus();await key(p,'Enter');
+ assert.equal(await tile.getAttribute('aria-busy'),'true');
+ assert.ok(Math.abs(await tile.evaluate(el=>new DOMMatrix(getComputedStyle(el).transform).m13))>.1,'Launch feedback retains the case angle');
+ assert.equal(await p.locator('#favorites.launch-motion').count(),0);
+ assert.equal(await p.locator('#favorites button').nth(1).evaluate(el=>getComputedStyle(el).opacity),'1','The other cases stay solid');
+ assert.equal(await tile.locator('.launch-label').isVisible(),true);
+ await key(p,'Escape');assert.equal(await tile.getAttribute('aria-busy'),null);
+ for(const reducedMotion of ['no-preference','reduce']) {
+  await p.emulateMedia({reducedMotion});await tile.focus();await p.waitForTimeout(180);
+  const pose=await p.evaluate(()=>{
+   const tiles=document.querySelectorAll('#favorites button'),tile=tiles[0];
+   document.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));
+   document.dispatchEvent(new KeyboardEvent('keyup',{key:'Enter',bubbles:true}));
+   document.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowRight',bubbles:true}));
+   document.querySelector('#favorites').getAnimations({subtree:true}).forEach(animation=>animation.finish());
+   return {pressed:tile.classList.contains('pressed'),yaw:new DOMMatrix(getComputedStyle(tile).transform).m13,
+    resting:new DOMMatrix(getComputedStyle(tiles[2]).transform).m13};
+  });
+  assert.equal(pose.pressed,true,'Inspect before the 120ms press feedback expires');
+  assert.ok(Math.abs(pose.yaw-pose.resting)<.001,'A pressed case returns to its resting angle after focus moves');
+  await key(p,'Escape');
+ }
+ await p.close();
+});
+
+test('Home Shelf recovers a failed launch and keeps an empty shelf editable',async()=>{
+ const p=await setup({tvos:true,launchFail:true});
+ await p.evaluate(()=>localStorage.setItem('minimal-hub.design.v1','shelf'));await p.reload();await p.waitForTimeout(100);
+ const first=(await ids(p))[0];await p.locator('#favorites button').first().focus();await key(p,'Enter');
+ assert.equal(await p.locator('#launch-error-dialog').isVisible(),true);await key(p,'Escape');
+ assert.equal(await p.locator(':focus').getAttribute('data-id'),first);
+ await p.evaluate(()=>localStorage.setItem('minimal-hub.shortcuts.v1',JSON.stringify({version:1,apps:[]})));await p.reload();await p.waitForTimeout(100);
+ assert.equal(await p.locator('#empty-add').isVisible(),true);assert.equal(await p.locator('#cinema-name').textContent(),'Your shelf');
+ await key(p,'ArrowDown','ArrowRight','Enter');assert.equal(await p.locator('#editor').isVisible(),true);await p.close();
 });
